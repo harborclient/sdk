@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.3.0 - 2026-06-25
+
 - Add renderer `hc.http.onAfterSend`, `hc.ipc.invoke`, and `hc.host` (`openRequestDraft`, `loadRequest`) to `PluginContext`.
 - Add `OpenRequestDraftPayload`, `OpenRequestDraftParam`, `PluginRendererHttp`, `PluginIpcInvoker`, and `PluginHost` types.
 - Extend `PluginHttpRequest` with `bodyType`, `params`, `sourceRequestId`, and `sourceRequestName`.
