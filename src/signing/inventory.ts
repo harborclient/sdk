@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import type { BinaryLike } from 'node:crypto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { PLUGIN_SIGNATURE_FILENAME } from './types.js';
@@ -28,10 +27,7 @@ export function shouldExcludePluginPath(relativePath: string): boolean {
  * @param absolutePath - Absolute path to the file on disk.
  */
 function hashFile(absolutePath: string): string {
-  const bytes = readFileSync(absolutePath);
-  return createHash('sha256')
-    .update(bytes as unknown as BinaryLike)
-    .digest('hex');
+  return createHash('sha256').update(readFileSync(absolutePath)).digest('hex');
 }
 
 /**
