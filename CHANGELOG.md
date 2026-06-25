@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 0.4.3 - 2026-06-25
+
 - Rename npm package from `@harborclient/plugin-api` to `@harborclient/sdk`.
 - Move documentation site from `harborclient.github.io/plugin-api/` to `harborclient.github.io/sdk/`.
 - **Breaking:** Plugin authors must update imports, `jsxImportSource`, and esbuild `--jsx-import-source` to `@harborclient/sdk`, then rebuild plugin bundles.
