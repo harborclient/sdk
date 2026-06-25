@@ -18,8 +18,8 @@
   },
   "license": "MIT",
   "author": {
-    "name": "Harbor",
-    "email": "harbor@example.com"
+    "name": "HarborClient",
+    "email": "contact@harborclient.com"
   },
   "type": "module",
   "packageManager": "pnpm@10.17.1",
