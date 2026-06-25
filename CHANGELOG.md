@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-## 0.2.6 - 2026-06-24
+## 0.3.1 - 2026-06-24
+
+- Export utility subpaths: `./http`, `./ui`, `./storage`, `./clipboard`, `./runtime-utils`, and `./store`.
+- Restore utility module sources under `src/` so `tsc` rebuilds them (previously only committed in `dist/`).
+
+## 0.3.0 - 2026-06-24
 
 - Add renderer `hc.http.onAfterSend`, `hc.ipc.invoke`, and `hc.host` (`openRequestDraft`, `loadRequest`) to `PluginContext`.
 - Add `OpenRequestDraftPayload`, `OpenRequestDraftParam`, `PluginRendererHttp`, `PluginIpcInvoker`, and `PluginHost` types.

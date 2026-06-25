@@ -1,6 +1,6 @@
 {
   "name": "@harborclient/plugin-api",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "TypeScript SDK for HarborClient plugin development.",
   "keywords": [
     "harborclient",
@@ -43,6 +43,30 @@
     },
     "./main": {
       "types": "./dist/main.d.ts"
+    },
+    "./http": {
+      "types": "./dist/http/index.d.ts",
+      "import": "./dist/http/index.js"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.js"
+    },
+    "./storage": {
+      "types": "./dist/storage/index.d.ts",
+      "import": "./dist/storage/index.js"
+    },
+    "./clipboard": {
+      "types": "./dist/clipboard.d.ts",
+      "import": "./dist/clipboard.js"
+    },
+    "./runtime-utils": {
+      "types": "./dist/runtime-utils.d.ts",
+      "import": "./dist/runtime-utils.js"
+    },
+    "./store": {
+      "types": "./dist/runtime/store.d.ts",
+      "import": "./dist/runtime/store.js"
     }
   },
   "files": [
@@ -60,7 +84,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint --cache .",
     "typecheck": "tsc --noEmit",
-    "test": "pnpm build && node --test dist/**/*.test.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "clean": "rm -rf dist",
     "release": "gh workflow run Release --ref main -f release_type=patch",
     "release:patch": "gh workflow run Release --ref main -f release_type=patch",
@@ -74,6 +99,7 @@
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.2",
     "@eslint/js": "^10.0.1",
+    "@jest/globals": "^30.4.1",
     "@types/react": "^19.1.2",
     "concurrently": "^8.2.2",
     "cytoscape": "^3.34.0",
@@ -82,8 +108,10 @@
     "debug": "^4.4.3",
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.4.2",
     "mermaid": "^11.15.0",
     "prettier": "^3.8.4",
+    "ts-jest": "^29.4.11",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.62.0",
     "vitepress": "^1.6.4",
