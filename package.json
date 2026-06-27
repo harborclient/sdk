@@ -70,11 +70,11 @@
       "require": "./dist/ui/index.js",
       "default": "./dist/ui/index.js"
     },
-    "./ui-react": {
-      "types": "./dist/ui-react/index.d.ts",
-      "import": "./dist/ui-react/index.js",
-      "require": "./dist/ui-react/index.js",
-      "default": "./dist/ui-react/index.js"
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "require": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
     },
     "./storage": {
       "types": "./dist/storage/index.d.ts",
