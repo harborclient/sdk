@@ -146,6 +146,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "clean": "rm -rf dist",
+    "dev": "node scripts/copy-runtime.mjs && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "release": "gh workflow run Release --ref main -f release_type=patch",
     "release:patch": "gh workflow run Release --ref main -f release_type=patch",
     "release:minor": "gh workflow run Release --ref main -f release_type=minor",
