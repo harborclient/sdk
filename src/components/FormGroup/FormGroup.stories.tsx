@@ -57,6 +57,9 @@ export const Checkbox: Story = {
 };
 
 export const Radio: Story = {
+  args: {
+    label: 'Content type'
+  },
   render: () => (
     <fieldset className="flex flex-col gap-2 border-none p-0">
       <legend className="mb-2 text-[14px] font-medium text-text">Content type</legend>
