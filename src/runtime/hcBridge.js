@@ -1,6 +1,3 @@
-/** @type {number} */
-let nextRequestId = 1;
-
 /** @type {Map<number, { resolve: (value: unknown) => void; reject: (reason?: unknown) => void }>} */
 const pendingRequests = new Map();
 
