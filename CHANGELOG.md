@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update PageHeader component styles to improve padding and layout consistency. (`7205c06`)
+
 ## 1.0.4 - 2026-07-01
 
 - Add linting instructions to AGENTS.md. (`440e1de`)
