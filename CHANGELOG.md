@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.7 - 2026-07-01
+
 - Refactor Modal and SegmentedTabs components for improved code clarity. (`0ac6fce`)
 - Enhance component styling with consistent class prefixes. (`d86919a`)
 
