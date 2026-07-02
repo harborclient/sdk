@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.23 - 2026-07-02
+
 - Fix export statement in styles.css.d.ts for consistency. (`7b2a250`)
 - Update ESLint cache, enhance package.json exports, and copy TypeScript definitions for styles. (`fd163a5`)
 - Refactor FormGroup component for improved ID resolution logic. (`820049b`)
