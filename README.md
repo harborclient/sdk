@@ -1,6 +1,6 @@
 # @harborclient/sdk
 
-TypeScript definitions, utility modules, and React runtime helpers for [HarborClient](https://harborclient.com/) plugin development.
+TypeScript definitions, utility modules, and React runtime helpers for [HarborClient](https://harborclient.com/) development.
 
 **Documentation:** [https://harborclient.github.io/sdk/](https://harborclient.github.io/sdk/)
 

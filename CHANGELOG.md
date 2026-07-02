@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update package description for clarity and consistency. (`d3c8e14`)
 - Refactor component styles for improved consistency and accessibility. (`58090ba`)
 
 ## 1.0.21 - 2026-07-02
