@@ -94,7 +94,7 @@ export function Table({ children, variant = 'bordered', className }: TableProps)
     createElement(
       'div',
       { className: wrapperClasses },
-      createElement('table', { className: 'w-full border-collapse' }, children)
+      createElement('table', { className: 'hc-table-element w-full border-collapse' }, children)
     )
   );
 }
@@ -118,8 +118,10 @@ interface TableSectionProps extends HTMLAttributes<HTMLTableSectionElement> {
  * @param className - Extra classes appended after any section preset.
  */
 export function TableHeader({ children, className, ...rest }: TableSectionProps): JSX.Element {
+  const classes = mergeClasses('hc-table-header', className);
+
   return (
-    <thead className={className} {...rest}>
+    <thead className={classes} {...rest}>
       {children}
     </thead>
   );
@@ -133,7 +135,8 @@ export function TableHeader({ children, className, ...rest }: TableSectionProps)
  */
 export function TableBody({ children, className, ...rest }: TableSectionProps): JSX.Element {
   const variant = useContext(TableVariantContext);
-  const base = variant === 'bordered' ? '[&_tr:last-child_td]:border-b-0' : '';
+  const base =
+    variant === 'bordered' ? 'hc-table-body [&_tr:last-child_td]:border-b-0' : 'hc-table-body';
   const classes = mergeClasses(base, className);
 
   return (
@@ -169,7 +172,7 @@ export function TableHead({
 }: TableHeadProps): JSX.Element {
   const variant = useContext(TableVariantContext);
   const base = variant === 'loose' ? tableHeadClassLoose : tableHeadClass;
-  const classes = mergeClasses(base, className);
+  const classes = mergeClasses(`hc-table-head ${base}`, className);
 
   return (
     <th scope={scope} className={classes} {...rest}>
@@ -199,7 +202,7 @@ interface TableCellProps extends TdHTMLAttributes<HTMLTableCellElement> {
 export function TableCell({ children, className, ...rest }: TableCellProps): JSX.Element {
   const variant = useContext(TableVariantContext);
   const base = variant === 'loose' ? tableCellClassLoose : tableCellClass;
-  const classes = mergeClasses(base, className);
+  const classes = mergeClasses(`hc-table-cell ${base}`, className);
 
   return (
     <td className={classes} {...rest}>

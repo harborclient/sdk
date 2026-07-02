@@ -34,7 +34,7 @@ export function OverlayCloseButton({ label = 'Close', onClose, className }: Prop
 
   return (
     <Button type="button" variant="icon" className={classes} aria-label={label} onClick={onClose}>
-      <FaIcon icon={faXmark} className="h-4 w-4" />
+      <FaIcon icon={faXmark} className="hc-overlay-close-button-icon h-4 w-4" />
     </Button>
   );
 }

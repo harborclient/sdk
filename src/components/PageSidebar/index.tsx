@@ -74,8 +74,8 @@ export function PageSidebar<T extends string>({
       {items.map((item) => {
         const active = selected === item.value;
         const rowClass = item.icon
-          ? `${sidebarRow(active)} w-full gap-2 border-none text-left text-[15px] app-no-drag`
-          : `${sidebarRow(active)} w-full border-none text-left text-[15px] app-no-drag`;
+          ? `hc-page-sidebar-item ${sidebarRow(active)} w-full gap-2 border-none text-left text-[15px] app-no-drag`
+          : `hc-page-sidebar-item ${sidebarRow(active)} w-full border-none text-left text-[15px] app-no-drag`;
 
         return (
           <button
@@ -88,11 +88,11 @@ export function PageSidebar<T extends string>({
             {item.icon ? (
               <FaIcon
                 icon={item.icon}
-                className={`h-3.5 w-3.5 shrink-0 ${active ? 'text-text' : 'text-muted'}`}
+                className={`hc-page-sidebar-item-icon h-3.5 w-3.5 shrink-0 ${active ? 'text-text' : 'text-muted'}`}
                 aria-hidden
               />
             ) : null}
-            <span className="min-w-0 truncate">{item.label}</span>
+            <span className="hc-page-sidebar-item-label min-w-0 truncate">{item.label}</span>
           </button>
         );
       })}

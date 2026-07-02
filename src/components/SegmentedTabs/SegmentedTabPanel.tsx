@@ -64,7 +64,7 @@ export function SegmentedTabPanel<T extends string>({
       role="tabpanel"
       id={context.getPanelId(value)}
       aria-labelledby={context.getTabId(value)}
-      className={className}
+      className={className ? `hc-segmented-tab-panel ${className}` : 'hc-segmented-tab-panel'}
       onKeyDown={handleKeyDown}
     >
       {children}

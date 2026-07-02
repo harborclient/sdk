@@ -61,7 +61,7 @@ export function ResizeHandle({
 }: Props): JSX.Element {
   const isHorizontal = orientation === 'horizontal';
   const containerClassName = [
-    'm-0 flex shrink-0 items-center justify-center bg-control p-0 font-inherit text-inherit hover:bg-selection/60 app-no-drag',
+    'hc-resize-handle m-0 flex shrink-0 items-center justify-center bg-control p-0 font-inherit text-inherit hover:bg-selection/60 app-no-drag',
     isHorizontal
       ? 'h-1.5 w-full cursor-row-resize border-b border-separator'
       : 'h-full w-1.5 cursor-col-resize border-r border-separator',
@@ -85,7 +85,9 @@ export function ResizeHandle({
     >
       <div
         className={
-          isHorizontal ? 'h-0.5 w-8 rounded-full bg-muted/50' : 'h-8 w-0.5 rounded-full bg-muted/50'
+          isHorizontal
+            ? 'hc-resize-handle-grip h-0.5 w-8 rounded-full bg-muted/50'
+            : 'hc-resize-handle-grip h-8 w-0.5 rounded-full bg-muted/50'
         }
         aria-hidden
       />

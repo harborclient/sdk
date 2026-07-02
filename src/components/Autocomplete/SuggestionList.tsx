@@ -145,7 +145,7 @@ export function SuggestionList({
     <ul
       id={listboxId}
       role="listbox"
-      className="fixed z-50 max-h-48 overflow-y-auto rounded-md border border-separator bg-surface py-1 text-[14px] text-text shadow-md"
+      className="hc-suggestion-list fixed z-50 max-h-48 overflow-y-auto rounded-md border border-separator bg-surface py-1 text-[14px] text-text shadow-md"
       style={{ top: position.top, left: position.left, width: position.width }}
     >
       {items.map((item, index) => (
@@ -156,8 +156,8 @@ export function SuggestionList({
           aria-selected={index === activeIndex}
           className={
             index === activeIndex
-              ? 'cursor-pointer bg-selection px-2 py-1'
-              : 'cursor-pointer px-2 py-1 hover:bg-selection'
+              ? 'hc-suggestion-list-option cursor-pointer bg-selection px-2 py-1'
+              : 'hc-suggestion-list-option cursor-pointer px-2 py-1 hover:bg-selection'
           }
           onMouseEnter={() => onActiveIndexChange(index)}
           onMouseDown={(event) => event.preventDefault()}

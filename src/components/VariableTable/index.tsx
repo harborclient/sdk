@@ -64,9 +64,11 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
 
   return (
     <div className="hc-variable-table">
-      {description && <p className="mb-3 text-[14px] text-muted">{description}</p>}
+      {description && (
+        <p className="hc-variable-table-description mb-3 text-[14px] text-muted">{description}</p>
+      )}
 
-      <div className="flex flex-col gap-1.5">
+      <div className="hc-variable-table-content flex flex-col gap-1.5">
         <Table>
           <TableHeader>
             <tr>
@@ -136,7 +138,7 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
         <Button
           type="button"
           variant="toolbar"
-          className="inline-flex items-center gap-1 self-start"
+          className="hc-variable-table-add inline-flex items-center gap-1 self-start"
           onClick={addVariable}
         >
           <FaIcon icon={faPlus} className="h-3 w-3" />

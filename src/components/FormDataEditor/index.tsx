@@ -115,7 +115,7 @@ export function FormDataEditor({
 
   return (
     <Table className="hc-form-data-editor">
-      <TableHeader>
+      <TableHeader className="hc-form-data-editor-header">
         <tr>
           <TableHead className="w-6 p-0">
             <span className="sr-only">Enable</span>
@@ -126,10 +126,10 @@ export function FormDataEditor({
           <TableHead className="w-7 p-0" />
         </tr>
       </TableHeader>
-      <TableBody>
+      <TableBody className="hc-form-data-editor-body">
         {rows.map((row, index) => (
           <tr key={index}>
-            <TableCell className="w-6 p-1 text-center">
+            <TableCell className="hc-form-data-editor-cell w-6 p-1 text-center">
               <Checkbox
                 className="app-no-drag"
                 checked={row.enabled}
@@ -138,7 +138,7 @@ export function FormDataEditor({
                 title="Enable"
               />
             </TableCell>
-            <TableCell>
+            <TableCell className="hc-form-data-editor-cell">
               <Input
                 type="text"
                 className="w-full"
@@ -148,7 +148,7 @@ export function FormDataEditor({
                 onChange={(e) => updateRow(index, { key: e.target.value })}
               />
             </TableCell>
-            <TableCell>
+            <TableCell className="hc-form-data-editor-cell">
               <Select
                 className="w-full"
                 value={row.type}
@@ -166,7 +166,7 @@ export function FormDataEditor({
                 <option value="file">File</option>
               </Select>
             </TableCell>
-            <TableCell>
+            <TableCell className="hc-form-data-editor-cell">
               {row.type === 'text' ? (
                 <VariableInput
                   wrapperClassName={`${fieldFrame} w-full`}
@@ -214,7 +214,7 @@ export function FormDataEditor({
                 </div>
               )}
             </TableCell>
-            <TableCell className="w-7 p-1 text-center">
+            <TableCell className="hc-form-data-editor-cell w-7 p-1 text-center">
               <Button
                 type="button"
                 variant="iconDanger"

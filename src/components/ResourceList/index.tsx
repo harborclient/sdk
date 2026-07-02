@@ -98,20 +98,24 @@ export function ResourceListRow({
 }: ResourceListRowProps): JSX.Element {
   const wrapClass = wrap ? 'flex-wrap' : '';
   const base =
-    `flex items-center justify-between gap-3 rounded-md border border-separator px-3 py-2 ${wrapClass}`.trim();
+    `hc-resource-list-row flex items-center justify-between gap-3 rounded-md border border-separator px-3 py-2 ${wrapClass}`.trim();
   const classes = className ? `${base} ${className}` : base;
 
   return (
     <li className={classes}>
-      <div className="min-w-0">
-        <div className="min-w-0">{primary}</div>
+      <div className="hc-resource-list-row-content min-w-0">
+        <div className="hc-resource-list-row-primary min-w-0">{primary}</div>
         {secondary != null ? (
-          <div className="truncate text-[14px] text-muted">{secondary}</div>
+          <div className="hc-resource-list-row-secondary truncate text-[14px] text-muted">
+            {secondary}
+          </div>
         ) : null}
         {meta}
       </div>
       {actions ? (
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">{actions}</div>
+        <div className="hc-resource-list-row-actions flex shrink-0 flex-wrap items-center justify-end gap-2">
+          {actions}
+        </div>
       ) : null}
     </li>
   );
@@ -123,7 +127,11 @@ export function ResourceListRow({
  * @param children - Title content.
  */
 export function ResourceListPrimary({ children }: { children: ReactNode }): JSX.Element {
-  return <div className="truncate text-[14px] font-medium text-text">{children}</div>;
+  return (
+    <div className="hc-resource-list-primary truncate text-[14px] font-medium text-text">
+      {children}
+    </div>
+  );
 }
 
 /**
@@ -132,5 +140,5 @@ export function ResourceListPrimary({ children }: { children: ReactNode }): JSX.
  * @param children - Empty message content.
  */
 export function ResourceListEmptyItem({ children }: { children: ReactNode }): JSX.Element {
-  return <li className="text-[14px] text-muted">{children}</li>;
+  return <li className="hc-resource-list-empty-item text-[14px] text-muted">{children}</li>;
 }

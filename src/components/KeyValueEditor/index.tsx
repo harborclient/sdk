@@ -107,7 +107,7 @@ export function KeyValueEditor({
 
   return (
     <Table className="hc-key-value-editor">
-      <TableHeader>
+      <TableHeader className="hc-key-value-editor-header">
         <tr>
           <TableHead className="w-6 p-0">
             <span className="sr-only">Enable</span>
@@ -117,12 +117,12 @@ export function KeyValueEditor({
           <TableHead className="w-7 p-0" />
         </tr>
       </TableHeader>
-      <TableBody>
+      <TableBody className="hc-key-value-editor-body">
         {rows.map((row, index) => {
           const normalizedRow = normalizeRow(row);
           return (
             <tr key={index}>
-              <TableCell className="w-6 p-1 text-center">
+              <TableCell className="hc-key-value-editor-cell w-6 p-1 text-center">
                 <Checkbox
                   className="app-no-drag"
                   checked={normalizedRow.enabled}
@@ -131,7 +131,7 @@ export function KeyValueEditor({
                   title="Enable"
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="hc-key-value-editor-cell">
                 <AutocompleteInput
                   type="text"
                   className="w-full"
@@ -142,7 +142,7 @@ export function KeyValueEditor({
                   onChange={(key) => updateRow(index, { key })}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell className="hc-key-value-editor-cell">
                 <VariableInput
                   wrapperClassName={`${fieldFrame} w-full`}
                   className="app-no-drag"
@@ -155,7 +155,7 @@ export function KeyValueEditor({
                   onEditVariable={onEditVariable}
                 />
               </TableCell>
-              <TableCell className="w-7 p-1 text-center">
+              <TableCell className="hc-key-value-editor-cell w-7 p-1 text-center">
                 <Button
                   type="button"
                   variant="iconDanger"

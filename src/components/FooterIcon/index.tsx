@@ -60,7 +60,7 @@ export function FooterIcon({ icon, active, onClick, label, className }: Props): 
       aria-label={accessibleLabel}
       title={accessibleLabel}
     >
-      <FaIcon icon={icon} className="h-4 w-4" />
+      <FaIcon icon={icon} className="hc-footer-icon-icon h-4 w-4" />
     </button>
   );
 }

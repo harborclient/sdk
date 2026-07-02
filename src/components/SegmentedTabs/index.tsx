@@ -273,7 +273,10 @@ export function SegmentedTabs<T extends string>({
     .filter(Boolean)
     .join(' ');
 
-  const tabListClassName = ['inline-flex min-w-0 flex-1 items-center', fullWidth ? 'w-full' : '']
+  const tabListClassName = [
+    'hc-segmented-tabs-list inline-flex min-w-0 flex-1 items-center',
+    fullWidth ? 'w-full' : ''
+  ]
     .filter(Boolean)
     .join(' ');
 
@@ -350,7 +353,7 @@ export function SegmentedTabs<T extends string>({
       >
         {visibleTabs.map((tab) => {
           const selected = value === tab.value;
-          const tabClassName = `${segment(selected)}${fullWidth ? ' flex-1' : ''}`;
+          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${fullWidth ? ' flex-1' : ''}`;
 
           return (
             <button
@@ -367,16 +370,19 @@ export function SegmentedTabs<T extends string>({
               {...(isRadiogroup
                 ? { role: 'radio', 'aria-checked': selected }
                 : {
-                    role: 'tab',
-                    id: getTabId(tab.value),
-                    'aria-selected': selected,
-                    ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
-                  })}
+                  role: 'tab',
+                  id: getTabId(tab.value),
+                  'aria-selected': selected,
+                  ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
+                })}
             >
-              <span className="inline-flex items-center gap-1.5">
+              <span className="hc-segmented-tabs-tab-label inline-flex items-center gap-1.5">
                 {tab.label}
                 {tab.indicator && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+                  <span
+                    className="hc-segmented-tabs-tab-indicator h-1.5 w-1.5 rounded-full bg-accent"
+                    aria-hidden
+                  />
                 )}
               </span>
             </button>

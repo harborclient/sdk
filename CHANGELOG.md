@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor component styles for improved consistency and accessibility. (`58090ba`)
+
 ## 1.0.21 - 2026-07-02
 
 - Update MethodSelect component styles for improved focus visibility. (`1077ed8`)

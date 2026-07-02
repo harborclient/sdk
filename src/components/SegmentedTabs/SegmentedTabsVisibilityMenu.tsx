@@ -180,7 +180,7 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
         innerRef={triggerRef}
         type="button"
         variant="icon"
-        className={triggerClassName}
+        className={`hc-segmented-tabs-visibility-menu-trigger ${triggerClassName}`}
         aria-label="Customize visible tabs"
         aria-haspopup="menu"
         aria-expanded={isOpen}
@@ -200,7 +200,7 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
         <div
           id={menuElementId}
           role="menu"
-          className="absolute right-0 top-full z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
+          className="hc-segmented-tabs-visibility-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
           onKeyDown={handleMenuKeyDown}
         >
           {tabs.map((tab, index) => {
@@ -249,16 +249,19 @@ function MenuCheckboxItem({
       role="menuitemcheckbox"
       aria-checked={checked}
       tabIndex={tabIndex}
-      className={menuItemClass}
+      className={`hc-segmented-tabs-visibility-menu-item ${menuItemClass}`}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();
       }}
     >
-      <span className="inline-flex w-4 shrink-0 justify-center" aria-hidden>
+      <span
+        className="hc-segmented-tabs-visibility-menu-item-check inline-flex w-4 shrink-0 justify-center"
+        aria-hidden
+      >
         {checked ? <FaIcon icon={faCheck} className="h-3 w-3" /> : null}
       </span>
-      <span className="min-w-0">{label}</span>
+      <span className="hc-segmented-tabs-visibility-menu-item-label min-w-0">{label}</span>
     </button>
   );
 }

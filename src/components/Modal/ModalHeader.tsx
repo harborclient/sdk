@@ -54,26 +54,29 @@ export function ModalHeader({
   onClose
 }: Props): JSX.Element {
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-separator px-4 py-4">
-      <div className="min-w-0 flex-1">
+    <div className="hc-modal-header flex flex-wrap items-center gap-2 border-b border-separator px-4 py-4">
+      <div className="hc-modal-header-content min-w-0 flex-1">
         <h2
           id={titleId}
-          className="m-0 flex flex-wrap items-center gap-2 text-[17px] font-semibold text-text"
+          className="hc-modal-header-title m-0 flex flex-wrap items-center gap-2 text-[17px] font-semibold text-text"
         >
           {title}
         </h2>
         {description ? (
-          <p id={descriptionId} className="m-0 mt-1 text-[14px] text-muted">
+          <p
+            id={descriptionId}
+            className="hc-modal-header-description m-0 mt-1 text-[14px] text-muted"
+          >
             {description}
           </p>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="hc-modal-header-actions flex flex-wrap items-center gap-2">
         {headerActions}
         <Button
           type="button"
           variant="icon"
-          className="shrink-0"
+          className="hc-modal-header-close shrink-0"
           aria-label="Close"
           disabled={closeDisabled}
           onClick={onClose}

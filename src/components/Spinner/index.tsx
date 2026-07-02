@@ -43,7 +43,7 @@ export function Spinner({ size = 'md', label, className }: Props): JSX.Element {
   return (
     <span className={wrapperClasses} role={label ? 'status' : undefined} aria-label={label}>
       <svg
-        className={`${sizeClasses(size)} animate-spin text-accent`}
+        className={`${sizeClasses(size)} hc-spinner-icon animate-spin text-accent`}
         viewBox="0 0 24 24"
         fill="none"
         aria-hidden={label ? true : undefined}

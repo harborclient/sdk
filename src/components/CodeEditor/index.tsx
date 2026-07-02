@@ -638,16 +638,22 @@ export function CodeEditor({
         <div
           id={tooltipId}
           role="tooltip"
-          className="pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-md border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md app-no-drag"
+          className="hc-code-editor-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-md border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md app-no-drag"
           style={{ top: selectionTooltip.top - 4, left: selectionTooltip.left }}
         >
-          <span className={selectionTooltipContent.muted ? 'text-muted' : undefined}>
+          <span
+            className={
+              selectionTooltipContent.muted
+                ? 'hc-code-editor-tooltip-text text-muted'
+                : 'hc-code-editor-tooltip-text'
+            }
+          >
             {selectionTooltipContent.text}
           </span>
           {onEditVariable ? (
             <button
               type="button"
-              className="self-start text-[14px] text-accent hover:underline"
+              className="hc-code-editor-tooltip-edit self-start text-[14px] text-accent hover:underline"
               aria-label={`Edit value for ${selectionTooltip.key}`}
               onMouseDown={(event) => {
                 event.preventDefault();

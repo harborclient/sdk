@@ -25,7 +25,9 @@ interface Props {
  * @param className - Extra classes appended after the layout preset.
  */
 export function ModalFooter({ children, spaced = false, className }: Props): JSX.Element {
-  const base = spaced ? 'mt-4 flex justify-end gap-2' : 'flex justify-end gap-2';
+  const base = spaced
+    ? 'hc-modal-footer mt-4 flex justify-end gap-2'
+    : 'hc-modal-footer flex justify-end gap-2';
   const classes = className ? `${base} ${className}` : base;
 
   return <div className={classes}>{children}</div>;

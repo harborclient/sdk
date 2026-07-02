@@ -52,7 +52,7 @@ export function PanelCloseButton({
       aria-label={ariaLabel ?? label}
       onClick={onClose}
     >
-      <FaIcon icon={faXmark} className="h-4 w-4" />
+      <FaIcon icon={faXmark} className="hc-panel-close-button-icon h-4 w-4" />
     </Button>
   );
 }

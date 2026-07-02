@@ -47,7 +47,7 @@ export function BackButton({ onClick, label = 'Back', ariaLabel, className }: Pr
       aria-label={ariaLabel}
       onClick={onClick}
     >
-      <FaIcon icon={faAngleLeft} className="h-4 w-4" aria-hidden />
+      <FaIcon icon={faAngleLeft} className="hc-back-button-icon h-4 w-4" aria-hidden />
       <span>{label}</span>
     </Button>
   );

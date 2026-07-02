@@ -91,7 +91,7 @@ interface Props {
  * @returns Class string for the label element.
  */
 function labelClasses(tone: FormGroupLabelTone, srOnly: boolean, inline: boolean): string {
-  const base = 'text-[18px]';
+  const base = 'hc-form-group-label text-[18px]';
   const visibility = srOnly ? 'sr-only' : '';
   if (inline) {
     const color = tone === 'muted' ? 'shrink-0 text-muted' : 'shrink-0 font-medium text-text';
@@ -152,7 +152,9 @@ export function FormGroup({
     const wrapperClasses = extra
       ? `hc-form-group flex items-start gap-2 ${extra}`
       : 'hc-form-group flex items-start gap-2';
-    const adjacentLabelClasses = labelClassName ?? 'min-w-0 flex-1 text-[16px] text-text';
+    const adjacentLabelClasses = labelClassName
+      ? `hc-form-group-label ${labelClassName}`
+      : 'hc-form-group-label min-w-0 flex-1 text-[16px] text-text';
     const linkedChildren = enhanceControl(children, { id: controlId });
     return (
       <div className={wrapperClasses}>
@@ -172,7 +174,7 @@ export function FormGroup({
     return (
       <label htmlFor={controlId} className={wrapperClasses}>
         {linkedChildren}
-        {label}
+        <span className="hc-form-group-label">{label}</span>
       </label>
     );
   }
@@ -200,8 +202,8 @@ export function FormGroup({
       : 'hc-form-group flex flex-col gap-1 p-4 border border-separator rounded-md';
     return (
       <div className={wrapperClasses}>
-        <label htmlFor={controlId} className="flex flex-col gap-1">
-          <span className="flex items-center gap-2">
+        <label htmlFor={controlId} className="hc-form-group-label flex flex-col gap-1">
+          <span className="hc-form-group-label-row flex items-center gap-2">
             {linkedChildren}
             <span className={`${labelClasses(labelTone, srOnly, false)} leading-none`}>
               {label}
@@ -210,7 +212,7 @@ export function FormGroup({
           {resolvedDescriptionId ? (
             <p
               id={resolvedDescriptionId}
-              className="hc-form-description m-0 pl-[26px] text-[14px] text-muted"
+              className="hc-form-group-description m-0 pl-[26px] text-[14px] text-muted"
             >
               {description}
             </p>
@@ -261,10 +263,13 @@ export function FormGroup({
 
   return (
     <div className={wrapperClasses}>
-      <label htmlFor={htmlFor} className="flex flex-col gap-1">
+      <label htmlFor={htmlFor} className="hc-form-group-label flex flex-col gap-1">
         <span className={labelClasses(labelTone, srOnly, false)}>{label}</span>
         {resolvedDescriptionId ? (
-          <p id={resolvedDescriptionId} className="hc-form-description m-0 text-[14px] text-muted">
+          <p
+            id={resolvedDescriptionId}
+            className="hc-form-group-description m-0 text-[14px] text-muted"
+          >
             {description}
           </p>
         ) : null}

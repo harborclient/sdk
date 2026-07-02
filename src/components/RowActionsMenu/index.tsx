@@ -233,6 +233,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
         innerRef={triggerRef}
         type="button"
         variant="icon"
+        className="hc-row-actions-menu-trigger"
         title="Actions"
         aria-label="Row actions"
         aria-haspopup="menu"
@@ -254,7 +255,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
         <div
           id={menuElementId}
           role="menu"
-          className="absolute right-0 top-full z-10 mt-0.5 min-w-[120px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
+          className="hc-row-actions-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[120px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
           onKeyDown={handleMenuKeyDown}
         >
           {groups.map((group, groupIndex) => {
@@ -263,7 +264,11 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
             return (
               <div
                 key={groupIndex}
-                className={groupIndex > 0 ? 'border-t border-separator' : undefined}
+                className={
+                  groupIndex > 0
+                    ? 'hc-row-actions-menu-group border-t border-separator'
+                    : 'hc-row-actions-menu-group'
+                }
               >
                 {group.map((item) => {
                   const itemIndex = flatIndex++;
@@ -276,7 +281,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
                       type="button"
                       role="menuitem"
                       tabIndex={itemIndex === focusedIndex ? 0 : -1}
-                      className={menuItemClass(item.variant)}
+                      className={`hc-row-actions-menu-item ${menuItemClass(item.variant)}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         closeMenu();

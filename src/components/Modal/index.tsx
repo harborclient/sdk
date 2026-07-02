@@ -56,19 +56,19 @@ interface BaseProps {
 type Props = BaseProps &
   (
     | {
-        /**
-         * Id of the element that labels the dialog (typically the heading).
-         */
-        labelledBy: string;
-        label?: never;
-      }
+      /**
+       * Id of the element that labels the dialog (typically the heading).
+       */
+      labelledBy: string;
+      label?: never;
+    }
     | {
-        labelledBy?: never;
-        /**
-         * Accessible name when no visible heading is linked via `labelledBy`.
-         */
-        label: string;
-      }
+      labelledBy?: never;
+      /**
+       * Accessible name when no visible heading is linked via `labelledBy`.
+       */
+      label: string;
+    }
   );
 
 /**
@@ -130,7 +130,7 @@ export function Modal({
         aria-labelledby={labelledBy}
         aria-describedby={descriptionId}
         aria-label={label}
-        className={`relative z-10 ${panelClass}`}
+        className={`hc-modal-panel relative z-10 ${panelClass}`}
         onClick={(event) => event.stopPropagation()}
       >
         {title && labelledBy ? (
@@ -144,7 +144,7 @@ export function Modal({
               closeDisabled={closeDisabled}
               onClose={onClose}
             />
-            <div className="flex-1 overflow-y-auto p-4">{children}</div>
+            <div className="hc-modal-body flex-1 overflow-y-auto p-4">{children}</div>
           </>
         ) : (
           children
@@ -153,7 +153,7 @@ export function Modal({
       <button
         type="button"
         tabIndex={-1}
-        className="absolute inset-0 z-0 cursor-default border-none bg-transparent p-0"
+        className="hc-modal-backdrop absolute inset-0 z-0 cursor-default border-none bg-transparent p-0"
         aria-label="Close dialog"
         onClick={onClose}
       />

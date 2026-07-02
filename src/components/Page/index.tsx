@@ -84,7 +84,7 @@ export function Page({
 
   return (
     <div className={outer}>
-      <div className="mx-auto w-full">
+      <div className="hc-page-inner mx-auto w-full">
         {header}
         {children}
         {footer}

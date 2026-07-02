@@ -24,7 +24,7 @@ export function LoadingMessage({
   children = 'Loading…',
   className
 }: LoadingMessageProps): JSX.Element {
-  const base = 'text-[14px] text-muted';
+  const base = 'hc-loading-message text-[14px] text-muted';
   const classes = className ? `${base} ${className}` : base;
 
   return (
@@ -61,10 +61,10 @@ interface ErrorRetryProps {
 export function ErrorRetry({ error, onRetry, retryLabel = 'Retry' }: ErrorRetryProps): JSX.Element {
   return (
     <div className="hc-error-retry flex flex-wrap items-center gap-2">
-      <FieldError spacing="field" className="mb-0 mt-0">
+      <FieldError spacing="field" className="hc-error-retry-message mb-0 mt-0">
         {error}
       </FieldError>
-      <Button type="button" variant="secondary" onClick={onRetry}>
+      <Button type="button" variant="secondary" className="hc-error-retry-button" onClick={onRetry}>
         {retryLabel}
       </Button>
     </div>
@@ -141,7 +141,7 @@ export function AsyncListState({
   }
 
   if (isEmpty && emptyMessage != null) {
-    return <p className="text-[14px] text-muted">{emptyMessage}</p>;
+    return <p className="hc-async-list-state-empty text-[14px] text-muted">{emptyMessage}</p>;
   }
 
   return <>{children}</>;

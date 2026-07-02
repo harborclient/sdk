@@ -301,7 +301,7 @@ export function VariableInput({
       <div
         ref={backdropRef}
         aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden whitespace-nowrap px-2.5 py-1.5 text-[16px] text-inherit"
+        className="hc-variable-input-backdrop pointer-events-none absolute inset-0 overflow-hidden whitespace-nowrap px-2.5 py-1.5 text-[16px] text-inherit"
       >
         {safeValue ? (
           tokens.map((token, index) =>
@@ -312,16 +312,18 @@ export function VariableInput({
                   if (el) spanRefs.current.set(index, el);
                   else spanRefs.current.delete(index);
                 }}
-                className="text-[#32D2E2]"
+                className="hc-variable-input-token hc-variable-input-token-variable text-[#32D2E2]"
               >
                 {token.text}
               </span>
             ) : (
-              <span key={index}>{token.text}</span>
+              <span key={index} className="hc-variable-input-token">
+                {token.text}
+              </span>
             )
           )
         ) : (
-          <span className="text-muted">{placeholder}</span>
+          <span className="hc-variable-input-placeholder text-muted">{placeholder}</span>
         )}
       </div>
 
@@ -341,7 +343,7 @@ export function VariableInput({
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={tooltip ? tooltipId : undefined}
-        className={`relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-[16px] text-transparent caret-text focus-visible:shadow-none ${className}`}
+        className={`hc-variable-input-field relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-[16px] text-transparent caret-text focus-visible:shadow-none ${className}`}
         type="text"
         placeholder={placeholder}
         value={safeValue}
@@ -380,18 +382,24 @@ export function VariableInput({
         <div
           id={tooltipId}
           role="tooltip"
-          className="pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-md border border-separator bg-surface px-4 py-3 text-[14px] text-text shadow-md after:pointer-events-auto after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-2 after:content-['']"
+          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-md border border-separator bg-surface px-4 py-3 text-[14px] text-text shadow-md after:pointer-events-auto after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-2 after:content-['']"
           style={{ top: tooltip.top - 4, left: tooltip.left }}
           onMouseEnter={cancelHide}
           onMouseLeave={scheduleHide}
         >
-          <span className={tooltipContent.muted ? 'text-muted' : undefined}>
+          <span
+            className={
+              tooltipContent.muted
+                ? 'hc-variable-input-tooltip-text text-muted'
+                : 'hc-variable-input-tooltip-text'
+            }
+          >
             {tooltipContent.text}
           </span>
           {onEditVariable && (
             <button
               type="button"
-              className="-mx-1 self-start rounded px-1 py-0.5 text-[14px] text-accent hover:underline app-no-drag"
+              className="hc-variable-input-tooltip-edit -mx-1 self-start rounded px-1 py-0.5 text-[14px] text-accent hover:underline app-no-drag"
               aria-label={`Edit value for ${tooltip.key}`}
               onClick={() => {
                 onEditVariable();

@@ -23,9 +23,9 @@ export function Radio({ ref, className, ...props }: Props): JSX.Element {
 
   return (
     <span className={wrapperClasses}>
-      <input ref={ref} type="radio" className={radioInput} {...props} />
-      <span className={radioCircle} aria-hidden>
-        <span className={radioDot} />
+      <input ref={ref} type="radio" className={`hc-radio-input ${radioInput}`} {...props} />
+      <span className={`hc-radio-circle ${radioCircle}`} aria-hidden>
+        <span className={`hc-radio-dot ${radioDot}`} />
       </span>
     </span>
   );

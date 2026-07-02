@@ -48,7 +48,7 @@ export function TabCloseButton({
       tabIndex={tabIndex}
       onClick={onClick}
     >
-      <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
+      <FaIcon icon={faXmark} className="hc-tab-close-button-icon h-3.5 w-3.5" />
     </button>
   );
 }
