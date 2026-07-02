@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor SegmentedTabs component for improved accessibility attributes. (`c11f504`)
 - Enhance SegmentedTabs component with editable tab visibility features. (`144d978`)
 
 ## 1.0.16 - 2026-07-02
