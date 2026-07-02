@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor FormGroup component for improved ID resolution logic. (`820049b`)
 - Update package version to 1.0.22 and enhance sideEffects configuration. (`3b2ff8f`)
 - Update package description for clarity and consistency. (`d3c8e14`)
 - Refactor component styles for improved consistency and accessibility. (`58090ba`)
