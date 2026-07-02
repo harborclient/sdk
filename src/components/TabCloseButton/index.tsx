@@ -42,7 +42,7 @@ export function TabCloseButton({
   return (
     <button
       type="button"
-      className="hc-tab-close-button inline-flex aspect-square shrink-0 cursor-pointer items-center justify-center self-stretch rounded-md border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text app-no-drag"
+      className="hc-tab-close-button inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text app-no-drag"
       title={title}
       aria-label={ariaLabel}
       tabIndex={tabIndex}

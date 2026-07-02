@@ -70,4 +70,4 @@ export function footerPanelClassName(open: boolean): string {
 
 /** Shared close-button styling for footer slide-up panels. */
 export const footerPanelCloseButtonClassName =
-  'inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text app-no-drag';
+  'inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text app-no-drag';

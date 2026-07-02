@@ -36,7 +36,7 @@ export function ResourceList({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: ResourceListProps): JSX.Element {
-  const base = 'hc-resource-list m-0 flex list-none flex-col gap-2 p-0';
+  const base = 'hc-resource-list m-0 flex list-none flex-col gap-[10px] p-0';
   const classes = className ? `${base} ${className}` : base;
 
   return (
@@ -98,7 +98,7 @@ export function ResourceListRow({
 }: ResourceListRowProps): JSX.Element {
   const wrapClass = wrap ? 'flex-wrap' : '';
   const base =
-    `hc-resource-list-row flex items-center justify-between gap-3 rounded-md border border-separator px-3 py-2 ${wrapClass}`.trim();
+    `hc-resource-list-row flex items-center justify-between gap-3 rounded-[10px] border border-separator/80 px-4 py-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-[background-color,box-shadow] duration-[120ms] ease-out hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.28)] ${wrapClass}`.trim();
   const classes = className ? `${base} ${className}` : base;
 
   return (

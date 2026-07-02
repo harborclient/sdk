@@ -53,8 +53,8 @@ interface Props<T extends string> {
  */
 function sidebarRow(active: boolean): string {
   return active
-    ? 'group flex cursor-pointer items-center gap-1 rounded-md bg-selection px-1.5 py-0.5 app-no-drag'
-    : 'group flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 hover:bg-selection/60 app-no-drag';
+    ? 'group flex cursor-pointer items-center gap-1 rounded-md bg-selection px-1.5 py-2 app-no-drag'
+    : 'group flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-2 hover:bg-selection/60 app-no-drag';
 }
 
 /**
@@ -68,14 +68,18 @@ export function PageSidebar<T extends string>({
 }: Props<T>): JSX.Element {
   return (
     <nav
-      className="hc-page-sidebar flex w-[180px] shrink-0 flex-col gap-0.5 border-r border-separator bg-sidebar px-2 py-3"
+      className="hc-page-sidebar flex w-[180px] shrink-0 flex-col gap-1 border-r border-separator bg-sidebar px-2 py-3"
       aria-label={ariaLabel}
     >
       {items.map((item) => {
         const active = selected === item.value;
         const rowClass = item.icon
-          ? `hc-page-sidebar-item ${sidebarRow(active)} w-full gap-2 border-none text-left text-[15px] app-no-drag`
-          : `hc-page-sidebar-item ${sidebarRow(active)} w-full border-none text-left text-[15px] app-no-drag`;
+          ? `hc-page-sidebar-item ${sidebarRow(
+              active
+            )} w-full gap-2 border-none text-left text-[15px] app-no-drag`
+          : `hc-page-sidebar-item ${sidebarRow(
+              active
+            )} w-full border-none text-left text-[15px] app-no-drag`;
 
         return (
           <button
@@ -88,7 +92,9 @@ export function PageSidebar<T extends string>({
             {item.icon ? (
               <FaIcon
                 icon={item.icon}
-                className={`hc-page-sidebar-item-icon h-3.5 w-3.5 shrink-0 ${active ? 'text-text' : 'text-muted'}`}
+                className={`hc-page-sidebar-item-icon h-[18px] w-[18px] shrink-0 ${
+                  active ? 'text-text' : 'text-muted'
+                }`}
                 aria-hidden
               />
             ) : null}

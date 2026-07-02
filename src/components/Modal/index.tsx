@@ -56,19 +56,19 @@ interface BaseProps {
 type Props = BaseProps &
   (
     | {
-      /**
-       * Id of the element that labels the dialog (typically the heading).
-       */
-      labelledBy: string;
-      label?: never;
-    }
+        /**
+         * Id of the element that labels the dialog (typically the heading).
+         */
+        labelledBy: string;
+        label?: never;
+      }
     | {
-      labelledBy?: never;
-      /**
-       * Accessible name when no visible heading is linked via `labelledBy`.
-       */
-      label: string;
-    }
+        labelledBy?: never;
+        /**
+         * Accessible name when no visible heading is linked via `labelledBy`.
+         */
+        label: string;
+      }
   );
 
 /**

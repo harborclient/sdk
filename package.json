@@ -1,6 +1,6 @@
 {
   "name": "@harborclient/sdk",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "TypeScript SDK for HarborClient development.",
   "keywords": [
     "harborclient",
@@ -22,7 +22,9 @@
     "email": "contact@harborclient.com"
   },
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "packageManager": "pnpm@10.17.1",
   "types": "./dist/client.d.ts",
   "exports": {
@@ -137,7 +139,8 @@
       "require": "./dist/eslint/index.js",
       "default": "./dist/eslint/index.js"
     },
-    "./tsconfig.base.json": "./tsconfig.base.json"
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./styles.css": "./dist/styles.css"
   },
   "bin": {
     "hc-plugin-sign": "./dist/signing/cli-sign.js",

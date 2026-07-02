@@ -182,11 +182,11 @@ export function FormGroup({
   if (layout === 'checkbox') {
     const resolvedDescriptionId =
       description != null && description !== ''
-        ? (descriptionId ?? (htmlFor ? `${htmlFor}-description` : undefined))
+        ? descriptionId ?? (htmlFor ? `${htmlFor}-description` : undefined)
         : undefined;
     const resolvedErrorId =
       error != null && error !== ''
-        ? (errorId ?? (htmlFor ? `${htmlFor}-error` : undefined))
+        ? errorId ?? (htmlFor ? `${htmlFor}-error` : undefined)
         : undefined;
     const describedByIds = [resolvedDescriptionId, resolvedErrorId].filter(
       (id): id is string => id != null
@@ -205,9 +205,7 @@ export function FormGroup({
         <label htmlFor={controlId} className="hc-form-group-label flex flex-col gap-1">
           <span className="hc-form-group-label-row flex items-center gap-2">
             {linkedChildren}
-            <span className={`${labelClasses(labelTone, srOnly, false)} leading-none`}>
-              {label}
-            </span>
+            <span className={labelClasses(labelTone, srOnly, false)}>{label}</span>
           </span>
           {resolvedDescriptionId ? (
             <p
@@ -242,11 +240,11 @@ export function FormGroup({
 
   const resolvedDescriptionId =
     description != null && description !== ''
-      ? (descriptionId ?? (htmlFor ? `${htmlFor}-description` : undefined))
+      ? descriptionId ?? (htmlFor ? `${htmlFor}-description` : undefined)
       : undefined;
   const resolvedErrorId =
     error != null && error !== ''
-      ? (errorId ?? (htmlFor ? `${htmlFor}-error` : undefined))
+      ? errorId ?? (htmlFor ? `${htmlFor}-error` : undefined)
       : undefined;
   const describedByIds = [resolvedDescriptionId, resolvedErrorId].filter(
     (id): id is string => id != null

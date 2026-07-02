@@ -1,0 +1,38 @@
+/**
+ * HarborClient SDK component styles that cannot be expressed as Tailwind utilities
+ * in JSX (pseudo-elements, ::highlight, forced-colors overrides).
+ *
+ * Consumers must define design tokens such as `--mac-accent` before importing this
+ * sheet. HarborClient maps these in its host `styles.css` `@theme` block.
+ */
+
+/**
+ * Variable token highlight color for CSS Highlight API overlays used by
+ * VariableInput and CodeEditor.
+ */
+::highlight(hc-variable-token) {
+  color: #32d2e2;
+}
+
+/**
+ * Active footer toggles use `shadow-sm`, which sits in Tailwind utilities and
+ * overrides the base focus ring. Restore a visible ring for keyboard focus,
+ * including programmatic focus from footer Tab handoff (`:focus:not(:focus-visible)`).
+ */
+.hc-footer-icon:focus-visible,
+.hc-footer-icon:focus:not(:focus-visible),
+.hc-footer-button:focus-visible,
+.hc-footer-button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mac-accent) 35%, transparent);
+}
+
+/**
+ * Windows Contrast Themes and other forced-colors environments need an explicit
+ * border on primary accent buttons so they remain distinguishable from the canvas.
+ */
+@media (forced-colors: active) {
+  .hc-button.bg-accent {
+    border: 1px solid ButtonBorder;
+  }
+}

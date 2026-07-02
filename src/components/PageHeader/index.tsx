@@ -41,7 +41,7 @@ export function PageHeader({ title, description, icon, children, className }: Pr
   return (
     <div className={wrapperClassName}>
       <div className="hc-page-header-content min-w-0 flex-1">
-        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[18px] font-semibold text-text leading-none mb-2">
+        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[28px] font-bold leading-[1.15] tracking-[-0.01em] text-text">
           {icon ? (
             <FaIcon
               icon={icon}
