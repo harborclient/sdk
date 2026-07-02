@@ -11,6 +11,8 @@ const tabs: TabItem<RequestTab>[] = [
   { value: 'body', label: 'Body', disabled: true }
 ];
 
+const savedVisibleTabValues: RequestTab[] = ['params', 'headers'];
+
 const meta = {
   title: 'Components/SegmentedTabs',
   component: SegmentedTabs,
@@ -20,12 +22,14 @@ const meta = {
       control: 'select',
       options: ['tabs', 'radiogroup']
     },
-    fullWidth: { control: 'boolean' }
+    fullWidth: { control: 'boolean' },
+    editable: { control: 'boolean' }
   },
   args: {
     tabs,
     value: 'params',
     onChange: fn(),
+    editable: false,
     ariaLabel: 'Request sections'
   }
 } satisfies Meta<typeof SegmentedTabs>;
@@ -72,12 +76,68 @@ export const RadioGroup: Story = {
   }
 };
 
+export const Editable: Story = {
+  args: {
+    editable: true,
+    defaultVisibleTabValues: savedVisibleTabValues,
+    onVisibleTabValuesChange: fn()
+  },
+  render: (args) => {
+    const [value, setValue] = useState<RequestTab>('params');
+    const [visibleTabValues, setVisibleTabValues] = useState<RequestTab[]>(savedVisibleTabValues);
+
+    return (
+      <div className="flex max-w-md flex-col gap-3">
+        <SegmentedTabs<RequestTab>
+          tabs={tabs}
+          editable={args.editable}
+          defaultVisibleTabValues={savedVisibleTabValues}
+          value={value}
+          visibleTabValues={visibleTabValues}
+          onChange={setValue}
+          onVisibleTabValuesChange={setVisibleTabValues}
+          ariaLabel={args.ariaLabel}
+        />
+        <button
+          type="button"
+          className="self-start rounded-md border border-separator bg-control px-3 py-1 text-[14px] text-text"
+          onClick={() => setVisibleTabValues(savedVisibleTabValues)}
+        >
+          Reset visibility
+        </button>
+      </div>
+    );
+  }
+};
+
+export const NotEditable: Story = {
+  args: {
+    editable: false
+  },
+  render: (args) => {
+    const [value, setValue] = useState<RequestTab>(args.value as RequestTab);
+    return (
+      <SegmentedTabs {...args} value={value} onChange={(next) => setValue(next as RequestTab)} />
+    );
+  }
+};
+
 export const WithPanels: Story = {
   render: () => {
     const [value, setValue] = useState<RequestTab>('params');
+    const [visibleTabValues, setVisibleTabValues] = useState<RequestTab[]>([
+      'params',
+      'headers',
+      'body'
+    ]);
+
     return (
       <SegmentedTabsGroup value={value} onChange={setValue} ariaLabel="Request editor">
-        <SegmentedTabs tabs={tabs} />
+        <SegmentedTabs
+          tabs={tabs}
+          visibleTabValues={visibleTabValues}
+          onVisibleTabValuesChange={setVisibleTabValues}
+        />
         <SegmentedTabPanel value="params" className="mt-3 text-[14px] text-muted">
           Query parameters go here.
         </SegmentedTabPanel>

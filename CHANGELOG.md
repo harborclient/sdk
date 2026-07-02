@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Enhance SegmentedTabs component with editable tab visibility features. (`144d978`)
+
 ## 1.0.16 - 2026-07-02
 
 - Enhance Radio component styling with new radioDot class. (`fe1ca3e`)
