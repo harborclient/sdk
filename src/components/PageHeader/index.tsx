@@ -45,7 +45,9 @@ export function PageHeader({ title, description, icon, children, className }: Pr
           {icon ? <FaIcon icon={icon} className="h-5 w-5 shrink-0 text-muted" aria-hidden /> : null}
           {title}
         </h2>
-        {description ? <p className="m-0 mt-1 text-[16px] text-muted leading-none">{description}</p> : null}
+        {description ? (
+          <p className="m-0 mt-1 text-[16px] text-muted leading-none">{description}</p>
+        ) : null}
       </div>
       {children ? <div className="flex flex-wrap items-center gap-2">{children}</div> : null}
     </div>

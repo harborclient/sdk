@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor PageHeader component for improved readability. (`1654121`)
 - Enhance FormGroup and PageHeader components for improved usability and styling. (`739a87b`)
 
 ## 1.0.13 - 2026-07-02
