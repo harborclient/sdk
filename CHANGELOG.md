@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.25 - 2026-07-03
+
 - Refactor CodeEditor component to simplify editor creation callback. (`7352dfa`)
 
 ## 1.0.23 - 2026-07-02
