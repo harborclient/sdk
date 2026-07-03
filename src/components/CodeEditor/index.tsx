@@ -4,7 +4,6 @@ import { json } from '@codemirror/lang-json';
 import { StreamLanguage } from '@codemirror/language';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { Prec } from '@codemirror/state';
-import type { EditorState } from '@codemirror/state';
 import {
   Decoration,
   EditorView,
@@ -782,7 +781,7 @@ export function CodeEditor({
   /**
    * Restores persisted scroll/selection and wires scroll tracking when the view is created.
    */
-  const stableOnCreateEditor = useCallback((view: EditorView, _state: EditorState): void => {
+  const stableOnCreateEditor = useCallback((view: EditorView): void => {
     editorViewRef.current = view;
 
     const restoredSelection = initialSelectionRef.current;

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor CodeEditor component to simplify editor creation callback. (`7352dfa`)
+
 ## 1.0.23 - 2026-07-02
 
 - Fix export statement in styles.css.d.ts for consistency. (`7b2a250`)
