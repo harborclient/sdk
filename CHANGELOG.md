@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update Toolbar component styles for improved UI consistency. (`488a52e`)
+
 ## 1.0.27 - 2026-07-03
 
 - Update RowActionsMenu styles for improved UI consistency. (`744e875`)

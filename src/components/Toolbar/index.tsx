@@ -83,13 +83,13 @@ interface Props {
  * Tailwind classes for inactive toolbar icon action buttons.
  */
 const TOOLBAR_ACTION_BUTTON_INACTIVE =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
+  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
 
 /**
  * Tailwind classes for pressed toolbar toggles, matching footer layout icon buttons.
  */
 const TOOLBAR_ACTION_BUTTON_ACTIVE =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-surface text-text shadow-sm focus-visible:bg-surface focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
+  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-selection text-text shadow-sm focus-visible:bg-surface focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
 
 /**
  * Resolves toolbar button classes for a declarative action.
@@ -138,8 +138,8 @@ export function Toolbar({ actions, ariaLabel = 'Toolbar', className }: Props): J
                   icon={action.icon}
                   className={
                     action.ariaPressed === true
-                      ? 'hc-toolbar-action-icon h-4 w-4'
-                      : 'hc-toolbar-action-icon h-3.5 w-3.5'
+                      ? 'hc-toolbar-action-icon h-5! w-5!'
+                      : 'hc-toolbar-action-icon h-5! w-5!'
                   }
                 />
               </button>
