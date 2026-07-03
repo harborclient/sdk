@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.27 - 2026-07-03
+
 - Update RowActionsMenu styles for improved UI consistency. (`744e875`)
 
 ## 1.0.26 - 2026-07-03
