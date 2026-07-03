@@ -1,20 +1,23 @@
-import { autocompletion, type CompletionSource } from '@codemirror/autocomplete';
+import { autocompletion, closeCompletion, type CompletionSource } from '@codemirror/autocomplete';
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
-import { HighlightStyle, StreamLanguage, syntaxHighlighting } from '@codemirror/language';
+import { StreamLanguage } from '@codemirror/language';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
+import { Prec } from '@codemirror/state';
+import type { EditorState } from '@codemirror/state';
 import {
   Decoration,
   EditorView,
   MatchDecorator,
   ViewPlugin,
   hoverTooltip,
+  keymap,
   type DecorationSet,
   type ViewUpdate
 } from '@codemirror/view';
 import CodeMirrorImport from '@uiw/react-codemirror';
-import { tags } from '@lezer/highlight';
 import {
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -25,12 +28,121 @@ import {
 import type { JSX } from 'react';
 import type { CodeEditorSetup, CodeEditorTheme, Variable } from '../../types.js';
 import { getVariableTooltipContent, VARIABLE_NAME_CHARS } from '../../variables/index.js';
+import { normalizeCodeEditorFontSize } from '../../ui/codeEditorSettings.js';
 import { useCodeEditorConfig } from './config.js';
+import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
+import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
+import { createSyntaxHighlightedPlaceholder } from './syntaxHighlightedPlaceholder.js';
 import { getCodeEditorThemeExtension } from './themes.js';
 
 export { CODE_EDITOR_THEME_OPTIONS } from './themes.js';
 
 export type CodeEditorLanguage = 'json' | 'text' | 'javascript' | 'shell';
+
+/**
+ * One slash command offered at the start of a line in the editor.
+ */
+export interface CodeEditorSlashCommand {
+  /**
+   * Command name without the leading slash (for example `ask`).
+   */
+  name: string;
+
+  /**
+   * Short description shown in autocomplete.
+   */
+  description?: string;
+}
+
+/**
+ * Screen coordinates for anchoring host UI near a slash command.
+ */
+export interface CodeEditorSlashCoords {
+  /**
+   * Top edge in viewport pixels.
+   */
+  top: number;
+
+  /**
+   * Left edge in viewport pixels.
+   */
+  left: number;
+
+  /**
+   * Bottom edge in viewport pixels.
+   */
+  bottom: number;
+
+  /**
+   * Right edge in viewport pixels.
+   */
+  right: number;
+}
+
+/**
+ * Parsed slash command at the caret line, passed to {@link Props.onSlashCommand}.
+ */
+export interface CodeEditorSlashTrigger {
+  /**
+   * Matched command name without the leading slash.
+   */
+  command: string;
+
+  /**
+   * Optional arguments typed after the command on the same line.
+   */
+  args: string;
+
+  /**
+   * 1-based line number where the command appears.
+   */
+  line: number;
+
+  /**
+   * Document offset of the leading slash character.
+   */
+  from: number;
+
+  /**
+   * Document offset after the matched command span (exclusive).
+   */
+  to: number;
+
+  /**
+   * Viewport coordinates near the command for positioning host UI.
+   */
+  coords: CodeEditorSlashCoords;
+}
+
+/**
+ * Document offsets for a CodeMirror selection range.
+ */
+export interface CodeEditorSelectionRange {
+  /**
+   * Anchor offset in the document.
+   */
+  anchor: number;
+
+  /**
+   * Head (active caret) offset in the document.
+   */
+  head: number;
+}
+
+/**
+ * Scroll and selection snapshot reported by {@link Props.onViewStateChange}.
+ */
+export interface CodeEditorViewState {
+  /**
+   * Vertical scroll offset of the CodeMirror scroller in pixels.
+   */
+  scrollTop: number;
+
+  /**
+   * Current selection range in document offsets.
+   */
+  selection: CodeEditorSelectionRange;
+}
 
 export interface Props {
   /**
@@ -56,14 +168,52 @@ export interface Props {
   readOnly?: boolean;
 
   /**
+   * When false, blocks user input while keeping normal editor chrome (gutters, border).
+   * Defaults to the inverse of {@link readOnly}. Use for temporary locks during async work.
+   */
+  editable?: boolean;
+
+  /**
    * Placeholder shown when the editor is empty.
    */
   placeholder?: string;
 
   /**
+   * When true, renders the placeholder as muted syntax-highlighted ghost content (JavaScript only).
+   */
+  placeholderHighlight?: boolean;
+
+  /**
    * Minimum editor height in CSS units.
    */
   minHeight?: string;
+
+  /**
+   * Explicit editor height in CSS units. When set, restores a user-resized height.
+   */
+  height?: string;
+
+  /**
+   * Called when the wrapper height changes (for example after native resize-y drag).
+   *
+   * @param heightPx - Observed wrapper height rounded to the nearest pixel.
+   */
+  onHeightChange?: (heightPx: number) => void;
+
+  /**
+   * Restores vertical scroll when the editor is created.
+   */
+  initialScrollTop?: number;
+
+  /**
+   * Restores caret/selection when the editor is created.
+   */
+  initialSelection?: CodeEditorSelectionRange;
+
+  /**
+   * Called when scroll or selection changes, debounced, and once on unmount.
+   */
+  onViewStateChange?: (state: CodeEditorViewState) => void;
 
   /**
    * Additional wrapper classes.
@@ -86,6 +236,16 @@ export interface Props {
   completionSource?: CompletionSource;
 
   /**
+   * Slash commands recognized at the start of a line (for example `/ask`).
+   */
+  slashCommands?: CodeEditorSlashCommand[];
+
+  /**
+   * Called when the user presses Enter on a complete slash command line.
+   */
+  onSlashCommand?: (trigger: CodeEditorSlashTrigger) => void;
+
+  /**
    * When set, overrides the persisted CodeMirror theme (used by the settings preview).
    */
   themeOverride?: CodeEditorTheme;
@@ -94,6 +254,11 @@ export interface Props {
    * When set, overrides persisted basicSetup options (used by the settings preview).
    */
   setupOverride?: CodeEditorSetup;
+
+  /**
+   * When set, overrides the persisted editor font size (used by the settings preview).
+   */
+  fontSize?: string;
 
   /**
    * DOM id applied to the editable region for label association.
@@ -121,113 +286,26 @@ export interface Props {
   'aria-describedby'?: string;
 }
 
-const lightHighlight = HighlightStyle.define([
-  { tag: tags.propertyName, color: '#881391' },
-  { tag: tags.string, color: '#c41a16' },
-  { tag: tags.number, color: '#1c00cf' },
-  { tag: tags.bool, color: '#1c00cf' },
-  { tag: tags.null, color: '#1c00cf' },
-  { tag: tags.keyword, color: '#881391' },
-  { tag: tags.bracket, color: 'var(--mac-text)' },
-  { tag: tags.punctuation, color: 'var(--mac-muted)' },
-  { tag: tags.comment, color: 'var(--mac-muted)', fontStyle: 'italic' }
-]);
+/**
+ * Clamps selection offsets to the current document length.
+ *
+ * @param docLength - Current document length in characters.
+ * @param selection - Selection offsets to clamp.
+ * @returns Offsets safe to dispatch into CodeMirror.
+ */
+function clampSelection(
+  docLength: number,
+  selection: CodeEditorSelectionRange
+): CodeEditorSelectionRange {
+  const maxOffset = Math.max(0, docLength);
+  return {
+    anchor: Math.min(Math.max(0, selection.anchor), maxOffset),
+    head: Math.min(Math.max(0, selection.head), maxOffset)
+  };
+}
 
-const darkHighlight = HighlightStyle.define([
-  { tag: tags.propertyName, color: '#ff7ab2' },
-  { tag: tags.string, color: '#ff8170' },
-  { tag: tags.number, color: '#78dce8' },
-  { tag: tags.bool, color: '#78dce8' },
-  { tag: tags.null, color: '#78dce8' },
-  { tag: tags.keyword, color: '#ff7ab2' },
-  { tag: tags.bracket, color: 'var(--mac-text)' },
-  { tag: tags.punctuation, color: 'var(--mac-muted)' },
-  { tag: tags.comment, color: 'var(--mac-muted)', fontStyle: 'italic' }
-]);
-
-const editorTheme = EditorView.theme({
-  '&': {
-    backgroundColor: 'transparent',
-    color: 'var(--mac-text)'
-  },
-  '.cm-scroller': {
-    overflow: 'auto',
-    fontFamily: 'var(--font-mono)'
-  },
-  '.cm-content': {
-    padding: '8px 0',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '14px',
-    caretColor: 'var(--mac-accent)'
-  },
-  '.cm-line': {
-    padding: '0 8px'
-  },
-  '&.cm-focused': {
-    outline: 'none'
-  },
-  '&.cm-focused .cm-cursor': {
-    borderLeftColor: 'var(--mac-accent)'
-  },
-  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, ::selection': {
-    backgroundColor: 'var(--mac-selection) !important'
-  },
-  '.cm-gutters': {
-    backgroundColor: 'transparent',
-    color: 'var(--mac-muted)',
-    border: 'none'
-  },
-  '.cm-activeLineGutter': {
-    backgroundColor: 'var(--mac-selection)'
-  },
-  '.cm-activeLine': {
-    backgroundColor: 'color-mix(in srgb, var(--mac-selection) 45%, transparent)'
-  },
-  '.cm-variable-token': {
-    color: '#32D2E2'
-  },
-  '.cm-tooltip.cm-tooltip-hover': {
-    border: '1px solid var(--mac-separator)',
-    backgroundColor: 'var(--mac-surface)',
-    borderRadius: '6px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-  },
-  '.cm-variable-tooltip': {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    padding: '8px 12px',
-    fontSize: '14px',
-    color: 'var(--mac-text)'
-  },
-  '.cm-variable-tooltip-muted': {
-    color: 'var(--mac-muted)'
-  },
-  '.cm-variable-tooltip-edit': {
-    alignSelf: 'flex-start',
-    background: 'none',
-    border: 'none',
-    padding: '0',
-    cursor: 'pointer',
-    fontSize: '14px',
-    color: 'var(--mac-accent)'
-  },
-  '.cm-tooltip.cm-tooltip-autocomplete': {
-    border: '1px solid var(--mac-separator)',
-    backgroundColor: 'var(--mac-surface)',
-    borderRadius: '6px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-    fontSize: '14px'
-  },
-  '.cm-completionLabel': {
-    fontFamily: 'var(--font-mono)'
-  },
-  '.cm-completionDetail': {
-    color: 'var(--mac-muted)',
-    fontStyle: 'normal',
-    marginLeft: '8px'
-  }
-});
+/** Debounce interval for {@link Props.onViewStateChange} notifications. */
+const VIEW_STATE_DEBOUNCE_MS = 300;
 
 const variableMatcher = new MatchDecorator({
   regexp: new RegExp(`\\{\\{\\s*([${VARIABLE_NAME_CHARS}]+)\\s*\\}\\}`, 'g'),
@@ -258,6 +336,133 @@ const variableHighlighter = ViewPlugin.fromClass(
   },
   { decorations: (v) => v.decorations }
 );
+
+/** Matches a slash command at the start of a line with optional arguments. */
+const SLASH_COMMAND_LINE_PATTERN = /^(\s*)\/(\w+)(?:[ \t]+(.*))?$/;
+
+/**
+ * Returns a parsed slash command on a line when the name is registered.
+ *
+ * @param lineText - Full line text without the trailing newline.
+ * @param lineFrom - Document offset of the line start.
+ * @param lineNumber - 1-based line number.
+ * @param commands - Registered slash commands.
+ */
+function parseSlashCommandLine(
+  lineText: string,
+  lineFrom: number,
+  lineNumber: number,
+  commands: CodeEditorSlashCommand[]
+): Omit<CodeEditorSlashTrigger, 'coords'> | null {
+  const match = lineText.match(SLASH_COMMAND_LINE_PATTERN);
+  if (!match) {
+    return null;
+  }
+
+  const command = match[2];
+  if (command == null || !commands.some((entry) => entry.name === command)) {
+    return null;
+  }
+
+  const leading = match[1] ?? '';
+  const slashIndex = leading.length;
+  const from = lineFrom + slashIndex;
+  const to = lineFrom + lineText.length;
+
+  return {
+    command,
+    args: (match[3] ?? '').trim(),
+    line: lineNumber,
+    from,
+    to
+  };
+}
+
+/**
+ * Builds a CodeMirror completion source for registered slash commands at line start.
+ *
+ * @param commands - Slash commands to offer after `/`.
+ */
+function createSlashCommandCompletionSource(commands: CodeEditorSlashCommand[]): CompletionSource {
+  /**
+   * Returns slash command completions when the caret follows `/` at line start.
+   *
+   * @param context - CodeMirror completion context at the cursor.
+   */
+  return (context) => {
+    const word = context.matchBefore(/^\s*\/\w*/);
+    if (!word || word.text.length === 0) {
+      return null;
+    }
+
+    const partial = word.text.replace(/^\s*\//, '');
+    const options = commands
+      .filter((entry) => entry.name.startsWith(partial))
+      .map((entry) => ({
+        label: `/${entry.name}`,
+        type: 'keyword' as const,
+        detail: entry.description,
+        apply: `/${entry.name} `
+      }));
+
+    if (options.length === 0) {
+      return null;
+    }
+
+    return { from: word.from, options };
+  };
+}
+
+/**
+ * Returns an Enter keymap that triggers registered slash commands before default newline handling.
+ *
+ * @param commands - Slash commands to recognize.
+ * @param onSlashCommand - Host callback invoked with parsed trigger details.
+ */
+function slashCommandEnterHandler(
+  commands: CodeEditorSlashCommand[],
+  onSlashCommand: (trigger: CodeEditorSlashTrigger) => void
+): ReturnType<typeof Prec.highest> {
+  return Prec.highest(
+    keymap.of([
+      {
+        key: 'Enter',
+        /**
+         * Opens host slash-command UI when Enter is pressed on a complete command line.
+         *
+         * @param view - CodeMirror editor view instance.
+         */
+        run: (view): boolean => {
+          const pos = view.state.selection.main.head;
+          const line = view.state.doc.lineAt(pos);
+          const parsed = parseSlashCommandLine(line.text, line.from, line.number, commands);
+          if (!parsed) {
+            return false;
+          }
+
+          const coords = view.coordsAtPos(parsed.from);
+          if (!coords) {
+            return false;
+          }
+
+          // Dismiss the autocomplete popup so its Enter binding does not also fire.
+          closeCompletion(view);
+
+          onSlashCommand({
+            ...parsed,
+            coords: {
+              top: coords.top,
+              left: coords.left,
+              bottom: coords.bottom,
+              right: coords.right
+            }
+          });
+          return true;
+        }
+      }
+    ])
+  );
+}
 
 interface SelectionTooltipState {
   key: string;
@@ -429,12 +634,12 @@ function variableTooltipEscapeHandler(
 /**
  * Builds a hover tooltip extension for {{variable}} tokens.
  *
- * @param variables - Collection-scoped variables for resolution.
- * @param onEditVariable - Optional callback to open collection settings.
+ * @param getVariables - Returns the current collection-scoped variables.
+ * @param getOnEditVariable - Returns the optional edit callback.
  */
 function variableTooltip(
-  variables: Variable[],
-  onEditVariable?: () => void
+  getVariables: () => Variable[],
+  getOnEditVariable: () => (() => void) | undefined
 ): ReturnType<typeof hoverTooltip> {
   return hoverTooltip((view, pos) => {
     const match = findVariableAtPos(view.state.doc, pos);
@@ -445,11 +650,16 @@ function variableTooltip(
       end: match.end,
       above: true,
       create() {
-        return { dom: buildVariableTooltipDom(match.key, variables, onEditVariable) };
+        return {
+          dom: buildVariableTooltipDom(match.key, getVariables(), getOnEditVariable())
+        };
       }
     };
   });
 }
+
+/** Size of the native resize-y grip hit target in the bottom-right corner. */
+const RESIZE_GRIP_PX = 16;
 
 /**
  * CodeMirror wrapper for editable request bodies and read-only response views.
@@ -462,14 +672,24 @@ export function CodeEditor({
   onChange,
   language = 'text',
   readOnly = false,
+  editable,
   placeholder,
+  placeholderHighlight = false,
   minHeight = '144px',
+  height,
+  onHeightChange,
+  initialScrollTop,
+  initialSelection,
+  onViewStateChange,
   className = '',
   variables,
   onEditVariable,
   completionSource,
+  slashCommands,
+  onSlashCommand,
   themeOverride,
   setupOverride,
+  fontSize,
   id,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
@@ -479,6 +699,8 @@ export function CodeEditor({
   const config = useCodeEditorConfig();
   const resolvedTheme = themeOverride ?? config.theme;
   const resolvedSetup = setupOverride ?? (readOnly ? null : config.setup);
+  const resolvedFontSize = normalizeCodeEditorFontSize(fontSize ?? config.fontSize);
+  const resolvedEditable = editable ?? !readOnly;
   const [isDark, setIsDark] = useState(
     () => window.matchMedia('(prefers-color-scheme: dark)').matches
   );
@@ -489,8 +711,206 @@ export function CodeEditor({
   setSelectionTooltipRef.current = setSelectionTooltip;
   const ariaDescribedByRef = useRef(ariaDescribedBy);
   ariaDescribedByRef.current = ariaDescribedBy;
+  const onSlashCommandRef = useRef(onSlashCommand);
+  onSlashCommandRef.current = onSlashCommand;
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  const completionSourceRef = useRef(completionSource);
+  completionSourceRef.current = completionSource;
+  const variablesRef = useRef(variables);
+  variablesRef.current = variables;
+  const onEditVariableRef = useRef(onEditVariable);
+  onEditVariableRef.current = onEditVariable;
+  const hasVariables = variables != null;
+  const hasCompletionSource = completionSource != null;
   const tooltipId = useId();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const onHeightChangeRef = useRef(onHeightChange);
+  onHeightChangeRef.current = onHeightChange;
+  const isUserResizingRef = useRef(false);
+  const editorViewRef = useRef<EditorView | null>(null);
+  const onViewStateChangeRef = useRef(onViewStateChange);
+  onViewStateChangeRef.current = onViewStateChange;
+  const initialScrollTopRef = useRef(initialScrollTop);
+  initialScrollTopRef.current = initialScrollTop;
+  const initialSelectionRef = useRef(initialSelection);
+  initialSelectionRef.current = initialSelection;
+  const viewStateDebounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const scrollListenerCleanupRef = useRef<(() => void) | null>(null);
+  const scheduleViewStateFlushRef = useRef<() => void>(() => undefined);
   const getValidationDescribedBy = (): string | undefined => ariaDescribedByRef.current;
+
+  /**
+   * Reads the current scroll and selection snapshot from an editor view.
+   *
+   * @param view - Live CodeMirror view.
+   * @returns Rounded scroll offset and selection offsets.
+   */
+  const readViewState = useCallback((view: EditorView): CodeEditorViewState => {
+    const selection = view.state.selection.main;
+    return {
+      scrollTop: Math.max(0, Math.round(view.scrollDOM.scrollTop)),
+      selection: { anchor: selection.anchor, head: selection.head }
+    };
+  }, []);
+
+  /**
+   * Notifies the host of the latest scroll/selection snapshot.
+   */
+  const flushViewState = useCallback((): void => {
+    const view = editorViewRef.current;
+    if (!view || !onViewStateChangeRef.current) {
+      return;
+    }
+    onViewStateChangeRef.current(readViewState(view));
+  }, [readViewState]);
+
+  /**
+   * Debounces view-state persistence while the user scrolls or changes selection.
+   */
+  useEffect(() => {
+    scheduleViewStateFlushRef.current = (): void => {
+      if (viewStateDebounceRef.current) {
+        clearTimeout(viewStateDebounceRef.current);
+      }
+      viewStateDebounceRef.current = setTimeout(() => {
+        flushViewState();
+      }, VIEW_STATE_DEBOUNCE_MS);
+    };
+  }, [flushViewState]);
+
+  /**
+   * Restores persisted scroll/selection and wires scroll tracking when the view is created.
+   */
+  const stableOnCreateEditor = useCallback((view: EditorView, _state: EditorState): void => {
+    editorViewRef.current = view;
+
+    const restoredSelection = initialSelectionRef.current;
+    if (restoredSelection) {
+      const clamped = clampSelection(view.state.doc.length, restoredSelection);
+      view.dispatch({
+        selection: { anchor: clamped.anchor, head: clamped.head }
+      });
+    }
+
+    const restoredScrollTop = initialScrollTopRef.current;
+    if (restoredScrollTop != null && Number.isFinite(restoredScrollTop) && restoredScrollTop >= 0) {
+      view.scrollDOM.scrollTop = restoredScrollTop;
+    }
+
+    /**
+     * Schedules persistence when the user scrolls the editor content.
+     */
+    const handleScroll = (): void => {
+      scheduleViewStateFlushRef.current();
+    };
+
+    view.scrollDOM.addEventListener('scroll', handleScroll, { passive: true });
+    scrollListenerCleanupRef.current = (): void => {
+      view.scrollDOM.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  /**
+   * Flushes scroll/selection on unmount so collapsed script rows retain view state.
+   */
+  useEffect(() => {
+    return () => {
+      if (viewStateDebounceRef.current) {
+        clearTimeout(viewStateDebounceRef.current);
+      }
+      scrollListenerCleanupRef.current?.();
+      scrollListenerCleanupRef.current = null;
+      flushViewState();
+      editorViewRef.current = null;
+    };
+  }, [flushViewState]);
+
+  /**
+   * Persists wrapper height only after the user finishes a native resize-y drag on the grip.
+   * Ignores mount and layout settling so height props do not reconfigure CodeMirror in a loop.
+   */
+  useEffect(() => {
+    if (!onHeightChange) {
+      return;
+    }
+
+    const wrapper = wrapperRef.current;
+    if (!wrapper) {
+      return;
+    }
+
+    /**
+     * Marks resize drags that begin on the native bottom-right grip.
+     *
+     * @param event - Pointer down on the editor wrapper.
+     */
+    const handlePointerDown = (event: PointerEvent): void => {
+      const rect = wrapper.getBoundingClientRect();
+      const onGrip =
+        event.clientX >= rect.right - RESIZE_GRIP_PX &&
+        event.clientY >= rect.bottom - RESIZE_GRIP_PX;
+      if (onGrip) {
+        isUserResizingRef.current = true;
+      }
+    };
+
+    /**
+     * Reports the final wrapper height after a completed user resize drag.
+     */
+    const handlePointerUp = (): void => {
+      if (!isUserResizingRef.current) {
+        return;
+      }
+      isUserResizingRef.current = false;
+      const nextHeight = Math.round(wrapper.getBoundingClientRect().height);
+      onHeightChangeRef.current?.(nextHeight);
+    };
+
+    wrapper.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerup', handlePointerUp);
+
+    return () => {
+      wrapper.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [onHeightChange]);
+
+  /**
+   * Whether to render a muted syntax-highlighted ghost layer instead of plain placeholder text.
+   */
+  const useHighlightedPlaceholder = Boolean(
+    placeholderHighlight && placeholder && language === 'javascript'
+  );
+
+  /**
+   * Stable onChange wrapper so @uiw/react-codemirror does not reconfigure on every parent render.
+   */
+  const stableOnChange = useCallback((nextValue: string): void => {
+    onChangeRef.current?.(nextValue);
+  }, []);
+
+  /**
+   * Stable completion delegator reading the latest host source from a ref.
+   */
+  const stableCompletionSource = useMemo<CompletionSource>(
+    () => (context) => completionSourceRef.current?.(context) ?? null,
+    []
+  );
+
+  /**
+   * Stable variable accessors for tooltip extensions.
+   */
+  const getVariables = useCallback((): Variable[] => variablesRef.current ?? [], []);
+  const getOnEditVariable = useCallback(
+    (): (() => void) | undefined => onEditVariableRef.current,
+    []
+  );
+
+  /**
+   * Memoized editor chrome theme keyed by font size only.
+   */
+  const editorThemeExt = useMemo(() => createEditorTheme(resolvedFontSize), [resolvedFontSize]);
 
   /**
    * Tracks system dark mode so syntax highlighting matches the active theme.
@@ -503,37 +923,74 @@ export function CodeEditor({
   }, []);
 
   /**
+   * Stable selection listener that debounces view-state persistence.
+   */
+  const viewStateSelectionListener = useMemo(
+    () =>
+      EditorView.updateListener.of((update) => {
+        if (!onViewStateChangeRef.current || !update.selectionSet) {
+          return;
+        }
+        scheduleViewStateFlushRef.current();
+      }),
+    []
+  );
+
+  /**
    * Assembles CodeMirror extensions for language mode, theme, and optional variable tooling.
    */
   const extensions = useMemo(() => {
-    const next = [EditorView.lineWrapping, editorTheme];
+    const next = [EditorView.lineWrapping, editorThemeExt];
+    if (onViewStateChange != null) {
+      next.push(viewStateSelectionListener);
+    }
     const themeExtension = getCodeEditorThemeExtension(resolvedTheme);
     if (themeExtension) {
       next.push(themeExtension);
     } else {
-      next.push(syntaxHighlighting(isDark ? darkHighlight : lightHighlight));
+      next.push(createBuiltInSyntaxHighlighting(isDark));
     }
     if (language === 'json') {
       next.push(json());
     }
     if (language === 'javascript') {
       next.push(javascript());
-      if (completionSource) {
+      // Register the slash Enter handler before autocompletion so that, at equal
+      // Prec.highest precedence, this handler wins the tie and fires before the
+      // completion keymap's Enter->accept binding.
+      if (slashCommands && slashCommands.length > 0) {
+        next.push(
+          slashCommandEnterHandler(slashCommands, (trigger) => {
+            onSlashCommandRef.current?.(trigger);
+          })
+        );
+      }
+      const completionOverrides: CompletionSource[] = [];
+      if (slashCommands && slashCommands.length > 0) {
+        completionOverrides.push(createSlashCommandCompletionSource(slashCommands));
+      }
+      if (hasCompletionSource) {
+        completionOverrides.push(stableCompletionSource);
+      }
+      if (completionOverrides.length > 0) {
         next.push(
           autocompletion({
             activateOnTyping: true,
-            override: [completionSource]
+            override: completionOverrides
           })
         );
+      }
+      if (slashCommands && slashCommands.length > 0) {
+        next.push(createSlashCommandHighlighter(slashCommands));
       }
     }
     if (language === 'shell') {
       next.push(StreamLanguage.define(shell));
     }
-    if (variables) {
+    if (hasVariables) {
       next.push(
         variableHighlighter,
-        variableTooltip(variables, onEditVariable),
+        variableTooltip(getVariables, getOnEditVariable),
         variableSelectionTooltip(
           tooltipId,
           (state) => {
@@ -559,20 +1016,39 @@ export function CodeEditor({
     if (Object.keys(contentAttrs).length > 0) {
       next.push(EditorView.contentAttributes.of(contentAttrs));
     }
+    if (useHighlightedPlaceholder && placeholder) {
+      next.push(
+        ...createSyntaxHighlightedPlaceholder(placeholder, {
+          fontSize: resolvedFontSize,
+          isDark,
+          theme: resolvedTheme,
+          slashCommands
+        })
+      );
+    }
     return next;
   }, [
+    editorThemeExt,
     resolvedTheme,
     isDark,
     language,
-    variables,
-    onEditVariable,
-    completionSource,
+    hasVariables,
+    hasCompletionSource,
+    stableCompletionSource,
+    getVariables,
+    getOnEditVariable,
+    slashCommands,
+    useHighlightedPlaceholder,
+    placeholder,
+    resolvedFontSize,
     id,
     ariaLabel,
     ariaLabelledBy,
     ariaInvalid,
     ariaDescribedBy,
-    tooltipId
+    tooltipId,
+    onViewStateChange,
+    viewStateSelectionListener
   ]);
 
   /**
@@ -605,40 +1081,54 @@ export function CodeEditor({
       };
     }
 
+    // Disable the built-in autocompletion and completion keymap: this component
+    // installs its own autocompletion() for JavaScript editors, ordered after the
+    // slash-command Enter handler. Leaving basicSetup's autocompletion enabled would
+    // inject a competing Prec.highest Enter->acceptCompletion binding ahead of ours,
+    // swallowing the first Enter on a /ask line.
     return {
       lineNumbers: resolvedSetup.lineNumbers,
       foldGutter: resolvedSetup.foldGutter,
       highlightActiveLine: resolvedSetup.highlightActiveLine,
-      highlightActiveLineGutter: resolvedSetup.highlightActiveLineGutter
+      highlightActiveLineGutter: resolvedSetup.highlightActiveLineGutter,
+      highlightSelectionMatches: false,
+      autocompletion: false,
+      completionKeymap: false
     };
   }, [resolvedSetup, readOnly]);
 
   const wrapperClassName = readOnly
-    ? `hc-code-editor overflow-hidden rounded-md bg-control shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.06)] app-no-drag ${className}`
-    : `hc-code-editor min-h-36 resize-y overflow-hidden rounded-md border border-separator bg-control shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.06)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--mac-accent)_35%,transparent),inset_0_0.5px_1px_rgba(0,0,0,0.06)] app-no-drag ${className}`;
+    ? `hc-code-editor overflow-hidden rounded-lg bg-control shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.06)] app-no-drag ${className}`
+    : `hc-code-editor min-h-36 resize-y overflow-hidden rounded-lg border border-separator bg-control shadow-[inset_0_0.5px_1px_rgba(0,0,0,0.06)] focus-within:shadow-[0_0_0_3px_color-mix(in_srgb,var(--mac-accent)_35%,transparent),inset_0_0.5px_1px_rgba(0,0,0,0.06)] app-no-drag ${className}`;
 
   const selectionTooltipContent = selectionTooltip
     ? getVariableTooltipContent(selectionTooltip.key, variables ?? [])
     : null;
 
+  const wrapperStyle = height ? { height } : undefined;
+  const shouldTrackViewState =
+    onViewStateChange != null || initialScrollTop != null || initialSelection != null;
+
   return (
-    <div className={wrapperClassName}>
+    <div ref={wrapperRef} className={wrapperClassName} style={wrapperStyle}>
       {createElement(CodeMirrorImport, {
         value,
-        onChange: readOnly ? undefined : onChange,
+        onChange: readOnly ? undefined : stableOnChange,
         extensions,
         theme: 'none',
-        editable: !readOnly,
+        editable: resolvedEditable,
         readOnly,
-        placeholder,
+        placeholder: useHighlightedPlaceholder ? undefined : placeholder,
         minHeight,
-        basicSetup
+        ...(height ? { height: '100%' } : {}),
+        basicSetup,
+        ...(shouldTrackViewState ? { onCreateEditor: stableOnCreateEditor } : {})
       })}
       {selectionTooltip && selectionTooltipContent && variables ? (
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-code-editor-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-md border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md app-no-drag"
+          className="hc-code-editor-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md app-no-drag"
           style={{ top: selectionTooltip.top - 4, left: selectionTooltip.left }}
         >
           <span

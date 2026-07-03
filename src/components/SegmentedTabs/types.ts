@@ -22,7 +22,9 @@ export interface TabItem<T extends string> {
   disabled?: boolean;
 
   /**
-   * When true, renders a small dot indicating the tab has values set.
+   * When true, shows an accent dot in the reserved indicator slot to the left
+   * of the label. The slot stays visible (transparent) when false so tab width
+   * stays stable across the group.
    */
   indicator?: boolean;
 }

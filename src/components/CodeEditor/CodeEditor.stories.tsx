@@ -83,3 +83,23 @@ export const WithVariables: Story = {
     return <CodeEditor {...args} value={value} onChange={setValue} />;
   }
 };
+
+const scriptPlaceholder = `hc.request.url = 'https://example.com';
+hc.variables.set('token', 'abc');
+
+/ask How do I set a request header?`;
+
+export const HighlightedScriptPlaceholder: Story = {
+  args: {
+    value: '',
+    language: 'javascript',
+    placeholder: scriptPlaceholder,
+    placeholderHighlight: true,
+    slashCommands: [{ name: 'ask', description: 'Ask AI about this script' }],
+    'aria-label': 'Script editor placeholder preview'
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <CodeEditor {...args} value={value} onChange={setValue} />;
+  }
+};

@@ -353,7 +353,9 @@ export function SegmentedTabs<T extends string>({
       >
         {visibleTabs.map((tab) => {
           const selected = value === tab.value;
-          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${fullWidth ? ' flex-1' : ''}`;
+          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${
+            fullWidth ? ' flex-1' : ''
+          }`;
 
           return (
             <button
@@ -377,13 +379,21 @@ export function SegmentedTabs<T extends string>({
                   })}
             >
               <span className="hc-segmented-tabs-tab-label inline-flex items-center gap-1.5">
-                {tab.label}
-                {tab.indicator && (
+                <span className="inline-flex shrink-0 items-center px-1.5">
                   <span
-                    className="hc-segmented-tabs-tab-indicator h-1.5 w-1.5 rounded-full bg-accent"
+                    className={`hc-segmented-tabs-tab-indicator h-1.5 w-1.5 shrink-0 rounded-full ${
+                      tab.indicator ? 'bg-accent' : 'bg-transparent'
+                    }`}
                     aria-hidden
                   />
-                )}
+                </span>
+                {tab.label}
+                <span
+                  className="hc-segmented-tabs-tab-indicator-spacer inline-flex shrink-0 items-center px-1.5"
+                  aria-hidden
+                >
+                  <span className="h-1.5 w-1.5 shrink-0" />
+                </span>
               </span>
             </button>
           );

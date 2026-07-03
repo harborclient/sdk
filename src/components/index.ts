@@ -19,7 +19,15 @@ export {
   DEFAULT_CODE_EDITOR_CONFIG
 } from './CodeEditor/config.js';
 export type { CodeEditorConfig } from './CodeEditor/config.js';
-export type { Props as CodeEditorProps, CodeEditorLanguage } from './CodeEditor/index.js';
+export type {
+  Props as CodeEditorProps,
+  CodeEditorLanguage,
+  CodeEditorSelectionRange,
+  CodeEditorSlashCommand,
+  CodeEditorSlashCoords,
+  CodeEditorSlashTrigger,
+  CodeEditorViewState
+} from './CodeEditor/index.js';
 export { EmptyState } from './EmptyState/index.js';
 export { FaIcon } from './FaIcon/index.js';
 export { FieldError } from './FieldError/index.js';
@@ -76,6 +84,8 @@ export type { TabItem } from './SegmentedTabs/index.js';
 export { Spinner } from './Spinner/index.js';
 export { StatusMessage } from './StatusMessage/index.js';
 export { TabCloseButton } from './TabCloseButton/index.js';
+export { Toolbar } from './Toolbar/index.js';
+export type { ToolbarAction } from './Toolbar/index.js';
 export {
   Table,
   TableBody,

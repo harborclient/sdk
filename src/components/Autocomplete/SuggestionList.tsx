@@ -145,7 +145,7 @@ export function SuggestionList({
     <ul
       id={listboxId}
       role="listbox"
-      className="hc-suggestion-list fixed z-50 max-h-48 overflow-y-auto rounded-md border border-separator bg-surface py-1 text-[14px] text-text shadow-md"
+      className="hc-suggestion-list fixed z-50 max-h-48 overflow-y-auto rounded-lg border border-separator bg-surface py-1 text-[14px] text-text shadow-md"
       style={{ top: position.top, left: position.left, width: position.width }}
     >
       {items.map((item, index) => (

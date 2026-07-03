@@ -8,7 +8,10 @@ import {
 import type { JSX, ReactNode } from 'react';
 import { createExternalStore } from '../../runtime/store.js';
 import type { CodeEditorSetup, CodeEditorTheme } from '../../types.js';
-import { DEFAULT_CODE_EDITOR_SETUP } from '../../ui/codeEditorSettings.js';
+import {
+  DEFAULT_CODE_EDITOR_FONT_SIZE,
+  DEFAULT_CODE_EDITOR_SETUP
+} from '../../ui/codeEditorSettings.js';
 
 /**
  * Persisted CodeMirror theme and basicSetup options shared by all CodeEditor instances.
@@ -23,6 +26,11 @@ export interface CodeEditorConfig {
    * CodeMirror basicSetup options for editable editor instances.
    */
   setup: CodeEditorSetup;
+
+  /**
+   * Editor font size applied to CodeMirror content and in-editor tooltips.
+   */
+  fontSize: string;
 }
 
 /**
@@ -30,7 +38,8 @@ export interface CodeEditorConfig {
  */
 export const DEFAULT_CODE_EDITOR_CONFIG: CodeEditorConfig = {
   theme: 'default',
-  setup: DEFAULT_CODE_EDITOR_SETUP
+  setup: DEFAULT_CODE_EDITOR_SETUP,
+  fontSize: DEFAULT_CODE_EDITOR_FONT_SIZE
 };
 
 const GLOBAL_STORE_KEY = '__hc_codeEditorConfigStore';

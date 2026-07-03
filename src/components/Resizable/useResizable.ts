@@ -81,6 +81,11 @@ export interface UseResizableOptions {
    * When set, size is restored from and persisted to localStorage.
    */
   storageKey?: string;
+
+  /**
+   * Called when a resize is committed (mouseup after drag or keyboard nudge).
+   */
+  onPersist?: (size: number) => void;
 }
 
 export interface UseResizableResult {
@@ -129,13 +134,32 @@ function clampSize(size: number, minSize: number, getMaxSize?: () => number): nu
 /**
  * Tracks resizable panel size with pointer drag and optional persistence.
  */
+/**
+ * Persists a committed resize size via localStorage and/or a caller callback.
+ *
+ * @param storageKey - Optional localStorage key.
+ * @param onPersist - Optional commit callback.
+ * @param size - Committed size in pixels.
+ */
+function commitSize(
+  storageKey: string | undefined,
+  onPersist: ((size: number) => void) | undefined,
+  size: number
+): void {
+  if (storageKey) {
+    persistSize(storageKey, size);
+  }
+  onPersist?.(size);
+}
+
 export function useResizable({
   axis,
   direction,
   defaultSize,
   minSize,
   getMaxSize,
-  storageKey
+  storageKey,
+  onPersist
 }: UseResizableOptions): UseResizableResult {
   const [size, setSizeState] = useState(() => {
     const initial = storageKey ? loadStoredSize(storageKey, defaultSize) : defaultSize;
@@ -221,11 +245,9 @@ export function useResizable({
       event.preventDefault();
       const nextSize = clampSize(sizeRef.current + keyDelta * direction, minSize, getMaxSize);
       setSizeState(nextSize);
-      if (storageKey) {
-        persistSize(storageKey, nextSize);
-      }
+      commitSize(storageKey, onPersist, nextSize);
     },
-    [axis, direction, getMaxSize, minSize, storageKey]
+    [axis, direction, getMaxSize, minSize, onPersist, storageKey]
   );
 
   /**
@@ -246,15 +268,13 @@ export function useResizable({
     };
 
     /**
-     * Ends the resize drag and writes the final size to localStorage when configured.
+     * Ends the resize drag and commits the final size when configured.
      */
     const handleMouseUp = (): void => {
       if (!resizingRef.current) return;
       resizingRef.current = false;
       clearResizingState();
-      if (storageKey) {
-        persistSize(storageKey, sizeRef.current);
-      }
+      commitSize(storageKey, onPersist, sizeRef.current);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -269,7 +289,7 @@ export function useResizable({
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [axis, direction, getMaxSize, minSize, storageKey]);
+  }, [axis, direction, getMaxSize, minSize, onPersist, storageKey]);
 
   /**
    * Clears the document resize marker when the hook unmounts mid-drag.

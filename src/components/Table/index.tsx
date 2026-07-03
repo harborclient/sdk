@@ -85,7 +85,7 @@ export function Table({ children, variant = 'bordered', className }: TableProps)
     );
   }
 
-  const wrapperBase = 'hc-table overflow-hidden rounded-md border border-separator';
+  const wrapperBase = 'hc-table overflow-hidden rounded-lg border border-separator';
   const wrapperClasses = className ? `${wrapperBase} ${className}` : wrapperBase;
 
   return createElement(

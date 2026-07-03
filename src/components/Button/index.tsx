@@ -34,7 +34,7 @@ export type ButtonProps =
   | (BaseProps & { variant: IconButtonVariant } & AccessibleName)
   | (BaseProps & { variant?: Exclude<ButtonVariant, IconButtonVariant> });
 
-const BUTTON_BASE = 'inline-flex cursor-pointer items-center rounded-md app-no-drag';
+const BUTTON_BASE = 'inline-flex cursor-pointer items-center rounded-full app-no-drag';
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: `${BUTTON_BASE} min-h-[32px] justify-center border border-transparent bg-accent px-3 py-1 text-[15px] font-medium text-white shadow-sm hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50`,
