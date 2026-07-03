@@ -45,7 +45,7 @@ const TYPEAHEAD_TIMEOUT_MS = 500;
  */
 function menuItemClass(variant: MenuItem['variant']): string {
   const base =
-    'block w-full cursor-pointer border-none bg-transparent px-3.5 py-1.5 text-left text-[14px] app-no-drag';
+    'block w-full cursor-pointer border-none bg-transparent px-3.5 py-1.5 text-left text-[16px] app-no-drag';
 
   return variant === 'danger'
     ? `${base} text-text hover:bg-danger/15 hover:text-danger`
@@ -255,7 +255,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
         <div
           id={menuElementId}
           role="menu"
-          className="hc-row-actions-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[120px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
+          className="hc-row-actions-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[200px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
           onKeyDown={handleMenuKeyDown}
         >
           {groups.map((group, groupIndex) => {

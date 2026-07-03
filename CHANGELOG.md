@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update RowActionsMenu styles for improved UI consistency. (`744e875`)
+
 ## 1.0.26 - 2026-07-03
 
 - Enhance CodeEditor with linting support and new story examples. (`ec17c1f`)
