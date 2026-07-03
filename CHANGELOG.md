@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Enhance CodeEditor with linting support and new story examples. (`ec17c1f`)
+
 ## 1.0.25 - 2026-07-03
 
 - Refactor CodeEditor component to simplify editor creation callback. (`7352dfa`)

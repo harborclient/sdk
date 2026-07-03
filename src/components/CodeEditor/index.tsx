@@ -32,6 +32,7 @@ import { useCodeEditorConfig } from './config.js';
 import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
 import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
 import { createSyntaxHighlightedPlaceholder } from './syntaxHighlightedPlaceholder.js';
+import { createJavascriptSyntaxLinter, createJsonSyntaxLinter } from './syntaxLinters.js';
 import { getCodeEditorThemeExtension } from './themes.js';
 
 export { CODE_EDITOR_THEME_OPTIONS } from './themes.js';
@@ -243,6 +244,12 @@ export interface Props {
    * Called when the user presses Enter on a complete slash command line.
    */
   onSlashCommand?: (trigger: CodeEditorSlashTrigger) => void;
+
+  /**
+   * When true, shows inline syntax-error squiggles for supported languages.
+   * Defaults to true.
+   */
+  lint?: boolean;
 
   /**
    * When set, overrides the persisted CodeMirror theme (used by the settings preview).
@@ -686,6 +693,7 @@ export function CodeEditor({
   completionSource,
   slashCommands,
   onSlashCommand,
+  lint = true,
   themeOverride,
   setupOverride,
   fontSize,
@@ -986,6 +994,14 @@ export function CodeEditor({
     if (language === 'shell') {
       next.push(StreamLanguage.define(shell));
     }
+    if (lint) {
+      if (language === 'json') {
+        next.push(createJsonSyntaxLinter());
+      }
+      if (language === 'javascript') {
+        next.push(createJavascriptSyntaxLinter());
+      }
+    }
     if (hasVariables) {
       next.push(
         variableHighlighter,
@@ -1031,6 +1047,7 @@ export function CodeEditor({
     resolvedTheme,
     isDark,
     language,
+    lint,
     hasVariables,
     hasCompletionSource,
     stableCompletionSource,

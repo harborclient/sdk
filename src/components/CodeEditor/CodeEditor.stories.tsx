@@ -26,7 +26,8 @@ const meta = {
       control: 'select',
       options: ['text', 'json', 'javascript', 'shell']
     },
-    readOnly: { control: 'boolean' }
+    readOnly: { control: 'boolean' },
+    lint: { control: 'boolean' }
   },
   args: {
     value: ''
@@ -97,6 +98,45 @@ export const HighlightedScriptPlaceholder: Story = {
     placeholderHighlight: true,
     slashCommands: [{ name: 'ask', description: 'Ask AI about this script' }],
     'aria-label': 'Script editor placeholder preview'
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <CodeEditor {...args} value={value} onChange={setValue} />;
+  }
+};
+
+export const JsonInvalid: Story = {
+  args: {
+    value: '{ "name": ',
+    language: 'json',
+    lint: true,
+    'aria-label': 'Invalid JSON editor'
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <CodeEditor {...args} value={value} onChange={setValue} />;
+  }
+};
+
+export const JavascriptInvalid: Story = {
+  args: {
+    value: 'function foo( {',
+    language: 'javascript',
+    lint: true,
+    'aria-label': 'Invalid JavaScript editor'
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <CodeEditor {...args} value={value} onChange={setValue} />;
+  }
+};
+
+export const LintDisabled: Story = {
+  args: {
+    value: '{ "name": ',
+    language: 'json',
+    lint: false,
+    'aria-label': 'Invalid JSON editor with lint disabled'
   },
   render: (args) => {
     const [value, setValue] = useState(args.value);
