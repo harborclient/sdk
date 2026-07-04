@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.29 - 2026-07-04
+
 - Update documentation to clarify plugin and theme management. (`36bdeb7`)
 
 ## 1.0.28 - 2026-07-03
