@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor SegmentedTabs component for improved styling and layout. (`96a2f5f`)
+
 ## 1.0.31 - 2026-07-04
 
 - Update PageHeader component styles for improved visual consistency. (`eea60fb`)
