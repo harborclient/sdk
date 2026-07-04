@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.33 - 2026-07-04
+
 - Refactor CLI signing functionality for improved path resolution and environment variable support. (`1f815dc`)
 
 ## 1.0.32 - 2026-07-04
