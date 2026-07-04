@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.30 - 2026-07-04
+
 - Refactor Modal, PageSidebar, and SegmentedTabs components for improved readability. (`f9fe5b8`)
 - Refactor components to enhance type safety and props handling. (`c777731`)
 - Refactor AsyncListState and Card components for improved structure and clarity. (`6a6024c`)
