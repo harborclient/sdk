@@ -341,8 +341,9 @@ export function SegmentedTabs<T extends string>({
       >
         {visibleTabs.map((tab) => {
           const selected = value === tab.value;
-          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${fullWidth ? ' flex-1' : ''
-            }`;
+          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${
+            fullWidth ? ' flex-1' : ''
+          }`;
 
           return (
             <button
@@ -359,11 +360,11 @@ export function SegmentedTabs<T extends string>({
               {...(isRadiogroup
                 ? { role: 'radio', 'aria-checked': selected }
                 : {
-                  role: 'tab',
-                  id: getTabId(tab.value),
-                  'aria-selected': selected,
-                  ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
-                })}
+                    role: 'tab',
+                    id: getTabId(tab.value),
+                    'aria-selected': selected,
+                    ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
+                  })}
             >
               <span className="hc-segmented-tabs-tab-label inline-flex items-center gap-1.5">
                 <span className="inline-flex shrink-0 items-center px-1.5">

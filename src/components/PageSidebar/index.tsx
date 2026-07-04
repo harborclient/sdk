@@ -81,11 +81,11 @@ export function PageSidebar<T extends string>({
         const active = selected === item.value;
         const rowClass = item.icon
           ? `hc-page-sidebar-item ${sidebarRow(
-            active
-          )} w-full gap-2 border-none text-left text-[15px] app-no-drag`
+              active
+            )} w-full gap-2 border-none text-left text-[15px] app-no-drag`
           : `hc-page-sidebar-item ${sidebarRow(
-            active
-          )} w-full border-none text-left text-[15px] app-no-drag`;
+              active
+            )} w-full border-none text-left text-[15px] app-no-drag`;
 
         return (
           <button

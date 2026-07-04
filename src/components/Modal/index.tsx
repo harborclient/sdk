@@ -60,19 +60,19 @@ interface BaseProps extends Omit<
 type Props = BaseProps &
   (
     | {
-      /**
-       * Id of the element that labels the dialog (typically the heading).
-       */
-      labelledBy: string;
-      label?: never;
-    }
+        /**
+         * Id of the element that labels the dialog (typically the heading).
+         */
+        labelledBy: string;
+        label?: never;
+      }
     | {
-      labelledBy?: never;
-      /**
-       * Accessible name when no visible heading is linked via `labelledBy`.
-       */
-      label: string;
-    }
+        labelledBy?: never;
+        /**
+         * Accessible name when no visible heading is linked via `labelledBy`.
+         */
+        label: string;
+      }
   );
 
 /**
@@ -123,9 +123,9 @@ export function Modal({
 
   const panelClass = title
     ? cn(
-      className,
-      'flex max-h-[85vh] flex-col overflow-hidden rounded-lg border border-separator bg-surface shadow-xl'
-    )
+        className,
+        'flex max-h-[85vh] flex-col overflow-hidden rounded-lg border border-separator bg-surface shadow-xl'
+      )
     : cn(className, 'rounded-lg border border-separator bg-surface p-4 shadow-xl');
 
   const descriptionId = description && labelledBy ? `${labelledBy}-description` : undefined;
