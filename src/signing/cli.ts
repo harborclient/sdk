@@ -4,9 +4,10 @@ import { signPlugin } from './sign.js';
 import { verifyPlugin } from './verify.js';
 
 const SIGN_USAGE =
-  'Usage: hc-plugin-sign --dir <pluginDir> --private-key <path> [--key-id <id>] [--signature <path>]';
+  'Usage: hc-plugin-sign [--dir <pluginDir>] [--private-key <path>] [--key-id <id>] [--signature <path>]';
 const VERIFY_USAGE =
   'Usage: hc-plugin-verify --dir <pluginDir> --public-key <path> [--public-key <path> ...] [--signature <path>] [--allow-unsigned]';
+const PLUGIN_SIGNING_KEY_ENV = 'HARBORCLIENT_PLUGIN_SIGNING_KEY';
 
 /**
  * Parsed CLI arguments shared by sign and verify commands.
@@ -18,6 +19,13 @@ interface ParsedCliArgs {
   keyId?: string;
   signaturePath?: string;
   allowUnsigned: boolean;
+}
+
+/**
+ * Runtime context for the sign CLI.
+ */
+export interface RunSignCliOptions {
+  cwd?: string;
 }
 
 /**
@@ -78,20 +86,32 @@ function parseCliArgs(argv: string[]): ParsedCliArgs {
 }
 
 /**
+ * Resolves the private key path from the environment or CLI fallback.
+ *
+ * @param parsed - Parsed CLI arguments.
+ */
+function resolvePrivateKeyPath(parsed: ParsedCliArgs): string | undefined {
+  const fromEnv = process.env[PLUGIN_SIGNING_KEY_ENV]?.trim();
+  return fromEnv || parsed.privateKeyPath;
+}
+
+/**
  * Reads a PEM key file from disk.
  *
  * @param path - Absolute or relative key file path.
+ * @param cwd - Directory used to resolve relative paths.
  */
-function readKeyFile(path: string): string {
-  return readFileSync(resolve(path), 'utf8');
+function readKeyFile(path: string, cwd = process.cwd()): string {
+  return readFileSync(resolve(cwd, path), 'utf8');
 }
 
 /**
  * Runs the plugin sign CLI and returns a process exit code.
  *
  * @param argv - Raw process argv including node and script paths.
+ * @param options - Runtime context for path resolution.
  */
-export async function runSignCli(argv: string[]): Promise<number> {
+export async function runSignCli(argv: string[], options: RunSignCliOptions = {}): Promise<number> {
   let parsed: ParsedCliArgs;
   try {
     parsed = parseCliArgs(argv);
@@ -102,17 +122,21 @@ export async function runSignCli(argv: string[]): Promise<number> {
     return 1;
   }
 
-  if (!parsed.dir || !parsed.privateKeyPath) {
+  const cwd = options.cwd ?? process.cwd();
+  const pluginDir = resolve(cwd, parsed.dir ?? '.');
+  const privateKeyPath = resolvePrivateKeyPath(parsed);
+
+  if (!privateKeyPath) {
     console.error(SIGN_USAGE);
     return 1;
   }
 
   try {
     const result = await signPlugin({
-      pluginDir: parsed.dir,
-      privateKeyPem: readKeyFile(parsed.privateKeyPath),
+      pluginDir,
+      privateKeyPem: readKeyFile(privateKeyPath, cwd),
       keyId: parsed.keyId,
-      signaturePath: parsed.signaturePath
+      signaturePath: parsed.signaturePath ? resolve(cwd, parsed.signaturePath) : undefined
     });
     console.log(`Wrote ${result.signaturePath}`);
     return 0;
@@ -147,7 +171,7 @@ export async function runVerifyCli(argv: string[]): Promise<number> {
   try {
     const result = await verifyPlugin({
       pluginDir: parsed.dir,
-      trustedPublicKeysPem: parsed.publicKeyPaths.map(readKeyFile),
+      trustedPublicKeysPem: parsed.publicKeyPaths.map((path) => readKeyFile(path)),
       signaturePath: parsed.signaturePath
     });
 
