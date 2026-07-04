@@ -341,7 +341,7 @@ export function SegmentedTabs<T extends string>({
       >
         {visibleTabs.map((tab) => {
           const selected = value === tab.value;
-          const tabClassName = `hc-segmented-tabs-tab flex items-center ${segment(selected)}${
+          const tabClassName = `hc-segmented-tabs-tab flex items-center justify-center ${segment(selected)}${
             fullWidth ? ' flex-1' : ''
           }`;
 
@@ -366,7 +366,7 @@ export function SegmentedTabs<T extends string>({
                     ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
                   })}
             >
-              <span className="hc-segmented-tabs-tab-label inline-flex items-center gap-1.5">
+              <span className="hc-segmented-tabs-tab-label inline-flex items-center justify-center gap-1.5">
                 <span className="inline-flex shrink-0 items-center px-1.5">
                   <span
                     className={cn(
