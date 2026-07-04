@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.31 - 2026-07-04
+
 - Update PageHeader component styles for improved visual consistency. (`eea60fb`)
 
 ## 1.0.30 - 2026-07-04
