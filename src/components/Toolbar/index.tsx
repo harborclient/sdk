@@ -85,7 +85,7 @@ const TOOLBAR_ACTION_BUTTON_INACTIVE =
  * Tailwind classes for pressed toolbar toggles, matching footer layout icon buttons.
  */
 const TOOLBAR_ACTION_BUTTON_ACTIVE =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-selection text-text shadow-sm focus-visible:bg-surface focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
+  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-control text-text shadow-sm focus-visible:bg-surface focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
 
 /**
  * Resolves toolbar button classes for a declarative action.

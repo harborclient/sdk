@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update toolbar action button styles for improved visual consistency. (`221a733`)
+
 ## 1.0.33 - 2026-07-04
 
 - Refactor CLI signing functionality for improved path resolution and environment variable support. (`1f815dc`)
