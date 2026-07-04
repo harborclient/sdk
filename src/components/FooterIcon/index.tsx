@@ -1,9 +1,12 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<
+  ComponentPropsWithoutRef<'button'>,
+  'aria-label' | 'aria-pressed' | 'title'
+> {
   /**
    * Font Awesome icon shown inside the footer toggle button.
    */
@@ -15,20 +18,10 @@ interface Props {
   active: boolean;
 
   /**
-   * Called when the user activates the toggle button.
-   */
-  onClick: () => void;
-
-  /**
    * Noun phrase for accessibility labels, e.g. `"sidebar"` becomes
    * `"Hide sidebar"` / `"Show sidebar"`.
    */
   label: string;
-
-  /**
-   * Additional Tailwind classes merged onto the button element.
-   */
-  className?: string;
 }
 
 /**
@@ -44,10 +37,18 @@ function footerIconButton(active: boolean): string {
  * Icon-only toggle button for the window footer bar, used to show or hide
  * sidebars and similar panels.
  */
-export function FooterIcon({ icon, active, onClick, label, className }: Props): JSX.Element {
+export function FooterIcon({
+  icon,
+  active,
+  onClick,
+  label,
+  className,
+  ...props
+}: Props): JSX.Element {
   const accessibleLabel = active ? `Hide ${label}` : `Show ${label}`;
   return (
     <button
+      {...props}
       type="button"
       className={cn('hc-footer-icon', footerIconButton(active), className)}
       onClick={onClick}

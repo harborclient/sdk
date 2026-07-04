@@ -7,7 +7,7 @@ import {
   useRef,
   useState
 } from '@harborclient/sdk/react';
-import type { JSX, KeyboardEvent } from 'react';
+import type { ComponentPropsWithoutRef, JSX, KeyboardEvent } from 'react';
 import { segment, segmentGroup } from '../classes.js';
 import { getFocusableElements } from '../useDialogFocus.js';
 import { cn, resolveTabListKeyAction } from '../utils.js';
@@ -65,7 +65,10 @@ function focusFirstFocusableInPanel(panel: HTMLElement | null): boolean {
   return true;
 }
 
-interface Props<T extends string> {
+interface Props<T extends string> extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'className' | 'aria-label' | 'onChange'
+> {
   /**
    * Tab definitions to render.
    */
@@ -141,7 +144,8 @@ export function SegmentedTabs<T extends string>({
   fullWidth = false,
   className,
   pattern = 'tabs',
-  ariaLabel: ariaLabelProp
+  ariaLabel: ariaLabelProp,
+  ...props
 }: Props<T>): JSX.Element {
   const context = useContext(SegmentedTabsContext);
   const standaloneId = useId();
@@ -253,22 +257,18 @@ export function SegmentedTabs<T extends string>({
     }
   }, [editable, onChange, value, visibleSet, visibleTabs]);
 
-  const outerClassName = [
+  const outerClassName = cn(
     'hc-segmented-tabs',
     segmentGroup,
     'items-center gap-1',
-    fullWidth ? 'flex-1 min-w-0' : '',
+    fullWidth ? 'min-w-0 flex-1' : '',
     className
-  ]
-    .filter(Boolean)
-    .join(' ');
+  );
 
-  const tabListClassName = [
+  const tabListClassName = cn(
     'hc-segmented-tabs-list inline-flex min-w-0 flex-1 items-center',
     fullWidth ? 'w-full' : ''
-  ]
-    .filter(Boolean)
-    .join(' ');
+  );
 
   const isRadiogroup = pattern === 'radiogroup';
 
@@ -331,7 +331,7 @@ export function SegmentedTabs<T extends string>({
   );
 
   return (
-    <div className={outerClassName}>
+    <div {...props} className={outerClassName}>
       <div
         className={tabListClassName}
         role={isRadiogroup ? 'radiogroup' : 'tablist'}

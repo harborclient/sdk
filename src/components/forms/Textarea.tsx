@@ -1,7 +1,7 @@
-import type { JSX, Ref, TextareaHTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef, JSX, Ref } from 'react';
 import { type FieldVariant, mergeFieldClasses } from './classes.js';
 
-interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface Props extends Omit<ComponentPropsWithoutRef<'textarea'>, 'ref'> {
   /**
    * Base field styling preset.
    */

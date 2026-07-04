@@ -1,15 +1,10 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 
-interface Props {
-  /**
-   * Called when the user closes the panel or overlay.
-   */
-  onClose: () => void;
-
+interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'children' | 'aria-label'> {
   /**
    * Default accessible name when `ariaLabel` is not provided.
    */
@@ -21,9 +16,9 @@ interface Props {
   ariaLabel?: string;
 
   /**
-   * Additional Tailwind classes merged onto the button element.
+   * Called when the user closes the panel or overlay.
    */
-  className?: string;
+  onClose: () => void;
 }
 
 /**
@@ -33,10 +28,12 @@ export function PanelCloseButton({
   onClose,
   label = 'Close',
   ariaLabel,
-  className
+  className,
+  ...props
 }: Props): JSX.Element {
   return (
     <Button
+      {...props}
       type="button"
       variant="secondary"
       className={cn(

@@ -1,5 +1,5 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 
@@ -23,7 +23,10 @@ export interface PageSidebarItem<T extends string = string> {
   icon?: IconDefinition;
 }
 
-interface Props<T extends string> {
+interface Props<T extends string> extends Omit<
+  ComponentPropsWithoutRef<'nav'>,
+  'aria-label' | 'onSelect'
+> {
   /**
    * Navigation entries to render in the sidebar.
    */
@@ -61,11 +64,17 @@ export function PageSidebar<T extends string>({
   items,
   selected,
   onSelect,
-  ariaLabel
+  ariaLabel,
+  className,
+  ...props
 }: Props<T>): JSX.Element {
   return (
     <nav
-      className="hc-page-sidebar flex w-[180px] shrink-0 flex-col gap-1 border-r border-separator bg-sidebar px-2 py-3"
+      {...props}
+      className={cn(
+        'hc-page-sidebar flex w-[180px] shrink-0 flex-col gap-1 border-r border-separator bg-sidebar px-2 py-3',
+        className
+      )}
       aria-label={ariaLabel}
     >
       {items.map((item) => {

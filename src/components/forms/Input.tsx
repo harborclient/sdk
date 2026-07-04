@@ -1,7 +1,7 @@
-import type { InputHTMLAttributes, JSX, Ref } from 'react';
+import type { ComponentPropsWithoutRef, JSX, Ref } from 'react';
 import { type FieldVariant, mergeFieldClasses } from './classes.js';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends Omit<ComponentPropsWithoutRef<'input'>, 'ref'> {
   /**
    * Base field styling preset. Checkbox and radio inputs default to `plain`.
    */

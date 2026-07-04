@@ -1,11 +1,14 @@
-import type { InputHTMLAttributes, JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { Input } from '../forms/index.js';
 import { cn } from '../utils.js';
 import { SuggestionList } from './SuggestionList.js';
 import type { AutocompleteSource } from './types.js';
 import { useAutocomplete } from './useAutocomplete.js';
 
-export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
+export interface Props extends Omit<
+  ComponentPropsWithoutRef<'input'>,
+  'value' | 'onChange' | 'ref'
+> {
   /**
    * Current input value.
    */

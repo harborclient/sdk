@@ -1,16 +1,14 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<
+  ComponentPropsWithoutRef<'button'>,
+  'children' | 'aria-expanded' | 'aria-controls'
+> {
   /**
    * Whether the associated slide-up panel is currently open.
    */
   active: boolean;
-
-  /**
-   * Called when the user activates the footer segment button.
-   */
-  onClick: () => void;
 
   /**
    * Panel element id referenced by `aria-controls`.
@@ -21,11 +19,6 @@ interface Props {
    * Button label and optional count badge content.
    */
   children: ReactNode;
-
-  /**
-   * Additional Tailwind classes merged onto the button element.
-   */
-  className?: string;
 }
 
 /**
@@ -46,10 +39,12 @@ export function FooterButton({
   onClick,
   controlsId,
   children,
-  className
+  className,
+  ...props
 }: Props): JSX.Element {
   return (
     <button
+      {...props}
       type="button"
       className={cn('hc-footer-button', footerSegment(active), className)}
       onClick={onClick}

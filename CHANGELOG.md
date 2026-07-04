@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor components to enhance type safety and props handling. (`c777731`)
 - Refactor AsyncListState and Card components for improved structure and clarity. (`6a6024c`)
 - Enhance project configuration and component utilities. (`eec167c`)
 

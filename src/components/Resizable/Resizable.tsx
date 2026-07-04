@@ -1,6 +1,6 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useRef } from '@harborclient/sdk/react';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 import { ResizeHandle } from './ResizeHandle.js';
@@ -13,7 +13,7 @@ import {
 } from './footerPanelUtils';
 import { useResizable } from './useResizable.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'id' | 'title'> {
   /**
    * Root element id used by footer toggles via aria-controls.
    */
@@ -75,7 +75,9 @@ export function Resizable({
   title,
   headerless = false,
   unmountWhenClosed = false,
-  children
+  children,
+  className,
+  ...props
 }: Props): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -116,8 +118,9 @@ export function Resizable({
   return (
     <div
       ref={containerRef}
+      {...props}
       id={id}
-      className={cn('hc-resizable', footerPanelClassName(open))}
+      className={cn('hc-resizable', footerPanelClassName(open), className)}
       style={{ height }}
       role="region"
       aria-label={`${closeLabel} panel`}

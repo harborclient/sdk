@@ -1,8 +1,12 @@
 import { useEffect, useState } from '@harborclient/sdk/react';
-import type { JSX, RefObject } from 'react';
+import type { ComponentPropsWithoutRef, JSX, RefObject } from 'react';
 import { portalToBody } from '../portalToBody.js';
+import { cn } from '../utils.js';
 
-interface SuggestionListProps {
+interface SuggestionListProps extends Omit<
+  ComponentPropsWithoutRef<'ul'>,
+  'children' | 'id' | 'role' | 'onSelect'
+> {
   /**
    * Whether the suggestion popup should render.
    */
@@ -77,7 +81,9 @@ export function SuggestionList({
   listboxId,
   onSelect,
   onActiveIndexChange,
-  onClose
+  onClose,
+  className,
+  ...props
 }: SuggestionListProps): JSX.Element | null {
   const [position, setPosition] = useState<PopupPosition | null>(null);
 
@@ -137,9 +143,13 @@ export function SuggestionList({
 
   return portalToBody(
     <ul
+      {...props}
       id={listboxId}
       role="listbox"
-      className="hc-suggestion-list fixed z-50 max-h-48 overflow-y-auto rounded-lg border border-separator bg-surface py-1 text-[14px] text-text shadow-md"
+      className={cn(
+        'hc-suggestion-list fixed z-50 max-h-48 overflow-y-auto rounded-lg border border-separator bg-surface py-1 text-[14px] text-text shadow-md',
+        className
+      )}
       style={{ top: position.top, left: position.left, width: position.width }}
     >
       {items.map((item, index) => (

@@ -1,8 +1,9 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX, MouseEvent } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'children' | 'aria-label'> {
   /**
    * Accessible name for the close control, typically including the tab title.
    */
@@ -11,18 +12,12 @@ interface Props {
   /**
    * Called when the user activates the close button.
    */
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 
   /**
    * Optional tooltip label; defaults to "Close tab".
    */
   title?: string;
-
-  /**
-   * Tab order index for roving-tablist layouts. Pass `0` on the active tab and
-   * `-1` on inactive tabs so the tab label receives focus before the close control.
-   */
-  tabIndex?: number;
 }
 
 /**
@@ -32,12 +27,18 @@ export function TabCloseButton({
   ariaLabel,
   onClick,
   title = 'Close tab',
-  tabIndex
+  tabIndex,
+  className,
+  ...props
 }: Props): JSX.Element {
   return (
     <button
+      {...props}
       type="button"
-      className="hc-tab-close-button app-no-drag inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text"
+      className={cn(
+        'hc-tab-close-button app-no-drag inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text',
+        className
+      )}
       title={title}
       aria-label={ariaLabel}
       tabIndex={tabIndex}

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, JSX, RefObject } from 'react';
+import type { ComponentPropsWithoutRef, JSX, RefObject } from 'react';
 import { cn } from '../utils.js';
 
 /**
@@ -19,7 +19,10 @@ type AccessibleName =
   | { 'aria-label': string; 'aria-labelledby'?: undefined }
   | { 'aria-labelledby': string; 'aria-label'?: undefined };
 
-type BaseProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'aria-labelledby'> & {
+type BaseProps = Omit<
+  ComponentPropsWithoutRef<'button'>,
+  'aria-label' | 'aria-labelledby' | 'ref'
+> & {
   /**
    * Additional Tailwind classes merged after the variant preset.
    */

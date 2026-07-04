@@ -1,9 +1,10 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'title'> {
   /**
    * Id referenced by the dialog's `aria-labelledby`.
    */
@@ -51,10 +52,18 @@ export function ModalHeader({
   descriptionId,
   headerActions,
   closeDisabled = false,
-  onClose
+  onClose,
+  className,
+  ...props
 }: Props): JSX.Element {
   return (
-    <div className="hc-modal-header flex flex-wrap items-center gap-2 border-b border-separator px-4 py-4">
+    <div
+      {...props}
+      className={cn(
+        'hc-modal-header flex flex-wrap items-center gap-2 border-b border-separator px-4 py-4',
+        className
+      )}
+    >
       <div className="hc-modal-header-content min-w-0 flex-1">
         <h2
           id={titleId}

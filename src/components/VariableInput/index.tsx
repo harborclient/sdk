@@ -1,5 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState } from '@harborclient/sdk/react';
-import type { JSX, KeyboardEvent, MouseEvent } from 'react';
+import type { ComponentPropsWithoutRef, JSX, KeyboardEvent, MouseEvent } from 'react';
 import type { Variable } from '../../types.js';
 import {
   getDynamicVariableDescription,
@@ -22,7 +22,10 @@ interface TooltipState {
   left: number;
 }
 
-export interface Props {
+export interface Props extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'className' | 'id' | 'aria-label' | 'aria-labelledby' | 'onKeyDown' | 'onChange'
+> {
   /**
    * Current input value.
    */
@@ -102,7 +105,8 @@ export function VariableInput({
   id,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
-  source
+  source,
+  ...props
 }: Props): JSX.Element {
   const safeValue = value ?? '';
   const inputRef = useRef<HTMLInputElement>(null);
@@ -280,7 +284,10 @@ export function VariableInput({
   const tooltipContent = tooltip ? getVariableTooltipContent(tooltip.key, variables) : null;
 
   return (
-    <div className={cn('hc-variable-input relative min-w-0', wrapperClassName ?? 'flex-1')}>
+    <div
+      {...props}
+      className={cn('hc-variable-input relative min-w-0', wrapperClassName ?? 'flex-1')}
+    >
       <div
         ref={backdropRef}
         aria-hidden

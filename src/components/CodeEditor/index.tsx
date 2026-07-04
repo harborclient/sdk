@@ -24,7 +24,7 @@ import {
   useState
 } from '@harborclient/sdk/react';
 import CodeMirrorImport from '@uiw/react-codemirror';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import type { CodeEditorSetup, CodeEditorTheme, Variable } from '../../types.js';
 import { normalizeCodeEditorFontSize } from '../../ui/codeEditorSettings.js';
 import { VARIABLE_NAME_CHARS, getVariableTooltipContent } from '../../variables/index.js';
@@ -144,7 +144,18 @@ export interface CodeEditorViewState {
   selection: CodeEditorSelectionRange;
 }
 
-export interface Props {
+export interface Props extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  | 'children'
+  | 'onChange'
+  | 'className'
+  | 'id'
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-invalid'
+  | 'aria-describedby'
+  | 'style'
+> {
   /**
    * Editor content.
    */
@@ -655,7 +666,8 @@ export function CodeEditor({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
   'aria-invalid': ariaInvalid,
-  'aria-describedby': ariaDescribedBy
+  'aria-describedby': ariaDescribedBy,
+  ...props
 }: Props): JSX.Element {
   const config = useCodeEditorConfig();
   const resolvedTheme = themeOverride ?? config.theme;
@@ -1077,7 +1089,7 @@ export function CodeEditor({
     onViewStateChange != null || initialScrollTop != null || initialSelection != null;
 
   return (
-    <div ref={wrapperRef} className={wrapperClassName} style={wrapperStyle}>
+    <div ref={wrapperRef} {...props} className={wrapperClassName} style={wrapperStyle}>
       {createElement(CodeMirrorImport, {
         value,
         onChange: readOnly ? undefined : stableOnChange,

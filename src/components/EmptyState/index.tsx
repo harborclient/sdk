@@ -1,9 +1,9 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 
 type EmptyStateVariant = 'inline' | 'centered';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   /**
    * Empty-state message content.
    */
@@ -13,11 +13,6 @@ interface Props {
    * Layout preset; centered fills available space in panel bodies.
    */
   variant?: EmptyStateVariant;
-
-  /**
-   * Additional Tailwind classes merged onto the wrapper element.
-   */
-  className?: string;
 }
 
 /**
@@ -35,9 +30,17 @@ function variantClasses(variant: EmptyStateVariant): string {
 /**
  * Placeholder shown when a panel or list has no content to display.
  */
-export function EmptyState({ children, variant = 'inline', className }: Props): JSX.Element {
+export function EmptyState({
+  children,
+  variant = 'inline',
+  className,
+  ...props
+}: Props): JSX.Element {
   return (
-    <div className={cn('hc-empty-state text-[16px]', variantClasses(variant), className)}>
+    <div
+      {...props}
+      className={cn('hc-empty-state text-[16px]', variantClasses(variant), className)}
+    >
       {children}
     </div>
   );

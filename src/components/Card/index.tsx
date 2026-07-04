@@ -1,9 +1,9 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 import { Body } from './Body.js';
 import { Image } from './Image.js';
 
-interface Props extends React.ComponentPropsWithoutRef<'div'> {
+interface Props extends ComponentPropsWithoutRef<'div'> {
   /**
    */
   children: ReactNode;

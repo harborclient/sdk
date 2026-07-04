@@ -1,17 +1,18 @@
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import type { Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { Checkbox, Input } from '../forms/index.js';
+import { cn } from '../utils.js';
 
 /**
  * Returns a blank variable row for new table entries.
  */
 const emptyVariable = (): Variable => ({ key: '', value: '', defaultValue: '', share: false });
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'onChange'> {
   /**
    * Variable rows to display.
    */
@@ -31,7 +32,13 @@ interface Props {
 /**
  * Editable table for key/value/default/share variable rows.
  */
-export function VariableTable({ variables, onChange, description }: Props): JSX.Element {
+export function VariableTable({
+  variables,
+  onChange,
+  description,
+  className,
+  ...props
+}: Props): JSX.Element {
   /**
    * Updates a single variable row by index.
    */
@@ -58,7 +65,7 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
   };
 
   return (
-    <div className="hc-variable-table">
+    <div {...props} className={cn('hc-variable-table', className)}>
       {description && (
         <p className="hc-variable-table-description mb-3 text-[14px] text-muted">{description}</p>
       )}

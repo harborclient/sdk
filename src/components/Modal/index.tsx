@@ -1,5 +1,5 @@
 import { useEffect, useRef } from '@harborclient/sdk/react';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { useDialogFocus } from '../useDialogFocus.js';
 import { cn } from '../utils.js';
 import { ModalHeader } from './ModalHeader.js';
@@ -7,7 +7,10 @@ import { ModalHeader } from './ModalHeader.js';
 export { ModalFooter } from './ModalFooter.js';
 export { ModalFormLayout } from './ModalFormLayout.js';
 
-interface BaseProps {
+interface BaseProps extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'className' | 'title'
+> {
   /**
    * Called when the backdrop is clicked or Escape is pressed.
    */
@@ -86,7 +89,8 @@ export function Modal({
   closeDisabled = false,
   labelledBy,
   label,
-  children
+  children,
+  ...props
 }: Props): JSX.Element {
   const panelRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -127,7 +131,7 @@ export function Modal({
   const descriptionId = description && labelledBy ? `${labelledBy}-description` : undefined;
 
   return (
-    <div ref={overlayRef} className={overlayClass}>
+    <div ref={overlayRef} {...props} className={overlayClass}>
       <div
         ref={panelRef}
         role="dialog"

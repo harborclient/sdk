@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 
 /**
@@ -6,16 +6,11 @@ import { cn } from '../utils.js';
  */
 export type FieldErrorSpacing = 'field' | 'section' | 'modal';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'p'>, 'children'> {
   /**
    * Error message content. When empty, nothing is rendered.
    */
   children?: ReactNode;
-
-  /**
-   * Element id referenced by `aria-describedby` on the related control.
-   */
-  id?: string;
 
   /**
    * Margin preset matching common form, section, and modal layouts.
@@ -26,11 +21,6 @@ interface Props {
    * When true, exposes the message as an alert for assistive technologies.
    */
   roleAlert?: boolean;
-
-  /**
-   * Additional Tailwind classes merged onto the error paragraph.
-   */
-  className?: string;
 }
 
 /**
@@ -55,16 +45,16 @@ function spacingClasses(spacing: FieldErrorSpacing): string {
  */
 export function FieldError({
   children,
-  id,
   spacing = 'field',
   roleAlert = true,
-  className
+  className,
+  ...props
 }: Props): JSX.Element | null {
   if (children == null || children === '') return null;
 
   return (
     <p
-      id={id}
+      {...props}
       className={cn('hc-field-error text-[14px] text-danger', spacingClasses(spacing), className)}
       role={roleAlert ? 'alert' : undefined}
     >

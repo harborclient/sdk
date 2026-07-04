@@ -1,5 +1,5 @@
 import { createElement } from '@harborclient/sdk/react';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 import { type TableVariant, TableVariantContext } from './TableContext.js';
 
@@ -15,7 +15,7 @@ export { TableCell } from './TableCell.js';
 export { TableHead } from './TableHead.js';
 export { TableHeader } from './TableHeader.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'> {
   /**
    * Table header and body sections.
    */
@@ -35,31 +35,34 @@ interface Props {
 /**
  * Table shell for editable row layouts.
  */
-export function Table({ children, variant = 'bordered', className }: Props): JSX.Element {
+export function Table({ children, variant = 'bordered', className, ...props }: Props): JSX.Element {
   if (variant === 'loose') {
-    const tableClasses = cn(
-      'hc-table w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5',
-      className
-    );
-
     return createElement(
       TableVariantContext.Provider,
       { value: variant },
-      createElement('table', { className: tableClasses }, children)
+      createElement(
+        'table',
+        {
+          ...props,
+          className: cn(
+            'hc-table w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5',
+            className
+          )
+        },
+        children
+      )
     );
   }
-
-  const wrapperClasses = cn(
-    'hc-table overflow-hidden rounded-lg border border-separator',
-    className
-  );
 
   return createElement(
     TableVariantContext.Provider,
     { value: variant },
     createElement(
       'div',
-      { className: wrapperClasses },
+      {
+        ...props,
+        className: cn('hc-table overflow-hidden rounded-lg border border-separator', className)
+      },
       createElement('table', { className: 'hc-table-element w-full border-collapse' }, children)
     )
   );

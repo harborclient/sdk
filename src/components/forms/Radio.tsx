@@ -1,8 +1,8 @@
-import type { InputHTMLAttributes, JSX, Ref } from 'react';
+import type { ComponentPropsWithoutRef, JSX, Ref } from 'react';
 import { cn } from '../utils.js';
 import { radioCircle, radioDot, radioInput } from './classes.js';
 
-interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface Props extends Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'ref' | 'className'> {
   /**
    * Additional Tailwind classes applied to the outer wrapper.
    */
@@ -25,7 +25,7 @@ export function Radio({ ref, className, ...props }: Props): JSX.Element {
         className
       )}
     >
-      <input ref={ref} type="radio" className={cn('hc-radio-input', radioInput)} {...props} />
+      <input {...props} ref={ref} type="radio" className={cn('hc-radio-input', radioInput)} />
       <span className={cn('hc-radio-circle', radioCircle)} aria-hidden>
         <span className={cn('hc-radio-dot', radioDot)} />
       </span>

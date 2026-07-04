@@ -1,8 +1,9 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FieldError } from '../FieldError/index.js';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   /**
    * Error message shown beside the retry control.
    */
@@ -22,9 +23,15 @@ interface Props {
 /**
  * Inline error message paired with a secondary retry button.
  */
-export function ErrorRetry({ error, onRetry, retryLabel = 'Retry' }: Props): JSX.Element {
+export function ErrorRetry({
+  error,
+  onRetry,
+  retryLabel = 'Retry',
+  className,
+  ...props
+}: Props): JSX.Element {
   return (
-    <div className="hc-error-retry flex flex-wrap items-center gap-2">
+    <div {...props} className={cn('hc-error-retry flex flex-wrap items-center gap-2', className)}>
       <FieldError spacing="field" className="hc-error-retry-message mt-0 mb-0">
         {error}
       </FieldError>

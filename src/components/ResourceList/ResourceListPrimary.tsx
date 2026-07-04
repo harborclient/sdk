@@ -1,6 +1,7 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<'div'> {
   /**
    * Primary title content.
    */
@@ -10,9 +11,15 @@ interface Props {
 /**
  * Primary title styling for {@link ResourceListRow}.
  */
-export function ResourceListPrimary({ children }: Props): JSX.Element {
+export function ResourceListPrimary({ children, className, ...props }: Props): JSX.Element {
   return (
-    <div className="hc-resource-list-primary truncate text-[14px] font-medium text-text">
+    <div
+      {...props}
+      className={cn(
+        'hc-resource-list-primary truncate text-[14px] font-medium text-text',
+        className
+      )}
+    >
       {children}
     </div>
   );

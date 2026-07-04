@@ -1,6 +1,7 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<'li'> {
   /**
    * Empty-state message content.
    */
@@ -10,6 +11,10 @@ interface Props {
 /**
  * Inline empty-state row rendered inside a {@link ResourceList}.
  */
-export function ResourceListEmptyItem({ children }: Props): JSX.Element {
-  return <li className="hc-resource-list-empty-item text-[14px] text-muted">{children}</li>;
+export function ResourceListEmptyItem({ children, className, ...props }: Props): JSX.Element {
+  return (
+    <li {...props} className={cn('hc-resource-list-empty-item text-[14px] text-muted', className)}>
+      {children}
+    </li>
+  );
 }

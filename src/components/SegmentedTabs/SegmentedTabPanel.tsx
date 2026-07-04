@@ -1,9 +1,9 @@
 import { useCallback, useContext } from '@harborclient/sdk/react';
-import type { JSX, KeyboardEvent, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, KeyboardEvent, ReactNode } from 'react';
 import { cn } from '../utils.js';
 import { SegmentedTabsContext } from './SegmentedTabsContext.js';
 
-interface Props<T extends string> {
+interface Props<T extends string> extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   /**
    * Tab value that controls visibility of this panel.
    */
@@ -13,11 +13,6 @@ interface Props<T extends string> {
    * Panel content shown when this tab is selected.
    */
   children: ReactNode;
-
-  /**
-   * Additional CSS classes for the panel container.
-   */
-  className?: string;
 }
 
 /**
@@ -26,7 +21,8 @@ interface Props<T extends string> {
 export function SegmentedTabPanel<T extends string>({
   value,
   children,
-  className
+  className,
+  ...props
 }: Props<T>): JSX.Element | null {
   const context = useContext(SegmentedTabsContext);
   if (!context) {
@@ -60,6 +56,7 @@ export function SegmentedTabPanel<T extends string>({
 
   return (
     <div
+      {...props}
       role="tabpanel"
       id={context.getPanelId(value)}
       aria-labelledby={context.getTabId(value)}

@@ -1,15 +1,10 @@
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 
-interface Props {
-  /**
-   * Called when the user activates the back control.
-   */
-  onClick: () => void;
-
+interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'children' | 'aria-label'> {
   /**
    * Visible button text and default accessible name when `ariaLabel` is not provided.
    */
@@ -19,11 +14,6 @@ interface Props {
    * Accessible name when it should differ from the visible `label`.
    */
   ariaLabel?: string;
-
-  /**
-   * Additional Tailwind classes merged onto the button element.
-   */
-  className?: string;
 }
 
 /**
@@ -31,9 +21,16 @@ interface Props {
  *
  * Matches {@link PanelCloseButton} sizing with a left-angle icon and visible label.
  */
-export function BackButton({ onClick, label = 'Back', ariaLabel, className }: Props): JSX.Element {
+export function BackButton({
+  onClick,
+  label = 'Back',
+  ariaLabel,
+  className,
+  ...props
+}: Props): JSX.Element {
   return (
     <Button
+      {...props}
       type="button"
       variant="toolbar"
       className={cn(

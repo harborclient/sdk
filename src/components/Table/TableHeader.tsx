@@ -1,26 +1,19 @@
-import type { HTMLAttributes, JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 
-interface Props extends HTMLAttributes<HTMLTableSectionElement> {
+interface Props extends ComponentPropsWithoutRef<'thead'> {
   /**
    * Header or body row content.
    */
   children: ReactNode;
-
-  /**
-   * Additional Tailwind classes merged onto the section element.
-   */
-  className?: string;
 }
 
 /**
  * Table header section wrapper.
  */
-export function TableHeader({ children, className, ...rest }: Props): JSX.Element {
-  const classes = cn('hc-table-header', className);
-
+export function TableHeader({ children, className, ...props }: Props): JSX.Element {
   return (
-    <thead className={classes} {...rest}>
+    <thead {...props} className={cn('hc-table-header', className)}>
       {children}
     </thead>
   );

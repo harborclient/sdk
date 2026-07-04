@@ -1,5 +1,5 @@
 import { useId } from '@harborclient/sdk/react';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { FieldError } from '../FieldError/index.js';
 import { enhanceControl } from '../enhanceControl.js';
 
@@ -19,7 +19,7 @@ export type FormGroupLayout =
  */
 export type FormGroupLabelTone = 'default' | 'muted';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'> {
   /**
    * Visible label text, or screen-reader-only text when `srOnly` is set.
    */
@@ -115,7 +115,8 @@ export function FormGroup({
   labelTone = 'default',
   srOnly = false,
   className,
-  labelClassName
+  labelClassName,
+  ...props
 }: Props): JSX.Element {
   const generatedId = useId();
   const controlId = htmlFor ?? generatedId;
@@ -141,7 +142,7 @@ export function FormGroup({
       : 'hc-form-group-label min-w-0 flex-1 text-[16px] text-text';
     const linkedChildren = enhanceControl(children, { id: controlId });
     return (
-      <div className={wrapperClasses}>
+      <div {...props} className={wrapperClasses}>
         {linkedChildren}
         <label htmlFor={controlId} className={adjacentLabelClasses}>
           {label}
@@ -185,7 +186,7 @@ export function FormGroup({
       ? `hc-form-group flex flex-col gap-1 p-4 border border-separator rounded-md ${extra}`
       : 'hc-form-group flex flex-col gap-1 p-4 border border-separator rounded-md';
     return (
-      <div className={wrapperClasses}>
+      <div {...props} className={wrapperClasses}>
         <label htmlFor={controlId} className="hc-form-group-label flex flex-col gap-1">
           <span className="hc-form-group-label-row flex items-center gap-2">
             {linkedChildren}
@@ -244,7 +245,7 @@ export function FormGroup({
     : 'hc-form-group flex flex-col gap-1 p-4 text-[16px] border border-separator rounded-md';
 
   return (
-    <div className={wrapperClasses}>
+    <div {...props} className={wrapperClasses}>
       <label htmlFor={htmlFor} className="hc-form-group-label flex flex-col gap-1">
         <span className={labelClasses(labelTone, srOnly, false)}>{label}</span>
         {resolvedDescriptionId ? (

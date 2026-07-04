@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { cn } from '../utils.js';
 
 /**
@@ -6,7 +6,7 @@ import { cn } from '../utils.js';
  */
 export type BadgeVariant = 'success' | 'danger' | 'muted' | 'accent' | 'warning';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
   /**
    * Badge label content.
    */
@@ -16,11 +16,6 @@ interface Props {
    * Color and background preset.
    */
   variant?: BadgeVariant;
-
-  /**
-   * Additional Tailwind classes merged onto the badge element.
-   */
-  className?: string;
 }
 
 /**
@@ -47,9 +42,10 @@ function variantClasses(variant: BadgeVariant): string {
 /**
  * Compact pill badge for status labels in lists and settings panels.
  */
-export function Badge({ children, variant = 'muted', className }: Props): JSX.Element {
+export function Badge({ children, variant = 'muted', className, ...props }: Props): JSX.Element {
   return (
     <span
+      {...props}
       className={cn(
         'hc-badge inline-flex shrink-0 items-center rounded px-1.5 py-0.5 text-[14px]',
         variantClasses(variant),

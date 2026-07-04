@@ -1,9 +1,9 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import type { JSX, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
 import { PageHeader } from '../PageHeader/index.js';
 import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'> {
   /**
    * Page heading rendered in the header row.
    */
@@ -60,7 +60,8 @@ export function Page({
   footer,
   embedded = false,
   className,
-  children
+  children,
+  ...props
 }: Props): JSX.Element {
   const header = (
     <PageHeader title={title} description={description} icon={icon}>
@@ -70,7 +71,7 @@ export function Page({
 
   if (embedded) {
     return (
-      <div className={cn('hc-page', className)}>
+      <div {...props} className={cn('hc-page', className)}>
         {header}
         {children}
         {footer}
@@ -79,7 +80,10 @@ export function Page({
   }
 
   return (
-    <div className={cn('hc-page flex min-h-0 flex-1 flex-col overflow-y-auto p-6', className)}>
+    <div
+      {...props}
+      className={cn('hc-page flex min-h-0 flex-1 flex-col overflow-y-auto p-6', className)}
+    >
       <div className="hc-page-inner mx-auto w-full">
         {header}
         {children}

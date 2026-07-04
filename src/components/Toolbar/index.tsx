@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import type { AriaAttributes, JSX, ReactNode, RefObject } from 'react';
+import type { AriaAttributes, ComponentPropsWithoutRef, JSX, ReactNode, RefObject } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
 /**
  * Declarative action rendered as an icon button in a sidebar toolbar.
@@ -62,7 +63,7 @@ export interface ToolbarAction {
   buttonRef?: RefObject<HTMLButtonElement | null>;
 }
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'aria-label'> {
   /**
    * Icon actions rendered in the toolbar.
    */
@@ -72,11 +73,6 @@ interface Props {
    * Accessible name for the toolbar landmark.
    */
   ariaLabel?: string;
-
-  /**
-   * Extra classes merged onto the outer toolbar wrapper.
-   */
-  className?: string;
 }
 
 /**
@@ -103,13 +99,22 @@ function toolbarActionButton(action: ToolbarAction): string {
 /**
  * Top-of-sidebar toolbar with left-aligned icon actions.
  */
-export function Toolbar({ actions, ariaLabel = 'Toolbar', className }: Props): JSX.Element {
-  const wrapperClassName = className
-    ? `hc-toolbar flex shrink-0 items-center border-b border-separator bg-sidebar-toolbar px-2 py-2 app-no-drag ${className}`
-    : 'hc-toolbar flex shrink-0 items-center border-b border-separator bg-sidebar-toolbar px-2 py-2 app-no-drag';
-
+export function Toolbar({
+  actions,
+  ariaLabel = 'Toolbar',
+  className,
+  ...props
+}: Props): JSX.Element {
   return (
-    <div role="toolbar" aria-label={ariaLabel} className={wrapperClassName}>
+    <div
+      {...props}
+      role="toolbar"
+      aria-label={ariaLabel}
+      className={cn(
+        'hc-toolbar app-no-drag flex shrink-0 items-center border-b border-separator bg-sidebar-toolbar px-2 py-2',
+        className
+      )}
+    >
       <div className="hc-toolbar-actions flex items-center gap-1">
         {actions.map((action) => {
           const title = action.title ?? action.label;

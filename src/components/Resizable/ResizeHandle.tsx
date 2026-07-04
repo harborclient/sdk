@@ -1,10 +1,15 @@
 import type {
+  ComponentPropsWithoutRef,
   JSX,
   KeyboardEvent as ReactKeyboardEvent,
   MouseEvent as ReactMouseEvent
 } from 'react';
+import { cn } from '../utils.js';
 
-interface Props {
+interface Props extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'aria-label' | 'aria-valuenow' | 'aria-valuemin' | 'aria-valuemax'
+> {
   /**
    * Handle orientation: horizontal resizes height, vertical resizes width.
    */
@@ -39,11 +44,6 @@ interface Props {
    * Accessible label for the separator.
    */
   ariaLabel: string;
-
-  /**
-   * Optional additional classes for the handle container.
-   */
-  className?: string;
 }
 
 /**
@@ -57,24 +57,23 @@ export function ResizeHandle({
   onResizeStart,
   onKeyboardResize,
   ariaLabel,
-  className
+  className,
+  ...props
 }: Props): JSX.Element {
   const isHorizontal = orientation === 'horizontal';
-  const containerClassName = [
-    'hc-resize-handle m-0 flex shrink-0 items-center justify-center bg-control p-0 font-inherit text-inherit hover:bg-selection/60 app-no-drag',
-    isHorizontal
-      ? 'h-1.5 w-full cursor-row-resize border-b border-separator'
-      : 'h-full w-1.5 cursor-col-resize border-r border-separator',
-    className
-  ]
-    .filter(Boolean)
-    .join(' ');
 
   return (
     <div
+      {...props}
       role="separator"
       tabIndex={0}
-      className={containerClassName}
+      className={cn(
+        'hc-resize-handle font-inherit app-no-drag m-0 flex shrink-0 items-center justify-center bg-control p-0 text-inherit hover:bg-selection/60',
+        isHorizontal
+          ? 'h-1.5 w-full cursor-row-resize border-b border-separator'
+          : 'h-full w-1.5 cursor-col-resize border-r border-separator',
+        className
+      )}
       onMouseDown={onResizeStart}
       onKeyDown={onKeyboardResize}
       aria-orientation={orientation}

@@ -1,9 +1,9 @@
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { cn } from '../utils.js';
 
 type SpinnerSize = 'sm' | 'md';
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'span'>, 'children'> {
   /**
    * Visual size preset for the spinner SVG.
    */
@@ -13,11 +13,6 @@ interface Props {
    * Accessible label announced while the spinner is visible.
    */
   label?: string;
-
-  /**
-   * Additional Tailwind classes merged onto the wrapper element.
-   */
-  className?: string;
 }
 
 /**
@@ -32,9 +27,10 @@ function sizeClasses(size: SpinnerSize): string {
 /**
  * Accent-colored spinning indicator shared by busy overlays, tabs, and modals.
  */
-export function Spinner({ size = 'md', label, className }: Props): JSX.Element {
+export function Spinner({ size = 'md', label, className, ...props }: Props): JSX.Element {
   return (
     <span
+      {...props}
       className={cn('hc-spinner inline-flex items-center justify-center', className)}
       role={label ? 'status' : undefined}
       aria-label={label}

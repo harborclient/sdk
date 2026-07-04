@@ -1,26 +1,15 @@
-import type { JSX } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { cn } from '../utils.js';
 
-interface Props {
-  /**
-   */
-  src: string;
-
-  /**
-   */
-  alt: string;
-
-  /**
-   */
-  className?: string;
-}
+type Props = ComponentPropsWithoutRef<'img'>;
 
 /**
  * Renders a card image.
  */
-export function Image({ src, alt, className }: Props): JSX.Element {
+export function Image({ src, alt, className, ...props }: Props): JSX.Element {
   return (
     <img
+      {...props}
       src={src}
       alt={alt}
       className={cn('hc-card-image h-full w-full max-w-full object-cover', className)}

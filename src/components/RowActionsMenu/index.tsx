@@ -1,6 +1,6 @@
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useEffect, useMemo, useRef, useState } from '@harborclient/sdk/react';
-import type { JSX, KeyboardEvent } from 'react';
+import type { ComponentPropsWithoutRef, JSX, KeyboardEvent } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn, resolveMenuTypeahead, resolveTabListKeyAction } from '../utils.js';
@@ -11,7 +11,7 @@ export type MenuItem = {
   variant?: 'default' | 'danger';
 };
 
-interface Props {
+interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   /**
    * Grouped menu entries shown when the trigger is open. Each inner array is
    * one visual group separated by a divider line.
@@ -51,7 +51,14 @@ function menuItemClass(variant: MenuItem['variant']): string {
 /**
  * Hamburger-triggered dropdown for row-level actions (rename, delete, etc.).
  */
-export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Props): JSX.Element {
+export function RowActionsMenu({
+  groups,
+  menuId,
+  openMenuId,
+  onOpenChange,
+  className,
+  ...props
+}: Props): JSX.Element {
   const isOpen = openMenuId === menuId;
   const menuElementId = `${menuId}-menu`;
   const rootRef = useRef<HTMLDivElement>(null);
@@ -216,7 +223,11 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
   };
 
   return (
-    <div ref={rootRef} className="hc-row-actions-menu relative shrink-0">
+    <div
+      ref={rootRef}
+      {...props}
+      className={cn('hc-row-actions-menu relative shrink-0', className)}
+    >
       <Button
         innerRef={triggerRef}
         type="button"
