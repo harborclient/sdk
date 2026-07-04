@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.32 - 2026-07-04
+
 - Refactor SegmentedTabs component for improved code readability. (`ae5f9b0`)
 - Refactor SegmentedTabs component for improved styling and layout. (`96a2f5f`)
 
