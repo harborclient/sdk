@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.35 - 2026-07-04
+
 - Enhance SegmentedTabs component styling for improved alignment. (`4e8ecea`)
 
 ## 1.0.34 - 2026-07-04
