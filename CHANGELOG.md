@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.34 - 2026-07-04
+
 - Update toolbar action button styles for improved visual consistency. (`221a733`)
 
 ## 1.0.33 - 2026-07-04
