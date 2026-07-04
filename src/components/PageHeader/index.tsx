@@ -46,18 +46,18 @@ export function PageHeader({
       )}
     >
       <div className="hc-page-header-content min-w-0 flex-1">
-        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[24px] leading-[1.15] font-bold tracking-[-0.01em] text-text">
+        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[22px] leading-[1.15] font-bold tracking-[-0.01em] text-text">
           {icon ? (
             <FaIcon
               icon={icon}
-              className="hc-page-header-title-icon h-5 w-5 shrink-0 text-muted"
+              className="hc-page-header-title-icon h-4 w-4 shrink-0 text-muted"
               aria-hidden
             />
           ) : null}
           {title}
         </h2>
         {description ? (
-          <p className="hc-page-header-description m-0 mt-1 text-[16px] leading-none text-muted">
+          <p className="hc-page-header-description m-0 mt-1 text-[16px] leading-6 text-muted">
             {description}
           </p>
         ) : null}

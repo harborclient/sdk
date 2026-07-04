@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update PageHeader component styles for improved visual consistency. (`eea60fb`)
+
 ## 1.0.30 - 2026-07-04
 
 - Refactor Modal, PageSidebar, and SegmentedTabs components for improved readability. (`f9fe5b8`)
