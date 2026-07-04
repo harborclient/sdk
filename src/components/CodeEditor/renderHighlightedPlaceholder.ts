@@ -3,7 +3,7 @@ import { EditorState, type Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { CodeEditorTheme } from '../../types.js';
 import { createBuiltInSyntaxHighlighting } from './editorChrome.js';
-import { createSlashCommandHighlighter, type SlashCommandSpec } from './slashCommandHighlighter.js';
+import { type SlashCommandSpec, createSlashCommandHighlighter } from './slashCommandHighlighter.js';
 import { getCodeEditorThemeExtension } from './themes.js';
 
 /**

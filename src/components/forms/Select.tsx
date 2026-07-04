@@ -1,5 +1,5 @@
 import type { JSX, Ref, SelectHTMLAttributes } from 'react';
-import { mergeFieldClasses, type FieldVariant } from './classes.js';
+import { type FieldVariant, mergeFieldClasses } from './classes.js';
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   /**

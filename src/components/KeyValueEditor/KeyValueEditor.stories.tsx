@@ -1,8 +1,8 @@
 import { useMemo, useState } from '@harborclient/sdk/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import type { AutocompleteSource } from '../Autocomplete/types.js';
 import type { KeyValue, Variable } from '../../types.js';
+import type { AutocompleteSource } from '../Autocomplete/types.js';
 import { KeyValueEditor } from './index.js';
 
 const sampleVariables: Variable[] = [
@@ -16,8 +16,6 @@ const initialRows: KeyValue[] = [
 
 /**
  * Creates an in-memory async autocomplete source for Storybook demos.
- *
- * @param initial - Initial suggestion values.
  */
 function createMemorySource(initial: string[]): AutocompleteSource {
   let values = [...initial];

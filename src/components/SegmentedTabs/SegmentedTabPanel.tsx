@@ -1,5 +1,6 @@
 import { useCallback, useContext } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent, ReactNode } from 'react';
+import { cn } from '../utils.js';
 import { SegmentedTabsContext } from './SegmentedTabsContext.js';
 
 interface Props<T extends string> {
@@ -35,8 +36,6 @@ export function SegmentedTabPanel<T extends string>({
   /**
    * Moves focus back to the owning tab when ArrowUp is pressed inside the panel,
    * except inside CodeMirror editors where Up should edit text.
-   *
-   * @param event - Keyboard event from the tab panel container.
    */
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>): void => {
@@ -64,7 +63,7 @@ export function SegmentedTabPanel<T extends string>({
       role="tabpanel"
       id={context.getPanelId(value)}
       aria-labelledby={context.getTabId(value)}
-      className={className ? `hc-segmented-tab-panel ${className}` : 'hc-segmented-tab-panel'}
+      className={cn('hc-segmented-tab-panel', className)}
       onKeyDown={handleKeyDown}
     >
       {children}

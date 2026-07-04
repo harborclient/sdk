@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, JSX, Ref } from 'react';
+import { cn } from '../utils.js';
 import { checkboxBox, checkboxInput } from './classes.js';
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -17,19 +18,20 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
  * macOS-style checkbox with a custom box slightly larger than the native control.
  */
 export function Checkbox({ ref, className, ...props }: Props): JSX.Element {
-  const wrapperClasses = className
-    ? `hc-checkbox relative inline-flex h-[18px] w-[18px] shrink-0 leading-none ${className}`
-    : 'hc-checkbox relative inline-flex h-[18px] w-[18px] shrink-0 leading-none';
-
   return (
-    <span className={wrapperClasses}>
+    <span
+      className={cn(
+        'hc-checkbox relative inline-flex h-[18px] w-[18px] shrink-0 leading-none',
+        className
+      )}
+    >
       <input
         ref={ref}
         type="checkbox"
-        className={`hc-checkbox-input ${checkboxInput}`}
+        className={cn('hc-checkbox-input', checkboxInput)}
         {...props}
       />
-      <span className={`hc-checkbox-box ${checkboxBox}`} aria-hidden>
+      <span className={cn('hc-checkbox-box', checkboxBox)} aria-hidden>
         <svg
           className="hc-checkbox-icon h-3 w-3"
           viewBox="0 0 12 12"

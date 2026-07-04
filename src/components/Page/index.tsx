@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX, ReactNode } from 'react';
 import { PageHeader } from '../PageHeader/index.js';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -68,9 +69,8 @@ export function Page({
   );
 
   if (embedded) {
-    const outer = className ? `hc-page ${className}` : 'hc-page';
     return (
-      <div className={outer}>
+      <div className={cn('hc-page', className)}>
         {header}
         {children}
         {footer}
@@ -78,12 +78,8 @@ export function Page({
     );
   }
 
-  const outer = className
-    ? `hc-page flex min-h-0 flex-1 flex-col overflow-y-auto p-6 ${className}`
-    : 'hc-page flex min-h-0 flex-1 flex-col overflow-y-auto p-6';
-
   return (
-    <div className={outer}>
+    <div className={cn('hc-page flex min-h-0 flex-1 flex-col overflow-y-auto p-6', className)}>
       <div className="hc-page-inner mx-auto w-full">
         {header}
         {children}

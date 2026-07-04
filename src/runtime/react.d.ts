@@ -1,3 +1,5 @@
+import type * as React from 'react';
+
 export {
   useState,
   useEffect,
@@ -15,8 +17,6 @@ export {
   useLayoutEffect,
   createElement
 } from 'react';
-
-import type * as React from 'react';
 
 declare const _default: typeof React;
 export default _default;

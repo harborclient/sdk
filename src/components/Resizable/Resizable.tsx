@@ -1,7 +1,9 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useRef } from '@harborclient/sdk/react';
 import type { JSX, ReactNode } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '../utils.js';
+import { ResizeHandle } from './ResizeHandle.js';
 import {
   DEFAULT_HEIGHT,
   MIN_HEIGHT,
@@ -9,7 +11,6 @@ import {
   footerPanelCloseButtonClassName,
   getFooterPanelMaxSize
 } from './footerPanelUtils';
-import { ResizeHandle } from './ResizeHandle.js';
 import { useResizable } from './useResizable.js';
 
 interface Props {
@@ -102,7 +103,7 @@ export function Resizable({
   const closeButton = (
     <button
       type="button"
-      className={`hc-resizable-close ${footerPanelCloseButtonClassName}`}
+      className={cn('hc-resizable-close', footerPanelCloseButtonClassName)}
       onClick={onClose}
       aria-label={`Close ${closeLabel}`}
     >
@@ -116,7 +117,7 @@ export function Resizable({
     <div
       ref={containerRef}
       id={id}
-      className={`hc-resizable ${footerPanelClassName(open)}`}
+      className={cn('hc-resizable', footerPanelClassName(open))}
       style={{ height }}
       role="region"
       aria-label={`${closeLabel} panel`}
@@ -137,7 +138,10 @@ export function Resizable({
         <div className="hc-resizable-headerless relative flex min-h-0 flex-1 flex-col overflow-hidden">
           <button
             type="button"
-            className={`hc-resizable-headerless-close absolute right-2 top-2 z-10 ${footerPanelCloseButtonClassName}`}
+            className={cn(
+              'hc-resizable-headerless-close absolute top-2 right-2 z-10',
+              footerPanelCloseButtonClassName
+            )}
             onClick={onClose}
             aria-label={`Close ${closeLabel}`}
           >

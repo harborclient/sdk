@@ -1,6 +1,6 @@
 import { jsonParseLinter } from '@codemirror/lang-json';
 import { syntaxTree } from '@codemirror/language';
-import { linter, type Diagnostic } from '@codemirror/lint';
+import { type Diagnostic, linter } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 

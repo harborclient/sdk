@@ -1,9 +1,9 @@
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useEffect, useMemo, useRef, useState } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { resolveMenuTypeahead, resolveTabListKeyAction } from '../utils.js';
+import { cn, resolveMenuTypeahead, resolveTabListKeyAction } from '../utils.js';
 
 export type MenuItem = {
   label: string;
@@ -30,8 +30,6 @@ interface Props {
 
   /**
    * Called when the user opens or closes a menu.
-   *
-   * @param id - Open menu id, or null to close.
    */
   onOpenChange: (id: string | null) => void;
 }
@@ -40,8 +38,6 @@ const TYPEAHEAD_TIMEOUT_MS = 500;
 
 /**
  * Tailwind classes for a single menu item button.
- *
- * @param variant - Visual variant for default or destructive actions.
  */
 function menuItemClass(variant: MenuItem['variant']): string {
   const base =
@@ -92,8 +88,6 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
 
   /**
    * Focuses a menu item by index and updates roving tabindex state.
-   *
-   * @param index - Flat index of the menu item to focus.
    */
   const focusItem = useCallback((index: number): void => {
     setFocusedIndex(index);
@@ -104,8 +98,6 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
 
   /**
    * Opens the menu and focuses the first or last item.
-   *
-   * @param focusLast - When true, focus the last item instead of the first.
    */
   const openMenu = useCallback(
     (focusLast = false): void => {
@@ -168,8 +160,6 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
 
   /**
    * Handles keyboard interaction on the menu trigger when closed.
-   *
-   * @param event - Keyboard event from the trigger button.
    */
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>): void => {
     if (isOpen) return;
@@ -188,8 +178,6 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
 
   /**
    * Handles keyboard navigation within the open menu.
-   *
-   * @param event - Keyboard event from the menu container.
    */
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     if (flatItems.length === 0) return;
@@ -255,7 +243,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
         <div
           id={menuElementId}
           role="menu"
-          className="hc-row-actions-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[200px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
+          className="hc-row-actions-menu-panel app-no-drag absolute top-full right-0 z-10 mt-0.5 min-w-[200px] rounded-md border border-separator bg-surface py-1 shadow-md"
           onKeyDown={handleMenuKeyDown}
         >
           {groups.map((group, groupIndex) => {
@@ -281,7 +269,7 @@ export function RowActionsMenu({ groups, menuId, openMenuId, onOpenChange }: Pro
                       type="button"
                       role="menuitem"
                       tabIndex={itemIndex === focusedIndex ? 0 : -1}
-                      className={`hc-row-actions-menu-item ${menuItemClass(item.variant)}`}
+                      className={cn('hc-row-actions-menu-item', menuItemClass(item.variant))}
                       onClick={(e) => {
                         e.stopPropagation();
                         closeMenu();

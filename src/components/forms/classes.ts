@@ -1,6 +1,7 @@
 /**
  * Shared Tailwind class strings for macOS-style form controls.
  */
+import { cn } from '../utils.js';
 
 /**
  * Visual style preset for form field wrappers.
@@ -40,11 +41,6 @@ export const radioCircle =
 export const radioDot =
   'absolute left-1/2 top-1/2 block h-2 w-2 -translate-x-1/2 -translate-y-1/2 shrink-0 rounded-full bg-accent';
 
-const VARIANT_CLASSES: Record<Exclude<FieldVariant, 'plain'>, string> = {
-  control: field,
-  surface: surfaceField
-};
-
 /**
  * Merges a field variant preset with optional caller classes.
  *
@@ -58,10 +54,10 @@ export function mergeFieldClasses(
   className?: string,
   rootClass?: string
 ): string | undefined {
-  const base = variant === 'plain' ? '' : VARIANT_CLASSES[variant];
-  const parts = [rootClass, base, className].filter(
-    (part): part is string => part != null && part !== ''
+  const result = cn(
+    rootClass,
+    variant === 'control' ? field : variant === 'surface' ? surfaceField : undefined,
+    className
   );
-  if (parts.length === 0) return undefined;
-  return parts.join(' ');
+  return result === '' ? undefined : result;
 }

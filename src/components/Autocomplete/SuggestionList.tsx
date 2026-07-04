@@ -30,15 +30,11 @@ interface SuggestionListProps {
 
   /**
    * Called when the user selects a suggestion.
-   *
-   * @param item - Selected suggestion value.
    */
   onSelect: (item: string) => void;
 
   /**
    * Called when the active highlight changes via mouse hover.
-   *
-   * @param index - Highlighted suggestion index.
    */
   onActiveIndexChange: (index: number) => void;
 
@@ -56,8 +52,6 @@ interface PopupPosition {
 
 /**
  * Computes fixed popup coordinates from the anchor element.
- *
- * @param anchor - Anchor element for positioning.
  */
 function getPopupPosition(anchor: HTMLElement | null): PopupPosition | null {
   if (!anchor) {

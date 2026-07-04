@@ -1,5 +1,4 @@
 import { describe, expect, it } from '@jest/globals';
-
 import {
   DEFAULT_CODE_EDITOR_FONT_SIZE,
   MIN_CODE_EDITOR_FONT_SIZE_PX,

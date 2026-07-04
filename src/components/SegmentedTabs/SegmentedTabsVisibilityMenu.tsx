@@ -1,9 +1,9 @@
+import { faCaretDown, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useEffect, useId, useRef, useState } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent, ReactNode } from 'react';
-import { faCaretDown, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { resolveTabListKeyAction } from '../utils.js';
+import { cn, resolveTabListKeyAction } from '../utils.js';
 import type { TabItem } from './types.js';
 
 interface Props<T extends string> {
@@ -19,8 +19,6 @@ interface Props<T extends string> {
 
   /**
    * Called when the user toggles a tab's visibility in the menu.
-   *
-   * @param tabValue - Tab value to toggle.
    */
   onToggle: (tabValue: T) => void;
 }
@@ -61,8 +59,6 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
 
   /**
    * Opens the menu and focuses the first or last item.
-   *
-   * @param focusLast - When true, focus the last item instead of the first.
    */
   const openMenu = useCallback(
     (focusLast = false): void => {
@@ -75,8 +71,6 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
 
   /**
    * Focuses a menu item by index and updates roving tabindex state.
-   *
-   * @param index - Index of the menu item to focus.
    */
   const focusItem = useCallback((index: number): void => {
     setFocusedIndex(index);
@@ -136,8 +130,6 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
 
   /**
    * Handles keyboard interaction on the menu trigger when closed.
-   *
-   * @param event - Keyboard event from the trigger button.
    */
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>): void => {
     if (isOpen) return;
@@ -156,8 +148,6 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
 
   /**
    * Handles keyboard navigation within the open menu.
-   *
-   * @param event - Keyboard event from the menu container.
    */
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     if (tabs.length === 0) return;
@@ -180,7 +170,7 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
         innerRef={triggerRef}
         type="button"
         variant="icon"
-        className={`hc-segmented-tabs-visibility-menu-trigger ${triggerClassName}`}
+        className={cn('hc-segmented-tabs-visibility-menu-trigger', triggerClassName)}
         aria-label="Customize visible tabs"
         aria-haspopup="menu"
         aria-expanded={isOpen}
@@ -200,7 +190,7 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
         <div
           id={menuElementId}
           role="menu"
-          className="hc-segmented-tabs-visibility-menu-panel absolute right-0 top-full z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md app-no-drag"
+          className="hc-segmented-tabs-visibility-menu-panel app-no-drag absolute top-full right-0 z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md"
           onKeyDown={handleMenuKeyDown}
         >
           {tabs.map((tab, index) => {
@@ -249,7 +239,7 @@ function MenuCheckboxItem({
       role="menuitemcheckbox"
       aria-checked={checked}
       tabIndex={tabIndex}
-      className={`hc-segmented-tabs-visibility-menu-item ${menuItemClass}`}
+      className={cn('hc-segmented-tabs-visibility-menu-item', menuItemClass)}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();

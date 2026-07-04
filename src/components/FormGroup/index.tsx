@@ -85,9 +85,6 @@ interface Props {
 /**
  * Returns Tailwind classes for the label text based on tone and visibility.
  *
- * @param tone - Label color preset.
- * @param srOnly - Whether the label is visually hidden.
- * @param inline - Whether the label sits beside the control in a row.
  * @returns Class string for the label element.
  */
 function labelClasses(tone: FormGroupLabelTone, srOnly: boolean, inline: boolean): string {
@@ -105,19 +102,6 @@ function labelClasses(tone: FormGroupLabelTone, srOnly: boolean, inline: boolean
  * Reusable form field wrapper that pairs a label with one or more controls.
  * Supports stacked fields, checkboxes, inline rows, radio options, and
  * adjacent checkbox rows used in list pickers.
- *
- * @param label - Field label text.
- * @param children - Input, select, or composite control content.
- * @param htmlFor - ID of the primary associated control.
- * @param description - Optional helper text below the label and above the control.
- * @param error - Optional validation error below the control.
- * @param errorId - Explicit error element id for `aria-describedby`.
- * @param descriptionId - Explicit description element id for `aria-describedby`.
- * @param layout - Label/control placement preset.
- * @param labelTone - Label color style.
- * @param srOnly - Hide label visually for screen-reader-only labels.
- * @param className - Extra classes on the outer wrapper.
- * @param labelClassName - Extra classes on the label element.
  */
 export function FormGroup({
   label,

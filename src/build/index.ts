@@ -1,7 +1,7 @@
-import { cpSync, mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
 import * as esbuild from 'esbuild';
 import type { BuildOptions, Plugin } from 'esbuild';
+import { cpSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 
 /**
  * Which JSX runtime alias (if any) the renderer bundle should use.

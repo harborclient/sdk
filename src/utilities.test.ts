@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
+import { formatHeaders, formatRelativeTime } from './ui/format.js';
 import { methodColorClass, statusColorClass } from './ui/tokens.js';
-import { formatRelativeTime, formatHeaders } from './ui/format.js';
 
 describe('method and status color helpers', () => {
   it('return host classes', () => {

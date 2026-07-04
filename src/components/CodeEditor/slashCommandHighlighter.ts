@@ -1,12 +1,12 @@
+import type { Extension } from '@codemirror/state';
 import {
   Decoration,
+  type DecorationSet,
   EditorView,
   MatchDecorator,
   ViewPlugin,
-  type DecorationSet,
   type ViewUpdate
 } from '@codemirror/view';
-import type { Extension } from '@codemirror/state';
 
 /**
  * Minimal slash-command shape required for line highlighting.

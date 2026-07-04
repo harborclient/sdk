@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -22,12 +23,8 @@ interface Props {
  * with standard page padding.
  */
 export function SidebarLayout({ sidebar, children, className }: Props): JSX.Element {
-  const outer = className
-    ? `hc-sidebar-layout flex min-h-0 flex-1 flex-col ${className}`
-    : 'hc-sidebar-layout flex min-h-0 flex-1 flex-col';
-
   return (
-    <div className={outer}>
+    <div className={cn('hc-sidebar-layout flex min-h-0 flex-1 flex-col', className)}>
       <div className="hc-sidebar-layout-body flex min-h-0 flex-1">
         {sidebar}
         <div className="hc-sidebar-layout-content flex-1 overflow-y-auto p-6 pt-0!">{children}</div>

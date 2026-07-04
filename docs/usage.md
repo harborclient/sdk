@@ -44,21 +44,21 @@ See [Main API](/main-api) for HTTP hooks and IPC, and [Building](/building) to p
 Shared helpers ship as subpath exports (requires `@harborclient/sdk` **0.3.1+**):
 
 ```typescript
-import { resolveRequest } from '@harborclient/sdk/http';
-import { methodColorClass, formatRelativeTime } from '@harborclient/sdk/ui';
-import {
-  mergeById,
-  createCappedList,
-  asRecord,
-  str,
-  num,
-  bool,
-  oneOf,
-  recordOf
-} from '@harborclient/sdk/storage';
 import { copyToClipboard } from '@harborclient/sdk/clipboard';
+import { resolveRequest } from '@harborclient/sdk/http';
 import { randomId, truncateBody } from '@harborclient/sdk/runtime-utils';
+import {
+  asRecord,
+  bool,
+  createCappedList,
+  mergeById,
+  num,
+  oneOf,
+  recordOf,
+  str
+} from '@harborclient/sdk/storage';
 import { createExternalStore } from '@harborclient/sdk/store';
+import { formatRelativeTime, methodColorClass } from '@harborclient/sdk/ui';
 ```
 
 ## Plugin build and tooling baseline

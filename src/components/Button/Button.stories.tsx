@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
 import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FaIcon } from '../FaIcon/index.js';
 import { Button } from './index.js';
 

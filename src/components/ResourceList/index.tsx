@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface ResourceListProps {
   /**
@@ -24,11 +25,6 @@ interface ResourceListProps {
 
 /**
  * Vertical list shell used for bordered resource rows in settings and Team Hub.
- *
- * @param children - List item elements.
- * @param className - Extra classes appended after the layout preset.
- * @param aria-label - Accessible name when surrounding context does not name the list.
- * @param aria-labelledby - Id of a visible heading that names the list.
  */
 export function ResourceList({
   children,
@@ -36,11 +32,12 @@ export function ResourceList({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: ResourceListProps): JSX.Element {
-  const base = 'hc-resource-list m-0 flex list-none flex-col gap-[10px] p-0';
-  const classes = className ? `${base} ${className}` : base;
-
   return (
-    <ul className={classes} aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
+    <ul
+      className={cn('hc-resource-list m-0 flex list-none flex-col gap-[10px] p-0', className)}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       {children}
     </ul>
   );
@@ -80,13 +77,6 @@ interface ResourceListRowProps {
 
 /**
  * Bordered list row with primary text, optional secondary line, metadata, and actions.
- *
- * @param primary - Main label for the resource.
- * @param secondary - Optional muted secondary line.
- * @param meta - Optional content below the title block.
- * @param actions - Trailing controls aligned to the row end.
- * @param wrap - Whether the row uses flex-wrap for narrow layouts.
- * @param className - Extra classes appended after the layout preset.
  */
 export function ResourceListRow({
   primary,
@@ -96,13 +86,14 @@ export function ResourceListRow({
   wrap = false,
   className
 }: ResourceListRowProps): JSX.Element {
-  const wrapClass = wrap ? 'flex-wrap' : '';
-  const base =
-    `hc-resource-list-row flex items-center justify-between gap-3 rounded-[10px] border border-separator/80 px-4 py-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-[background-color,box-shadow] duration-[120ms] ease-out hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.28)] ${wrapClass}`.trim();
-  const classes = className ? `${base} ${className}` : base;
-
   return (
-    <li className={classes}>
+    <li
+      className={cn(
+        'hc-resource-list-row flex items-center justify-between gap-3 rounded-[10px] border border-separator/80 px-4 py-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-[background-color,box-shadow] duration-[120ms] ease-out hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.28)]',
+        wrap && 'flex-wrap',
+        className
+      )}
+    >
       <div className="hc-resource-list-row-content min-w-0">
         <div className="hc-resource-list-row-primary min-w-0">{primary}</div>
         {secondary != null ? (
@@ -123,8 +114,6 @@ export function ResourceListRow({
 
 /**
  * Primary title styling for {@link ResourceListRow}.
- *
- * @param children - Title content.
  */
 export function ResourceListPrimary({ children }: { children: ReactNode }): JSX.Element {
   return (
@@ -136,8 +125,6 @@ export function ResourceListPrimary({ children }: { children: ReactNode }): JSX.
 
 /**
  * Inline empty-state row rendered inside a {@link ResourceList}.
- *
- * @param children - Empty message content.
  */
 export function ResourceListEmptyItem({ children }: { children: ReactNode }): JSX.Element {
   return <li className="hc-resource-list-empty-item text-[14px] text-muted">{children}</li>;

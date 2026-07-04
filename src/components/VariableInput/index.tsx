@@ -12,6 +12,7 @@ import { SuggestionList } from '../Autocomplete/SuggestionList.js';
 import type { AutocompleteSource } from '../Autocomplete/types.js';
 import { useAutocomplete } from '../Autocomplete/useAutocomplete.js';
 import { Input } from '../forms/index.js';
+import { cn } from '../utils.js';
 
 interface TooltipState {
   key: string;
@@ -29,8 +30,6 @@ export interface Props {
 
   /**
    * Called when the value changes.
-   *
-   * @param value - Updated input value.
    */
   onChange: (value: string) => void;
 
@@ -172,10 +171,6 @@ export function VariableInput({
 
   /**
    * Shows a tooltip for a variable token at the given screen position.
-   *
-   * @param key - Variable name from the token.
-   * @param top - Top coordinate for tooltip placement.
-   * @param left - Horizontal center coordinate for tooltip placement.
    */
   const showTooltipForKey = (key: string, top: number, left: number): void => {
     setTooltip({
@@ -224,8 +219,6 @@ export function VariableInput({
 
   /**
    * Shows a tooltip when the pointer is over a variable token span.
-   *
-   * @param e - Mouse move event from the input.
    */
   const handleMouseMove = (e: MouseEvent<HTMLInputElement>): void => {
     cancelHide();
@@ -253,8 +246,6 @@ export function VariableInput({
 
   /**
    * Handles keyboard events on the input, including tooltip dismissal.
-   *
-   * @param event - Keyboard event from the input.
    */
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (onInputKeyDown(event)) {
@@ -272,8 +263,6 @@ export function VariableInput({
 
   /**
    * Updates the tooltip after keyboard navigation moves the caret.
-   *
-   * @param event - Keyboard event from the input.
    */
   const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (
@@ -291,17 +280,11 @@ export function VariableInput({
   const tooltipContent = tooltip ? getVariableTooltipContent(tooltip.key, variables) : null;
 
   return (
-    <div
-      className={
-        wrapperClassName
-          ? `hc-variable-input relative min-w-0 ${wrapperClassName}`
-          : 'hc-variable-input relative min-w-0 flex-1'
-      }
-    >
+    <div className={cn('hc-variable-input relative min-w-0', wrapperClassName ?? 'flex-1')}>
       <div
         ref={backdropRef}
         aria-hidden
-        className="hc-variable-input-backdrop pointer-events-none absolute inset-0 overflow-hidden whitespace-nowrap px-2.5 py-1.5 text-[16px] text-inherit"
+        className="hc-variable-input-backdrop pointer-events-none absolute inset-0 overflow-hidden px-2.5 py-1.5 text-[16px] whitespace-nowrap text-inherit"
       >
         {safeValue ? (
           tokens.map((token, index) =>
@@ -343,7 +326,10 @@ export function VariableInput({
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-describedby={tooltip ? tooltipId : undefined}
-        className={`hc-variable-input-field relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-[16px] text-transparent caret-text focus-visible:shadow-none ${className}`}
+        className={cn(
+          'hc-variable-input-field relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-[16px] text-transparent caret-text focus-visible:shadow-none',
+          className
+        )}
         type="text"
         placeholder={placeholder}
         value={safeValue}
@@ -382,7 +368,7 @@ export function VariableInput({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-[14px] text-text shadow-md after:pointer-events-auto after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-2 after:content-['']"
+          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-[14px] text-text shadow-md after:pointer-events-auto after:absolute after:right-0 after:-bottom-2 after:left-0 after:h-2 after:content-['']"
           style={{ top: tooltip.top - 4, left: tooltip.left }}
           onMouseEnter={cancelHide}
           onMouseLeave={scheduleHide}
@@ -399,7 +385,7 @@ export function VariableInput({
           {onEditVariable && (
             <button
               type="button"
-              className="hc-variable-input-tooltip-edit -mx-1 self-start rounded px-1 py-0.5 text-[14px] text-accent hover:underline app-no-drag"
+              className="hc-variable-input-tooltip-edit app-no-drag -mx-1 self-start rounded px-1 py-0.5 text-[14px] text-accent hover:underline"
               aria-label={`Edit value for ${tooltip.key}`}
               onClick={() => {
                 onEditVariable();

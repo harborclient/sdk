@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 /**
  * Vertical spacing preset for inline error text.
@@ -35,7 +36,6 @@ interface Props {
 /**
  * Returns margin classes for the chosen error spacing preset.
  *
- * @param spacing - Vertical spacing preset.
  * @returns Tailwind margin classes for the error paragraph.
  */
 function spacingClasses(spacing: FieldErrorSpacing): string {
@@ -52,12 +52,6 @@ function spacingClasses(spacing: FieldErrorSpacing): string {
 
 /**
  * Accessible inline validation or error text with consistent typography and spacing.
- *
- * @param children - Error message; omitted or empty values render nothing.
- * @param id - Optional id for `aria-describedby` linkage.
- * @param spacing - Margin preset (`field`, `section`, or `modal`).
- * @param roleAlert - Whether to set `role="alert"`.
- * @param className - Extra classes appended after the preset.
  */
 export function FieldError({
   children,
@@ -68,11 +62,12 @@ export function FieldError({
 }: Props): JSX.Element | null {
   if (children == null || children === '') return null;
 
-  const base = `hc-field-error ${spacingClasses(spacing)} text-[14px] text-danger`;
-  const classes = className ? `${base} ${className}` : base;
-
   return (
-    <p id={id} className={classes} role={roleAlert ? 'alert' : undefined}>
+    <p
+      id={id}
+      className={cn('hc-field-error text-[14px] text-danger', spacingClasses(spacing), className)}
+      role={roleAlert ? 'alert' : undefined}
+    >
       {children}
     </p>
   );

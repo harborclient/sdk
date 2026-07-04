@@ -1,4 +1,3 @@
-import { bridgeInvoke, bridgeOn } from './hcBridge.js';
 import {
   getContributionComponent,
   getContributionHeaderActions,
@@ -7,6 +6,7 @@ import {
   registerContributionHeaderActions,
   registerContributionIndicator
 } from './contributionRegistry.js';
+import { bridgeInvoke, bridgeOn } from './hcBridge.js';
 import { createPluginDatabaseApi } from './pluginDatabaseApi.js';
 import { setHostReact } from './reactHost.js';
 

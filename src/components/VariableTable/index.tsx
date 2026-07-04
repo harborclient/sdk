@@ -1,10 +1,10 @@
+import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { JSX } from 'react';
 import type { Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Checkbox, Input } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
+import { Checkbox, Input } from '../forms/index.js';
 
 /**
  * Returns a blank variable row for new table entries.
@@ -34,9 +34,6 @@ interface Props {
 export function VariableTable({ variables, onChange, description }: Props): JSX.Element {
   /**
    * Updates a single variable row by index.
-   *
-   * @param index - Row index to update.
-   * @param patch - Partial fields to merge into the row.
    */
   const updateVariable = (index: number, patch: Partial<Variable>): void => {
     onChange(variables.map((row, i) => (i === index ? { ...row, ...patch } : row)));
@@ -51,8 +48,6 @@ export function VariableTable({ variables, onChange, description }: Props): JSX.
 
   /**
    * Removes a variable row, keeping at least one empty row.
-   *
-   * @param index - Row index to remove.
    */
   const removeVariable = (index: number): void => {
     if (variables.length === 1) {

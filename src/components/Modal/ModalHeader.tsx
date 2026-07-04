@@ -1,5 +1,5 @@
-import type { JSX, ReactNode } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import type { JSX, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 

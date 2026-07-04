@@ -1,4 +1,3 @@
-import { installBridgeHandlers, bridgeOn } from './hcBridge.js';
 import { clearContributionRegistry } from './contributionRegistry.js';
 import {
   createBridgedPluginContext,
@@ -7,6 +6,7 @@ import {
   parseViewHostRole,
   resolveContributionKindFromUrl
 } from './createBridgedPluginContext.js';
+import { bridgeOn, installBridgeHandlers } from './hcBridge.js';
 import { setHostReact, setHostReactDom } from './reactHost.js';
 
 /**

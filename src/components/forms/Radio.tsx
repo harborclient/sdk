@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, JSX, Ref } from 'react';
+import { cn } from '../utils.js';
 import { radioCircle, radioDot, radioInput } from './classes.js';
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -17,15 +18,16 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
  * macOS-style radio button with a custom circle slightly larger than the native control.
  */
 export function Radio({ ref, className, ...props }: Props): JSX.Element {
-  const wrapperClasses = className
-    ? `hc-radio relative inline-flex h-[18px] w-[18px] shrink-0 leading-none ${className}`
-    : 'hc-radio relative inline-flex h-[18px] w-[18px] shrink-0 leading-none';
-
   return (
-    <span className={wrapperClasses}>
-      <input ref={ref} type="radio" className={`hc-radio-input ${radioInput}`} {...props} />
-      <span className={`hc-radio-circle ${radioCircle}`} aria-hidden>
-        <span className={`hc-radio-dot ${radioDot}`} />
+    <span
+      className={cn(
+        'hc-radio relative inline-flex h-[18px] w-[18px] shrink-0 leading-none',
+        className
+      )}
+    >
+      <input ref={ref} type="radio" className={cn('hc-radio-input', radioInput)} {...props} />
+      <span className={cn('hc-radio-circle', radioCircle)} aria-hidden>
+        <span className={cn('hc-radio-dot', radioDot)} />
       </span>
     </span>
   );

@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -24,19 +25,12 @@ interface Props {
 
 /**
  * Muted helper or progress text with optional polite live-region semantics.
- *
- * @param children - Status message content.
- * @param live - Whether to set `role="status"` and `aria-live="polite"`.
- * @param className - Extra classes appended after the preset.
  */
 export function StatusMessage({ children, live = true, id, className }: Props): JSX.Element {
-  const base = 'hc-status-message text-[14px] text-muted';
-  const classes = className ? `${base} ${className}` : base;
-
   return (
     <p
       id={id}
-      className={classes}
+      className={cn('hc-status-message text-[14px] text-muted', className)}
       role={live ? 'status' : undefined}
       aria-live={live ? 'polite' : undefined}
     >

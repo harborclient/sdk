@@ -1,10 +1,9 @@
 /** @jest-environment jsdom */
-
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { installReact } from '@harborclient/sdk';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { act, createElement } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
 import * as React from 'react';
+import { type Root, createRoot } from 'react-dom/client';
 import { TabCloseButton } from './index.js';
 
 describe('TabCloseButton', () => {

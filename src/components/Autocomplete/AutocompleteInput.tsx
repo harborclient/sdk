@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes, JSX } from 'react';
 import { Input } from '../forms/index.js';
+import { cn } from '../utils.js';
 import { SuggestionList } from './SuggestionList.js';
 import type { AutocompleteSource } from './types.js';
 import { useAutocomplete } from './useAutocomplete.js';
@@ -12,8 +13,6 @@ export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'valu
 
   /**
    * Called when the value changes.
-   *
-   * @param value - Updated input value.
    */
   onChange: (value: string) => void;
 
@@ -68,7 +67,7 @@ export function AutocompleteInput({
         aria-activedescendant={
           source && open && activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
         }
-        className={className ? `hc-autocomplete-input ${className}` : 'hc-autocomplete-input'}
+        className={cn('hc-autocomplete-input', className)}
         value={safeValue}
         onChange={(event) => onChange(event.target.value)}
         onFocus={(event) => {

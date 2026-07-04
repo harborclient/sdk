@@ -93,8 +93,6 @@ const TOOLBAR_ACTION_BUTTON_ACTIVE =
 
 /**
  * Resolves toolbar button classes for a declarative action.
- *
- * @param action - Toolbar action metadata.
  */
 function toolbarActionButton(action: ToolbarAction): string {
   return action.ariaPressed === true
@@ -104,10 +102,6 @@ function toolbarActionButton(action: ToolbarAction): string {
 
 /**
  * Top-of-sidebar toolbar with left-aligned icon actions.
- *
- * @param actions - Declarative icon actions rendered on the left.
- * @param ariaLabel - Accessible name for the toolbar landmark.
- * @param className - Extra classes merged onto the outer wrapper.
  */
 export function Toolbar({ actions, ariaLabel = 'Toolbar', className }: Props): JSX.Element {
   const wrapperClassName = className

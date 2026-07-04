@@ -1,7 +1,8 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { JSX } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -27,11 +28,6 @@ interface Props {
 
 /**
  * Secondary icon close control for settings headers and full-page panels.
- *
- * @param onClose - Close handler.
- * @param label - Default accessible name; defaults to "Close".
- * @param ariaLabel - Accessible name override.
- * @param className - Extra classes appended after the layout preset.
  */
 export function PanelCloseButton({
   onClose,
@@ -39,16 +35,14 @@ export function PanelCloseButton({
   ariaLabel,
   className
 }: Props): JSX.Element {
-  const base = 'inline-flex shrink-0 items-center justify-center py-2';
-  const classes = className
-    ? `hc-panel-close-button ${base} ${className}`
-    : `hc-panel-close-button ${base}`;
-
   return (
     <Button
       type="button"
       variant="secondary"
-      className={classes}
+      className={cn(
+        'hc-panel-close-button inline-flex shrink-0 items-center justify-center py-2',
+        className
+      )}
       aria-label={ariaLabel ?? label}
       onClick={onClose}
     >

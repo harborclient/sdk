@@ -3,8 +3,8 @@
 The renderer entry exports `activate(hc)` and optionally `deactivate()`. The `hc` argument is a `PluginContext`:
 
 ```typescript
+import type { HttpResponse, RequestDraft } from '@harborclient/sdk';
 import type * as React from 'react';
-import type { RequestDraft, HttpResponse } from '@harborclient/sdk';
 
 export interface Disposable {
   dispose(): void;
@@ -318,13 +318,13 @@ export function activate(hc: PluginContext): void {
 **Hooks in components** — import from `@harborclient/sdk/react` (not from `react`):
 
 ```tsx
-import { useState, useEffect } from '@harborclient/sdk/react';
+import { useEffect, useState } from '@harborclient/sdk/react';
 ```
 
 **Single-file escape hatch** — `createPluginComponent` builds a component from a factory that receives host React:
 
 ```tsx
-import { installReact, createPluginComponent } from '@harborclient/sdk';
+import { createPluginComponent, installReact } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
   installReact(hc.react);

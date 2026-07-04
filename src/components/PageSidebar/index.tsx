@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
 /**
  * One entry in a {@link PageSidebar} navigation list.
@@ -35,8 +36,6 @@ interface Props<T extends string> {
 
   /**
    * Called when the user selects a different section.
-   *
-   * @param value - Newly selected section value.
    */
   onSelect: (value: T) => void;
 
@@ -48,8 +47,6 @@ interface Props<T extends string> {
 
 /**
  * Tailwind classes for a sidebar navigation row.
- *
- * @param active - Whether this row is the current selection.
  */
 function sidebarRow(active: boolean): string {
   return active
@@ -75,11 +72,11 @@ export function PageSidebar<T extends string>({
         const active = selected === item.value;
         const rowClass = item.icon
           ? `hc-page-sidebar-item ${sidebarRow(
-              active
-            )} w-full gap-2 border-none text-left text-[15px] app-no-drag`
+            active
+          )} w-full gap-2 border-none text-left text-[15px] app-no-drag`
           : `hc-page-sidebar-item ${sidebarRow(
-              active
-            )} w-full border-none text-left text-[15px] app-no-drag`;
+            active
+          )} w-full border-none text-left text-[15px] app-no-drag`;
 
         return (
           <button
@@ -92,9 +89,10 @@ export function PageSidebar<T extends string>({
             {item.icon ? (
               <FaIcon
                 icon={item.icon}
-                className={`hc-page-sidebar-item-icon h-[18px] w-[18px] shrink-0 ${
+                className={cn(
+                  'hc-page-sidebar-item-icon h-[18px] w-[18px] shrink-0',
                   active ? 'text-text' : 'text-muted'
-                }`}
+                )}
                 aria-hidden
               />
             ) : null}

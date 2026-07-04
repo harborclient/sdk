@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Checkbox as CheckboxControl } from '../forms/Checkbox.js';
-import { Radio as RadioControl } from '../forms/Radio.js';
 import { Input } from '../forms/Input.js';
+import { Radio as RadioControl } from '../forms/Radio.js';
 import { FormGroup } from './index.js';
 
 const meta = {

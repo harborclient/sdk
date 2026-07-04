@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import {
+  type StorageLike,
   createExternalStore,
   createStorageStore,
   setIntervalDisposable,
-  syncOnWindowFocus,
-  type StorageLike
+  syncOnWindowFocus
 } from './runtime/store.js';
 
 /**

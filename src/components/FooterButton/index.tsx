@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -29,8 +30,6 @@ interface Props {
 
 /**
  * Compact segment button styles for the footer bar.
- *
- * @param active - Whether the associated panel is currently expanded.
  */
 function footerSegment(active: boolean): string {
   return active
@@ -49,14 +48,10 @@ export function FooterButton({
   children,
   className
 }: Props): JSX.Element {
-  const classes = className
-    ? `hc-footer-button ${footerSegment(active)} ${className}`
-    : `hc-footer-button ${footerSegment(active)}`;
-
   return (
     <button
       type="button"
-      className={classes}
+      className={cn('hc-footer-button', footerSegment(active), className)}
       onClick={onClick}
       aria-expanded={active}
       aria-controls={controlsId}

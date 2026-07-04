@@ -1,4 +1,4 @@
-import { autocompletion, closeCompletion, type CompletionSource } from '@codemirror/autocomplete';
+import { type CompletionSource, autocompletion, closeCompletion } from '@codemirror/autocomplete';
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { StreamLanguage } from '@codemirror/language';
@@ -6,28 +6,28 @@ import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { Prec } from '@codemirror/state';
 import {
   Decoration,
+  type DecorationSet,
   EditorView,
   MatchDecorator,
   ViewPlugin,
+  type ViewUpdate,
   hoverTooltip,
-  keymap,
-  type DecorationSet,
-  type ViewUpdate
+  keymap
 } from '@codemirror/view';
-import CodeMirrorImport from '@uiw/react-codemirror';
 import {
+  createElement,
   useCallback,
   useEffect,
   useId,
   useMemo,
   useRef,
-  useState,
-  createElement
+  useState
 } from '@harborclient/sdk/react';
+import CodeMirrorImport from '@uiw/react-codemirror';
 import type { JSX } from 'react';
 import type { CodeEditorSetup, CodeEditorTheme, Variable } from '../../types.js';
-import { getVariableTooltipContent, VARIABLE_NAME_CHARS } from '../../variables/index.js';
 import { normalizeCodeEditorFontSize } from '../../ui/codeEditorSettings.js';
+import { VARIABLE_NAME_CHARS, getVariableTooltipContent } from '../../variables/index.js';
 import { useCodeEditorConfig } from './config.js';
 import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
 import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
@@ -152,8 +152,6 @@ export interface Props {
 
   /**
    * Called when the user edits the content; omitted for read-only views.
-   *
-   * @param value - Updated editor content.
    */
   onChange?: (value: string) => void;
 
@@ -195,8 +193,6 @@ export interface Props {
 
   /**
    * Called when the wrapper height changes (for example after native resize-y drag).
-   *
-   * @param heightPx - Observed wrapper height rounded to the nearest pixel.
    */
   onHeightChange?: (heightPx: number) => void;
 
@@ -295,8 +291,6 @@ export interface Props {
 /**
  * Clamps selection offsets to the current document length.
  *
- * @param docLength - Current document length in characters.
- * @param selection - Selection offsets to clamp.
  * @returns Offsets safe to dispatch into CodeMirror.
  */
 function clampSelection(
@@ -324,8 +318,6 @@ const variableHighlighter = ViewPlugin.fromClass(
 
     /**
      * Builds the initial {{variable}} decoration set for the editor view.
-     *
-     * @param view - CodeMirror editor view instance.
      */
     constructor(view: EditorView) {
       this.decorations = variableMatcher.createDeco(view);
@@ -333,8 +325,6 @@ const variableHighlighter = ViewPlugin.fromClass(
 
     /**
      * Recomputes decorations when document content or viewport changes.
-     *
-     * @param update - View update describing what changed.
      */
     update(update: ViewUpdate): void {
       this.decorations = variableMatcher.updateDeco(update, this.decorations);
@@ -348,11 +338,6 @@ const SLASH_COMMAND_LINE_PATTERN = /^(\s*)\/(\w+)(?:[ \t]+(.*))?$/;
 
 /**
  * Returns a parsed slash command on a line when the name is registered.
- *
- * @param lineText - Full line text without the trailing newline.
- * @param lineFrom - Document offset of the line start.
- * @param lineNumber - 1-based line number.
- * @param commands - Registered slash commands.
  */
 function parseSlashCommandLine(
   lineText: string,
@@ -386,14 +371,10 @@ function parseSlashCommandLine(
 
 /**
  * Builds a CodeMirror completion source for registered slash commands at line start.
- *
- * @param commands - Slash commands to offer after `/`.
  */
 function createSlashCommandCompletionSource(commands: CodeEditorSlashCommand[]): CompletionSource {
   /**
    * Returns slash command completions when the caret follows `/` at line start.
-   *
-   * @param context - CodeMirror completion context at the cursor.
    */
   return (context) => {
     const word = context.matchBefore(/^\s*\/\w*/);
@@ -421,9 +402,6 @@ function createSlashCommandCompletionSource(commands: CodeEditorSlashCommand[]):
 
 /**
  * Returns an Enter keymap that triggers registered slash commands before default newline handling.
- *
- * @param commands - Slash commands to recognize.
- * @param onSlashCommand - Host callback invoked with parsed trigger details.
  */
 function slashCommandEnterHandler(
   commands: CodeEditorSlashCommand[],
@@ -435,8 +413,6 @@ function slashCommandEnterHandler(
         key: 'Enter',
         /**
          * Opens host slash-command UI when Enter is pressed on a complete command line.
-         *
-         * @param view - CodeMirror editor view instance.
          */
         run: (view): boolean => {
           const pos = view.state.selection.main.head;
@@ -479,8 +455,6 @@ interface SelectionTooltipState {
 /**
  * Finds the {{variable}} token at a document position, if any.
  *
- * @param doc - CodeMirror document.
- * @param pos - Character position in the document.
  * @returns Variable key and token range, or null when not inside a token.
  */
 function findVariableAtPos(
@@ -502,10 +476,6 @@ function findVariableAtPos(
 
 /**
  * Builds DOM content for a variable tooltip.
- *
- * @param key - Variable name from the token.
- * @param variables - Collection-scoped variables for resolution.
- * @param onEditVariable - Optional callback to open collection settings.
  */
 function buildVariableTooltipDom(
   key: string,
@@ -542,7 +512,6 @@ function buildVariableTooltipDom(
 /**
  * Joins non-empty element ids into a space-separated `aria-describedby` value.
  *
- * @param ids - Candidate element ids.
  * @returns Merged id string, or undefined when no ids are provided.
  */
 function mergeDescribedBy(...ids: (string | undefined)[]): string | undefined {
@@ -552,10 +521,6 @@ function mergeDescribedBy(...ids: (string | undefined)[]): string | undefined {
 
 /**
  * Sets or clears `aria-describedby` on the CodeMirror content element.
- *
- * @param content - Editable `.cm-content` element.
- * @param getValidationDescribedBy - Returns validation/helper ids from props.
- * @param tooltipId - Optional variable tooltip id to include while visible.
  */
 function setContentDescribedBy(
   content: Element | null | undefined,
@@ -573,10 +538,6 @@ function setContentDescribedBy(
 
 /**
  * Shows a keyboard-driven tooltip when the caret moves inside a {{variable}} token.
- *
- * @param tooltipId - Stable id referenced by `aria-describedby`.
- * @param onTooltipChange - Callback invoked when tooltip visibility or position changes.
- * @param getValidationDescribedBy - Returns validation/helper ids from editor props.
  */
 function variableSelectionTooltip(
   tooltipId: string,
@@ -614,10 +575,6 @@ function variableSelectionTooltip(
 
 /**
  * Dismisses the keyboard tooltip when Escape is pressed.
- *
- * @param isOpen - Returns whether the keyboard tooltip is currently visible.
- * @param onDismiss - Called to hide the keyboard tooltip.
- * @param getValidationDescribedBy - Returns validation/helper ids from editor props.
  */
 function variableTooltipEscapeHandler(
   isOpen: () => boolean,
@@ -639,9 +596,6 @@ function variableTooltipEscapeHandler(
 
 /**
  * Builds a hover tooltip extension for {{variable}} tokens.
- *
- * @param getVariables - Returns the current collection-scoped variables.
- * @param getOnEditVariable - Returns the optional edit callback.
  */
 function variableTooltip(
   getVariables: () => Variable[],
@@ -750,7 +704,6 @@ export function CodeEditor({
   /**
    * Reads the current scroll and selection snapshot from an editor view.
    *
-   * @param view - Live CodeMirror view.
    * @returns Rounded scroll offset and selection offsets.
    */
   const readViewState = useCallback((view: EditorView): CodeEditorViewState => {
@@ -849,8 +802,6 @@ export function CodeEditor({
 
     /**
      * Marks resize drags that begin on the native bottom-right grip.
-     *
-     * @param event - Pointer down on the editor wrapper.
      */
     const handlePointerDown = (event: PointerEvent): void => {
       const rect = wrapper.getBoundingClientRect();
@@ -1144,7 +1095,7 @@ export function CodeEditor({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-code-editor-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md app-no-drag"
+          className="hc-code-editor-tooltip app-no-drag pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md"
           style={{ top: selectionTooltip.top - 4, left: selectionTooltip.left }}
         >
           <span

@@ -27,11 +27,6 @@ interface Props {
 /**
  * Stacks modal body content, an optional error block, and a trailing action footer
  * using the shared spacing conventions used across Team Hub and settings dialogs.
- *
- * @param children - Main modal content.
- * @param error - Optional inline error rendered before actions.
- * @param actions - Footer buttons wrapped by {@link ModalFooter}.
- * @param actionsSpaced - Whether the footer row receives `mt-4`.
  */
 export function ModalFormLayout({
   children,

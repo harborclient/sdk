@@ -6,6 +6,7 @@ export {
   type AutocompleteInputProps,
   type AutocompleteSource
 } from './Autocomplete/index.js';
+export { Card } from './Card/index.js';
 export { BusyIndicator } from './BusyIndicator/index.js';
 export type { Props as BusyIndicatorProps } from './BusyIndicator/index.js';
 export { BackButton } from './BackButton/index.js';

@@ -5,9 +5,9 @@ import { AutocompleteInput } from '../Autocomplete/index.js';
 import type { AutocompleteSource } from '../Autocomplete/types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { Checkbox, fieldFrame } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { VariableInput } from '../VariableInput/index.js';
+import { Checkbox, fieldFrame } from '../forms/index.js';
 
 export interface Props {
   /**
@@ -17,8 +17,6 @@ export interface Props {
 
   /**
    * Called when rows are added, updated, or removed.
-   *
-   * @param rows - Updated row list.
    */
   onChange: (rows: KeyValue[]) => void;
 
@@ -68,9 +66,6 @@ export function KeyValueEditor({
 }: Props): JSX.Element {
   /**
    * Updates a single row by index.
-   *
-   * @param index - Row index to update.
-   * @param patch - Partial fields to merge into the row.
    */
   const updateRow = (index: number, patch: Partial<KeyValue>): void => {
     const next = rows.map((row, i) => (i === index ? { ...row, ...patch } : row));
@@ -83,8 +78,6 @@ export function KeyValueEditor({
 
   /**
    * Removes a row, keeping at least one empty row.
-   *
-   * @param index - Row index to remove.
    */
   const removeRow = (index: number): void => {
     if (rows.length === 1) {
@@ -96,8 +89,6 @@ export function KeyValueEditor({
 
   /**
    * Normalizes a key-value row so editors never receive undefined fields.
-   *
-   * @param row - Raw row from host state or imports.
    */
   const normalizeRow = (row: KeyValue): KeyValue => ({
     key: row.key ?? '',

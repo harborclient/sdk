@@ -1,13 +1,11 @@
 import { useMemo, useState } from '@harborclient/sdk/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import type { AutocompleteSource } from './types.js';
 import { AutocompleteInput } from './AutocompleteInput.js';
+import type { AutocompleteSource } from './types.js';
 
 /**
  * Creates an in-memory async autocomplete source backed by React state.
- *
- * @param initial - Initial suggestion values.
  */
 function createMemorySource(initial: string[]): {
   source: AutocompleteSource;

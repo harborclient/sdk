@@ -10,8 +10,6 @@ interface Props<T extends string> {
 
   /**
    * Called when the user selects a different tab.
-   *
-   * @param value - Newly selected tab value.
    */
   onChange: (value: T) => void;
 

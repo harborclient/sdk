@@ -8,9 +8,9 @@ import {
   useState
 } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent } from 'react';
-import { getFocusableElements } from '../useDialogFocus.js';
-import { resolveTabListKeyAction } from '../utils.js';
 import { segment, segmentGroup } from '../classes.js';
+import { getFocusableElements } from '../useDialogFocus.js';
+import { cn, resolveTabListKeyAction } from '../utils.js';
 import { SegmentedTabsContext } from './SegmentedTabsContext.js';
 import { SegmentedTabsVisibilityMenu } from './SegmentedTabsVisibilityMenu.js';
 import type { TabItem } from './types.js';
@@ -22,7 +22,6 @@ export type { TabItem } from './types.js';
 /**
  * Returns the tab value whose button currently has keyboard focus.
  *
- * @param tabRefs - Map of tab values to their button elements.
  * @returns Focused tab value, or undefined when focus is outside the tab buttons.
  */
 function getFocusedTabValue<T extends string>(tabRefs: Map<T, HTMLButtonElement>): T | undefined {
@@ -42,7 +41,6 @@ function getFocusedTabValue<T extends string>(tabRefs: Map<T, HTMLButtonElement>
  * Uses {@link getFocusableElements} first, then falls back to a direct query
  * when layout APIs report no visible descendants (for example in jsdom).
  *
- * @param panel - Tab panel element linked from the active tab.
  * @returns True when focus moved into the panel.
  */
 function focusFirstFocusableInPanel(panel: HTMLElement | null): boolean {
@@ -81,8 +79,6 @@ interface Props<T extends string> {
   /**
    * Called when the user selects a different tab. Omit when used inside
    * `SegmentedTabsGroup`.
-   *
-   * @param value - Newly selected tab value.
    */
   onChange?: (value: T) => void;
 
@@ -105,8 +101,6 @@ interface Props<T extends string> {
 
   /**
    * Called when the user toggles tab visibility in the edit menu.
-   *
-   * @param visibleTabValues - Updated visible tab values.
    */
   onVisibleTabValuesChange?: (visibleTabValues: T[]) => void;
 
@@ -195,8 +189,6 @@ export function SegmentedTabs<T extends string>({
   /**
    * Updates visible tab values and notifies the parent when controlled props
    * are used for persistence.
-   *
-   * @param nextVisibleTabValues - New visible tab values.
    */
   const updateVisibleTabValues = useCallback(
     (nextVisibleTabValues: T[]): void => {
@@ -211,8 +203,6 @@ export function SegmentedTabs<T extends string>({
   /**
    * Toggles a tab's visibility in the edit menu, keeping at least one tab
    * visible and moving selection when the active tab is hidden.
-   *
-   * @param tabValue - Tab value to show or hide.
    */
   const handleVisibilityToggle = useCallback(
     (tabValue: T): void => {
@@ -286,8 +276,6 @@ export function SegmentedTabs<T extends string>({
    * Moves selection with arrow, Home, and End keys and focuses the newly
    * selected tab or radio control. ArrowDown on a focused tab moves focus into
    * the linked tab panel when used inside `SegmentedTabsGroup`.
-   *
-   * @param event - Keyboard event from the tab list or radio group container.
    */
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>): void => {
@@ -353,9 +341,8 @@ export function SegmentedTabs<T extends string>({
       >
         {visibleTabs.map((tab) => {
           const selected = value === tab.value;
-          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${
-            fullWidth ? ' flex-1' : ''
-          }`;
+          const tabClassName = `hc-segmented-tabs-tab ${segment(selected)}${fullWidth ? ' flex-1' : ''
+            }`;
 
           return (
             <button
@@ -372,18 +359,19 @@ export function SegmentedTabs<T extends string>({
               {...(isRadiogroup
                 ? { role: 'radio', 'aria-checked': selected }
                 : {
-                    role: 'tab',
-                    id: getTabId(tab.value),
-                    'aria-selected': selected,
-                    ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
-                  })}
+                  role: 'tab',
+                  id: getTabId(tab.value),
+                  'aria-selected': selected,
+                  ...(context ? { 'aria-controls': getPanelId(tab.value) } : {})
+                })}
             >
               <span className="hc-segmented-tabs-tab-label inline-flex items-center gap-1.5">
                 <span className="inline-flex shrink-0 items-center px-1.5">
                   <span
-                    className={`hc-segmented-tabs-tab-indicator h-1.5 w-1.5 shrink-0 rounded-full ${
+                    className={cn(
+                      'hc-segmented-tabs-tab-indicator h-1.5 w-1.5 shrink-0 rounded-full',
                       tab.indicator ? 'bg-accent' : 'bg-transparent'
-                    }`}
+                    )}
                     aria-hidden
                   />
                 </span>

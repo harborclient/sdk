@@ -1,4 +1,4 @@
-import { setHostReact, requireHostReact } from './reactHost.js';
+import { requireHostReact, setHostReact } from './reactHost.js';
 
 /**
  * Installs the HarborClient renderer React instance for plugin JSX and hooks.

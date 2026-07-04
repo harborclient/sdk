@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
 import {
+  DYNAMIC_VARIABLES,
   DYNAMIC_VARIABLE_CATEGORIES,
   DYNAMIC_VARIABLE_NAMES,
-  DYNAMIC_VARIABLES,
   getDynamicVariableDescription,
   isDynamicVariable,
   resolveDynamicVariable

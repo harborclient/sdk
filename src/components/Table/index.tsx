@@ -1,5 +1,6 @@
 import { createContext, createElement, useContext } from '@harborclient/sdk/react';
 import type { HTMLAttributes, JSX, ReactNode, TdHTMLAttributes, ThHTMLAttributes } from 'react';
+import { cn } from '../utils.js';
 
 /**
  * Layout preset for {@link Table} and its subcomponents.
@@ -30,25 +31,6 @@ export const tableCellClassLoose = '';
 
 const TableVariantContext = createContext<TableVariant>('bordered');
 
-/**
- * Returns preset classes merged with optional overrides.
- *
- * @param base - Variant preset classes.
- * @param className - Additional classes appended after the preset.
- */
-function mergeClasses(base: string, className?: string): string | undefined {
-  if (base && className) {
-    return `${base} ${className}`;
-  }
-  if (base) {
-    return base;
-  }
-  if (className) {
-    return className;
-  }
-  return undefined;
-}
-
 interface TableProps {
   /**
    * Table header and body sections.
@@ -68,15 +50,13 @@ interface TableProps {
 
 /**
  * Table shell for editable row layouts.
- *
- * @param children - {@link TableHeader} and {@link TableBody} sections.
- * @param variant - Bordered collapsed layout or loose separate-cell spacing.
- * @param className - Extra classes on the wrapper (bordered) or table element (loose).
  */
 export function Table({ children, variant = 'bordered', className }: TableProps): JSX.Element {
   if (variant === 'loose') {
-    const tableBase = 'hc-table w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5';
-    const tableClasses = className ? `${tableBase} ${className}` : tableBase;
+    const tableClasses = cn(
+      'hc-table w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5',
+      className
+    );
 
     return createElement(
       TableVariantContext.Provider,
@@ -85,8 +65,10 @@ export function Table({ children, variant = 'bordered', className }: TableProps)
     );
   }
 
-  const wrapperBase = 'hc-table overflow-hidden rounded-lg border border-separator';
-  const wrapperClasses = className ? `${wrapperBase} ${className}` : wrapperBase;
+  const wrapperClasses = cn(
+    'hc-table overflow-hidden rounded-lg border border-separator',
+    className
+  );
 
   return createElement(
     TableVariantContext.Provider,
@@ -113,12 +95,9 @@ interface TableSectionProps extends HTMLAttributes<HTMLTableSectionElement> {
 
 /**
  * Table header section wrapper.
- *
- * @param children - Header row elements, typically native `tr` nodes.
- * @param className - Extra classes appended after any section preset.
  */
 export function TableHeader({ children, className, ...rest }: TableSectionProps): JSX.Element {
-  const classes = mergeClasses('hc-table-header', className);
+  const classes = cn('hc-table-header', className);
 
   return (
     <thead className={classes} {...rest}>
@@ -129,15 +108,13 @@ export function TableHeader({ children, className, ...rest }: TableSectionProps)
 
 /**
  * Table body section wrapper.
- *
- * @param children - Body row elements, typically native `tr` nodes.
- * @param className - Extra classes appended after the layout preset.
  */
 export function TableBody({ children, className, ...rest }: TableSectionProps): JSX.Element {
   const variant = useContext(TableVariantContext);
-  const base =
-    variant === 'bordered' ? 'hc-table-body [&_tr:last-child_td]:border-b-0' : 'hc-table-body';
-  const classes = mergeClasses(base, className);
+  const classes = cn(
+    variant === 'bordered' ? 'hc-table-body [&_tr:last-child_td]:border-b-0' : 'hc-table-body',
+    className
+  );
 
   return (
     <tbody className={classes} {...rest}>
@@ -160,9 +137,6 @@ interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement> {
 
 /**
  * Header cell with table styling for the active variant.
- *
- * @param children - Header label content.
- * @param className - Extra classes appended after the layout preset.
  */
 export function TableHead({
   children,
@@ -171,8 +145,11 @@ export function TableHead({
   ...rest
 }: TableHeadProps): JSX.Element {
   const variant = useContext(TableVariantContext);
-  const base = variant === 'loose' ? tableHeadClassLoose : tableHeadClass;
-  const classes = mergeClasses(`hc-table-head ${base}`, className);
+  const classes = cn(
+    'hc-table-head',
+    variant === 'loose' ? tableHeadClassLoose : tableHeadClass,
+    className
+  );
 
   return (
     <th scope={scope} className={classes} {...rest}>
@@ -195,14 +172,14 @@ interface TableCellProps extends TdHTMLAttributes<HTMLTableCellElement> {
 
 /**
  * Body cell with table styling for the active variant.
- *
- * @param children - Cell content.
- * @param className - Extra classes appended after the layout preset.
  */
 export function TableCell({ children, className, ...rest }: TableCellProps): JSX.Element {
   const variant = useContext(TableVariantContext);
-  const base = variant === 'loose' ? tableCellClassLoose : tableCellClass;
-  const classes = mergeClasses(`hc-table-cell ${base}`, className);
+  const classes = cn(
+    'hc-table-cell',
+    variant === 'loose' ? tableCellClassLoose : tableCellClass,
+    className
+  );
 
   return (
     <td className={classes} {...rest}>

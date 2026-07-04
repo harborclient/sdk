@@ -1,7 +1,8 @@
-import type { JSX } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import type { JSX } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -22,18 +23,16 @@ interface Props {
 
 /**
  * Always-visible overlay close icon used on full-page settings and plugin views.
- *
- * @param label - Accessible name; defaults to "Close".
- * @param onClose - Close handler.
- * @param className - Extra classes appended after the overlay preset.
  */
 export function OverlayCloseButton({ label = 'Close', onClose, className }: Props): JSX.Element {
-  const classes = className
-    ? `hc-overlay-close-button text-[28px] ${className}`
-    : 'hc-overlay-close-button text-[28px]';
-
   return (
-    <Button type="button" variant="icon" className={classes} aria-label={label} onClick={onClose}>
+    <Button
+      type="button"
+      variant="icon"
+      className={cn('hc-overlay-close-button text-[28px]', className)}
+      aria-label={label}
+      onClick={onClose}
+    >
       <FaIcon icon={faXmark} className="hc-overlay-close-button-icon h-4 w-4" />
     </Button>
   );

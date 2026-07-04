@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { Button } from '../Button/index.js';
 import { Input } from '../forms/Input.js';
-import { Modal, ModalFooter, ModalFormLayout } from './index.js';
 import { ModalHeader } from './ModalHeader.js';
+import { Modal, ModalFooter, ModalFormLayout } from './index.js';
 
 const meta = {
   title: 'Components/Modal',

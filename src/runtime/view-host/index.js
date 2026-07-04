@@ -1,3 +1,3 @@
-import { bootstrapViewHost, applyHostTheme } from './viewHost.js';
+import { applyHostTheme, bootstrapViewHost } from './viewHost.js';
 
 export { bootstrapViewHost, applyHostTheme };

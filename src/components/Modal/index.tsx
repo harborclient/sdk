@@ -1,6 +1,7 @@
 import { useEffect, useRef } from '@harborclient/sdk/react';
 import type { JSX, ReactNode } from 'react';
 import { useDialogFocus } from '../useDialogFocus.js';
+import { cn } from '../utils.js';
 import { ModalHeader } from './ModalHeader.js';
 
 export { ModalFooter } from './ModalFooter.js';
@@ -56,19 +57,19 @@ interface BaseProps {
 type Props = BaseProps &
   (
     | {
-        /**
-         * Id of the element that labels the dialog (typically the heading).
-         */
-        labelledBy: string;
-        label?: never;
-      }
+      /**
+       * Id of the element that labels the dialog (typically the heading).
+       */
+      labelledBy: string;
+      label?: never;
+    }
     | {
-        labelledBy?: never;
-        /**
-         * Accessible name when no visible heading is linked via `labelledBy`.
-         */
-        label: string;
-      }
+      labelledBy?: never;
+      /**
+       * Accessible name when no visible heading is linked via `labelledBy`.
+       */
+      label: string;
+    }
   );
 
 /**
@@ -100,8 +101,6 @@ export function Modal({
 
     /**
      * Dismisses the dialog on Escape key press.
-     *
-     * @param event - Document keydown event.
      */
     const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {
@@ -113,11 +112,17 @@ export function Modal({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [disableEscape, onClose]);
 
-  const overlayClass = `hc-modal fixed inset-0 flex items-center justify-center bg-black/40 ${overlayClassName ?? 'z-50'}`;
+  const overlayClass = cn(
+    'hc-modal fixed inset-0 flex items-center justify-center bg-black/40',
+    overlayClassName ?? 'z-50'
+  );
 
   const panelClass = title
-    ? `${className} flex max-h-[85vh] flex-col overflow-hidden rounded-lg border border-separator bg-surface shadow-xl`
-    : `${className} rounded-lg border border-separator bg-surface p-4 shadow-xl`;
+    ? cn(
+      className,
+      'flex max-h-[85vh] flex-col overflow-hidden rounded-lg border border-separator bg-surface shadow-xl'
+    )
+    : cn(className, 'rounded-lg border border-separator bg-surface p-4 shadow-xl');
 
   const descriptionId = description && labelledBy ? `${labelledBy}-description` : undefined;
 
@@ -130,7 +135,7 @@ export function Modal({
         aria-labelledby={labelledBy}
         aria-describedby={descriptionId}
         aria-label={label}
-        className={`hc-modal-panel relative z-10 ${panelClass}`}
+        className={cn('hc-modal-panel relative z-10', panelClass)}
         onClick={(event) => event.stopPropagation()}
       >
         {title && labelledBy ? (

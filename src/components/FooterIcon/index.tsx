@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -32,8 +33,6 @@ interface Props {
 
 /**
  * Square icon toggle styles for footer sidebar buttons.
- *
- * @param active - Whether the associated sidebar is currently visible.
  */
 function footerIconButton(active: boolean): string {
   return active
@@ -47,14 +46,10 @@ function footerIconButton(active: boolean): string {
  */
 export function FooterIcon({ icon, active, onClick, label, className }: Props): JSX.Element {
   const accessibleLabel = active ? `Hide ${label}` : `Show ${label}`;
-  const classes = className
-    ? `hc-footer-icon ${footerIconButton(active)} ${className}`
-    : `hc-footer-icon ${footerIconButton(active)}`;
-
   return (
     <button
       type="button"
-      className={classes}
+      className={cn('hc-footer-icon', footerIconButton(active), className)}
       onClick={onClick}
       aria-pressed={active}
       aria-label={accessibleLabel}

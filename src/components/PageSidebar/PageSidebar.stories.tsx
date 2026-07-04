@@ -2,8 +2,8 @@ import { faGear, faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { Page } from '../Page/index.js';
-import { PageSidebar } from './index.js';
 import { SidebarLayout } from '../SidebarLayout/index.js';
+import { PageSidebar } from './index.js';
 
 const meta = {
   title: 'Components/PageSidebar',

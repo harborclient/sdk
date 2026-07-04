@@ -1,5 +1,5 @@
-import type { JSX } from 'react';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import type { JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
 
 interface Props {
@@ -27,11 +27,6 @@ interface Props {
 
 /**
  * Close control for document-style tabs in the request editor and AI chat.
- *
- * @param ariaLabel - Accessible name describing which tab closes.
- * @param onClick - Click handler; callers should stop propagation when needed.
- * @param title - Optional native tooltip text.
- * @param tabIndex - Tab order index; use with roving tabindex on the tab label.
  */
 export function TabCloseButton({
   ariaLabel,
@@ -42,7 +37,7 @@ export function TabCloseButton({
   return (
     <button
       type="button"
-      className="hc-tab-close-button inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text app-no-drag"
+      className="hc-tab-close-button app-no-drag inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center self-center rounded-full border-none bg-transparent text-[14px] text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text"
       title={title}
       aria-label={ariaLabel}
       tabIndex={tabIndex}

@@ -109,7 +109,7 @@ export function BusyIndicator({ isBusy }: Props): JSX.Element | null {
         <div className="hc-busy-indicator-progress busy-progress-bar h-full w-1/3 bg-accent" />
       </div>
       <div
-        className="hc-busy-indicator-badge pointer-events-none fixed right-3 top-3 z-[100] flex h-6 w-6 items-center justify-center rounded-full border border-separator bg-surface shadow-sm"
+        className="hc-busy-indicator-badge pointer-events-none fixed top-3 right-3 z-[100] flex h-6 w-6 items-center justify-center rounded-full border border-separator bg-surface shadow-sm"
         role="status"
         aria-label="Working"
       >

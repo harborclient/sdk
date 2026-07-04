@@ -1,7 +1,7 @@
 import { describe, expect, it, jest } from '@jest/globals';
 import {
-  createPluginDatabaseApi,
-  type PluginDatabaseBackend
+  type PluginDatabaseBackend,
+  createPluginDatabaseApi
 } from './runtime/pluginDatabaseApi.js';
 
 /**

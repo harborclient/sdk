@@ -4,9 +4,9 @@ import type { JSX } from 'react';
 import type { FormDataPart, FormDataPartType, Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
-import { Checkbox, Input, Select, fieldFrame } from '../forms/index.js';
 import { Table, TableBody, TableCell, TableHead, TableHeader } from '../Table/index.js';
 import { VariableInput } from '../VariableInput/index.js';
+import { Checkbox, Input, Select, fieldFrame } from '../forms/index.js';
 import { emptyFormPart, fileBasename, withTrailingRow } from './utils.js';
 
 export interface Props {
@@ -17,8 +17,6 @@ export interface Props {
 
   /**
    * Called when rows are added, updated, or removed.
-   *
-   * @param parts - Updated part list.
    */
   onChange: (parts: FormDataPart[]) => void;
 
@@ -55,9 +53,6 @@ export function FormDataEditor({
 
   /**
    * Updates a single row by index, auto-appending a blank row when the last key is filled.
-   *
-   * @param index - Row index to update.
-   * @param patch - Partial fields to merge into the row.
    */
   const updateRow = (index: number, patch: Partial<FormDataPart>): void => {
     const next = rows.map((row, i) => (i === index ? { ...row, ...patch } : row));
@@ -70,8 +65,6 @@ export function FormDataEditor({
 
   /**
    * Removes a row, keeping at least one empty row.
-   *
-   * @param index - Row index to remove.
    */
   const removeRow = (index: number): void => {
     if (rows.length === 1) {
@@ -83,8 +76,6 @@ export function FormDataEditor({
 
   /**
    * Opens the host file picker and merges selected paths into a file row.
-   *
-   * @param index - Row index to attach files to.
    */
   const chooseFiles = async (index: number): Promise<void> => {
     const selected = await onSelectFiles();
@@ -104,9 +95,6 @@ export function FormDataEditor({
 
   /**
    * Removes one file path from a file row.
-   *
-   * @param index - Row index containing the file.
-   * @param filePath - Absolute path to remove.
    */
   const removeFile = (index: number, filePath: string): void => {
     const currentFiles = rows[index]?.files ?? [];
@@ -200,7 +188,7 @@ export function FormDataEditor({
                           <span className="truncate">{fileBasename(filePath)}</span>
                           <button
                             type="button"
-                            className="inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text app-no-drag"
+                            className="app-no-drag inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text"
                             onClick={() => removeFile(index, filePath)}
                             title={`Remove file ${fileBasename(filePath)}`}
                             aria-label={`Remove file ${fileBasename(filePath)}`}

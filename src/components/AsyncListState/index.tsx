@@ -1,6 +1,7 @@
+import type { JSX, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FieldError } from '../FieldError/index.js';
-import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface LoadingMessageProps {
   /**
@@ -16,19 +17,13 @@ interface LoadingMessageProps {
 
 /**
  * Muted loading label used while async list data is fetched.
- *
- * @param children - Loading message; defaults to "Loading…".
- * @param className - Extra classes appended after the preset.
  */
 export function LoadingMessage({
   children = 'Loading…',
   className
 }: LoadingMessageProps): JSX.Element {
-  const base = 'hc-loading-message text-[14px] text-muted';
-  const classes = className ? `${base} ${className}` : base;
-
   return (
-    <p role="status" className={classes}>
+    <p role="status" className={cn('hc-loading-message text-[14px] text-muted', className)}>
       {children}
     </p>
   );
@@ -53,15 +48,11 @@ interface ErrorRetryProps {
 
 /**
  * Inline error message paired with a secondary retry button.
- *
- * @param error - Error text rendered in danger color.
- * @param onRetry - Handler invoked when retry is clicked.
- * @param retryLabel - Visible retry button label.
  */
 export function ErrorRetry({ error, onRetry, retryLabel = 'Retry' }: ErrorRetryProps): JSX.Element {
   return (
     <div className="hc-error-retry flex flex-wrap items-center gap-2">
-      <FieldError spacing="field" className="hc-error-retry-message mb-0 mt-0">
+      <FieldError spacing="field" className="hc-error-retry-message mt-0 mb-0">
         {error}
       </FieldError>
       <Button type="button" variant="secondary" className="hc-error-retry-button" onClick={onRetry}>
@@ -111,14 +102,6 @@ interface AsyncListStateProps {
 /**
  * Switches between loading, error-with-retry, empty, and ready list content for
  * async CRUD screens such as Team Hub and storage location lists.
- *
- * @param loading - Whether data is still loading.
- * @param error - Optional fetch error message.
- * @param onRetry - Retry handler shown when `error` is set.
- * @param emptyMessage - Placeholder when `isEmpty` is true.
- * @param isEmpty - Whether the loaded collection has no items.
- * @param children - Ready-state list markup.
- * @param loadingMessage - Optional override for the loading placeholder.
  */
 export function AsyncListState({
   loading,

@@ -1,9 +1,9 @@
+import type { StorybookConfig } from '@storybook/react-vite';
+import tailwindcss from '@tailwindcss/vite';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import tailwindcss from '@tailwindcss/vite';
-import type { StorybookConfig } from '@storybook/react-vite';
-import { mergeConfig, type Plugin } from 'vite';
+import { type Plugin, mergeConfig } from 'vite';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, '..');

@@ -60,8 +60,8 @@ Exit codes:
 Import from `@harborclient/sdk/signing`:
 
 ```typescript
-import { readFileSync } from 'node:fs';
 import { signPlugin, verifyPlugin } from '@harborclient/sdk/signing';
+import { readFileSync } from 'node:fs';
 
 await signPlugin({
   pluginDir: './my-plugin',

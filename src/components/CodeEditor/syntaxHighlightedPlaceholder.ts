@@ -1,15 +1,15 @@
 import type { Extension } from '@codemirror/state';
 import {
   Decoration,
+  type DecorationSet,
   EditorView,
   ViewPlugin,
-  WidgetType,
-  type DecorationSet,
-  type ViewUpdate
+  type ViewUpdate,
+  WidgetType
 } from '@codemirror/view';
 import {
-  renderHighlightedPlaceholderDom,
-  type RenderHighlightedPlaceholderOptions
+  type RenderHighlightedPlaceholderOptions,
+  renderHighlightedPlaceholderDom
 } from './renderHighlightedPlaceholder.js';
 
 /**

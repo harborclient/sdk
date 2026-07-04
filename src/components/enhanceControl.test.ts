@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { createElement, Fragment, isValidElement } from 'react';
+import { Fragment, createElement, isValidElement } from 'react';
 import type { ReactElement } from 'react';
 import { enhanceControl } from './enhanceControl.js';
 

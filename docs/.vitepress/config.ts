@@ -1,8 +1,8 @@
 import { createRequire } from 'node:module';
 import path from 'node:path';
+import type { Plugin } from 'vite';
 import { defineConfig } from 'vitepress';
 import { withMermaid } from 'vitepress-plugin-mermaid';
-import type { Plugin } from 'vite';
 import pkg from '../../package.json';
 import { toAnchor } from '../../scripts/docs-slugger.mjs';
 import { sidebar } from './sidebar.generated';

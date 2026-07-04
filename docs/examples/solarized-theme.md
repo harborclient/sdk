@@ -24,7 +24,7 @@ Install and manage theme plugins from **File → Themes** in the app, or browse 
 ## src/renderer.tsx
 
 ```tsx
-import { registerTheme, type PluginContext } from '@harborclient/sdk';
+import { type PluginContext, registerTheme } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
   registerTheme(hc, {

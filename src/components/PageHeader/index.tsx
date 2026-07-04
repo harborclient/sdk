@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX, ReactNode } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -34,14 +35,10 @@ interface Props {
  * and optional action controls on the right.
  */
 export function PageHeader({ title, description, icon, children, className }: Props): JSX.Element {
-  const wrapperClassName = className
-    ? `hc-page-header -mx-6 mb-4 flex flex-wrap items-center gap-2 border-b border-separator px-6 py-4 ${className}`
-    : 'hc-page-header -mx-6 mb-4 flex flex-wrap items-center gap-2 border-b border-separator px-6 py-4';
-
   return (
-    <div className={wrapperClassName}>
+    <div className={cn('hc-page-header -mx-6 mb-4 flex flex-wrap items-center gap-2 border-b border-separator px-6 py-4', className)}>
       <div className="hc-page-header-content min-w-0 flex-1">
-        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[28px] font-bold leading-[1.15] tracking-[-0.01em] text-text">
+        <h2 className="hc-page-header-title m-0 flex items-center gap-2 text-[24px] leading-[1.15] font-bold tracking-[-0.01em] text-text">
           {icon ? (
             <FaIcon
               icon={icon}
@@ -52,7 +49,7 @@ export function PageHeader({ title, description, icon, children, className }: Pr
           {title}
         </h2>
         {description ? (
-          <p className="hc-page-header-description m-0 mt-1 text-[16px] text-muted leading-none">
+          <p className="hc-page-header-description m-0 mt-1 text-[16px] leading-none text-muted">
             {description}
           </p>
         ) : null}

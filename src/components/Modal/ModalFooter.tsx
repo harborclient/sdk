@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import { cn } from '../utils.js';
 
 interface Props {
   /**
@@ -19,16 +20,11 @@ interface Props {
 
 /**
  * Right-aligned action button row for modal bodies and overlay footers.
- *
- * @param children - Cancel, confirm, and other action controls.
- * @param spaced - Whether to add `mt-4` above the button row.
- * @param className - Extra classes appended after the layout preset.
  */
 export function ModalFooter({ children, spaced = false, className }: Props): JSX.Element {
-  const base = spaced
-    ? 'hc-modal-footer mt-4 flex justify-end gap-2'
-    : 'hc-modal-footer flex justify-end gap-2';
-  const classes = className ? `${base} ${className}` : base;
-
-  return <div className={classes}>{children}</div>;
+  return (
+    <div className={cn('hc-modal-footer flex justify-end gap-2', spaced && 'mt-4', className)}>
+      {children}
+    </div>
+  );
 }

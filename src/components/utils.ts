@@ -1,4 +1,16 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import type { Variable } from '../types.js';
+
+/**
+ * Merges Tailwind classes into a single string.
+ *
+ * @param inputs - Tailwind classes to merge.
+ * @returns Merged classes.
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 /**
  * Drops variable rows with no key, value, or default content.

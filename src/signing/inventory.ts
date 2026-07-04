@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { PLUGIN_SIGNATURE_FILENAME } from './types.js';
 import type { PluginFileHash } from './types.js';

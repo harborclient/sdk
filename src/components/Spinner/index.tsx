@@ -1,4 +1,5 @@
 import type { JSX } from 'react';
+import { cn } from '../utils.js';
 
 type SpinnerSize = 'sm' | 'md';
 
@@ -22,7 +23,6 @@ interface Props {
 /**
  * Returns width and height classes for the spinner size preset.
  *
- * @param size - Spinner size preset.
  * @returns Tailwind dimension classes.
  */
 function sizeClasses(size: SpinnerSize): string {
@@ -31,19 +31,16 @@ function sizeClasses(size: SpinnerSize): string {
 
 /**
  * Accent-colored spinning indicator shared by busy overlays, tabs, and modals.
- *
- * @param size - Visual size (`sm` or `md`).
- * @param label - Accessible status label; when set, exposes `role="status"`.
- * @param className - Extra classes on the wrapper span.
  */
 export function Spinner({ size = 'md', label, className }: Props): JSX.Element {
-  const wrapperBase = 'hc-spinner inline-flex items-center justify-center';
-  const wrapperClasses = className ? `${wrapperBase} ${className}` : wrapperBase;
-
   return (
-    <span className={wrapperClasses} role={label ? 'status' : undefined} aria-label={label}>
+    <span
+      className={cn('hc-spinner inline-flex items-center justify-center', className)}
+      role={label ? 'status' : undefined}
+      aria-label={label}
+    >
       <svg
-        className={`${sizeClasses(size)} hc-spinner-icon animate-spin text-accent`}
+        className={cn('hc-spinner-icon animate-spin text-accent', sizeClasses(size))}
         viewBox="0 0 24 24"
         fill="none"
         aria-hidden={label ? true : undefined}
