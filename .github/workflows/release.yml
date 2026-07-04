@@ -1,8 +1,10 @@
 name: Release
 
-# Release workflow for @harborclient/sdk. Bumps the `version` field in
-# package.json, renames `## Unreleased` in CHANGELOG.md to the new version,
-# commits + tags + pushes back to `main`, and publishes to npm.
+# Release workflow for @harborclient/sdk. Runs when changes land on `main`.
+# Bumps the `version` field in package.json (patch semver), renames
+# `## Unreleased` in CHANGELOG.md to the new version, commits + tags +
+# pushes back to `main`, and publishes to npm. Skips when `## Unreleased`
+# has no content (release commits use `[skip ci]` and do not re-trigger).
 #
 # Required setup BEFORE the first run:
 #
@@ -13,17 +15,9 @@ name: Release
 #   2. Branch protection on `main` must allow github-actions[bot] to push.
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_type:
-        description: 'semver bump'
-        required: true
-        default: patch
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -32,8 +26,44 @@ jobs:
   ci:
     uses: ./.github/workflows/ci.yml
 
-  release:
+  changelog:
     needs: ci
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Unreleased changelog content
+        id: check
+        run: |
+          set -euo pipefail
+          if python3 - <<'PY'
+          import re
+          import pathlib
+          import sys
+
+          path = pathlib.Path("CHANGELOG.md")
+          if not path.exists():
+              sys.exit(1)
+          text = path.read_text()
+          match = re.search(r"^## Unreleased\s*\n(.*?)(?=^## |\Z)", text, flags=re.S | re.M)
+          if not match or not match.group(1).strip():
+              sys.exit(1)
+          PY
+          then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "No Unreleased changelog content; skipping release."
+          fi
+
+  release:
+    needs: [ci, changelog]
+    if: needs.changelog.outputs.ready == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
@@ -61,7 +91,7 @@ jobs:
       - name: Bump version
         run: |
           set -euo pipefail
-          VERSION=$(pnpm version "${{ inputs.release_type }}" --no-git-tag-version | tail -n1 | sed 's/^v//')
+          VERSION=$(pnpm version patch --no-git-tag-version | tail -n1 | sed 's/^v//')
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Bumped to $VERSION"
 
