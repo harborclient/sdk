@@ -40,7 +40,7 @@ flowchart LR
 
 ## Load unpacked
 
-Build your plugin at least once so `dist/` exists (`pnpm build` or `pnpm dev`), then register the project folder through [Settings → Plugins](https://harborclient.com/settings#plugins) (**Load unpacked…**) or via the startup options below. For UI plugins, open a contributed surface (for example your settings section) to trigger activation. Main-only plugins activate as soon as they are enabled.
+Build your plugin at least once so `dist/` exists (`pnpm build` or `pnpm dev`), then register the project folder through **File → Plugins → Install** (**Load unpacked…**) or via the startup options below. Theme plugins load the same way from **File → Themes → Install**. For UI plugins, open a contributed surface (for example your settings section) to trigger activation. Main-only plugins activate as soon as they are enabled.
 
 HarborClient stores unpacked paths in a dev registry under `userData` and restores them on the next launch.
 
@@ -58,7 +58,7 @@ When a watched file changes, HarborClient debounces briefly (so multi-file write
 3. Re-validates the manifest
 4. Calls `activate(hc)` again
 
-Leave the relevant Settings or UI panel open to see UI updates after each rebuild. If reload fails (syntax error, invalid manifest), the previous activation is torn down and an inline error is shown in [Settings → Plugins](https://harborclient.com/settings#plugins). Use **Reload** on the plugin row to force the same sequence manually.
+Leave the relevant Settings or UI panel open to see UI updates after each rebuild. If reload fails (syntax error, invalid manifest), the previous activation is torn down and an inline error is shown on the plugin card under **File → Plugins → Installed** or **File → Themes → Installed**. Use **Reload** on the card to force the same sequence manually.
 
 ## Recommended dev workflow
 
@@ -86,7 +86,7 @@ For day-to-day work on the same plugin, you can register an unpacked path before
 | Environment variable | `HARBOR_PLUGINS_DEV=~/projects/request-logger pnpm dev` |
 | CLI flag             | `harborclient --plugin-dev ~/projects/request-logger`   |
 
-Multiple paths are separated by `:` on Linux and macOS, or `;` on Windows. Paths registered this way appear in [Settings → Plugins](https://harborclient.com/settings#plugins) the same as plugins loaded through **Load unpacked…**.
+Multiple paths are separated by `:` on Linux and macOS, or `;` on Windows. Paths registered this way appear under **File → Plugins → Installed** or **File → Themes → Installed** the same as plugins loaded through **Load unpacked…**.
 
 ## Unpacked vs installed
 

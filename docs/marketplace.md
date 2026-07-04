@@ -1,6 +1,6 @@
 # Marketplace
 
-HarborClient maintains a curated [plugin marketplace](https://harborclient.com/plugins) built from [`plugins/catalog.json`](https://github.com/harborclient/harborclient/blob/main/plugins/catalog.json) in the main repository. In the app, open **Settings → Plugins** and click **Marketplace** to install listed plugins with one click. The app clones each listing from its public GitHub repository using the same git install flow as **Install from Git…**.
+HarborClient maintains a curated [plugin marketplace](https://harborclient.com/plugins) built from [`plugins/catalog.json`](https://github.com/harborclient/harborclient/blob/main/plugins/catalog.json) in the main repository. In the app, open **File → Plugins → Marketplace** to install listed plugins with one click. The app clones each listing from its public GitHub repository using the same git install flow as **Install from Git…**.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ HarborClient maintains a curated [plugin marketplace](https://harborclient.com/p
 | `screenshot`    | No       | HTTPS URL to a preview image shown in the marketplace list (PNG, JPEG, or WebP).          |
 | `minAppVersion` | No       | Minimum HarborClient semver required to install.                                          |
 
-Example entry:
+Example plugin entry:
 
 ```json
 {
@@ -39,6 +39,28 @@ Example entry:
   "ref": "v1.0.0",
   "homepage": "https://example.com/my-plugin",
   "screenshot": "https://raw.githubusercontent.com/example/my-plugin/v1.0.0/assets/screenshots/overview.png"
+}
+```
+
+## Theme listings
+
+Theme packages are plugins that contribute `contributes.themes`. List them in the same [`plugins/catalog.json`](https://github.com/harborclient/harborclient/blob/main/plugins/catalog.json) file with `"categories": ["themes"]`. Theme-only repositories should also include `"categories": ["themes", …]` in `manifest.json` — add one appearance slug (`light`, `dark`, or `high-contrast`) alongside `themes` so HarborClient routes the installed package to **File → Themes** and users can filter the marketplace by appearance.
+
+In the app, users install theme listings from **File → Themes → Marketplace**. The web catalog for themes lives at [harborclient.com/themes](https://harborclient.com/themes).
+
+Example theme entry:
+
+```json
+{
+  "id": "com.example.solarized",
+  "name": "Solarized Theme",
+  "version": "1.0.0",
+  "summary": "Solarized Dark appearance theme for HarborClient.",
+  "author": "Example Inc.",
+  "categories": ["themes", "dark"],
+  "repoUrl": "https://github.com/example/solarized-theme",
+  "ref": "v1.0.0",
+  "screenshot": "https://raw.githubusercontent.com/example/solarized-theme/v1.0.0/assets/screenshots/overview.png"
 }
 ```
 

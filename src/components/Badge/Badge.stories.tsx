@@ -8,7 +8,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['success', 'danger', 'muted', 'accent']
+      options: ['success', 'danger', 'muted', 'accent', 'warning']
     }
   }
 } satisfies Meta<typeof Badge>;
@@ -41,5 +41,12 @@ export const Accent: Story = {
   args: {
     children: 'New',
     variant: 'accent'
+  }
+};
+
+export const Warning: Story = {
+  args: {
+    children: 'Permissions',
+    variant: 'warning'
   }
 };

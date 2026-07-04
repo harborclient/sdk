@@ -26,6 +26,7 @@ Every plugin requires a manifest at the root of the `.hcp` archive. The example 
   "bugs": {
     "url": "https://github.com/example/my-plugin/issues"
   },
+  "categories": ["editor"],
 
   "engines": {
     "harborclient": ">=1.7.0"
@@ -59,27 +60,28 @@ Every plugin requires a manifest at the root of the `.hcp` archive. The example 
 }
 ```
 
-| Field                  | Required | Description                                                                                                                         |
-| ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                   | Yes      | Reverse-DNS identifier. Namespaces storage and plugin updates.                                                                      |
-| `name`                 | Yes      | Display name shown in Settings and install dialogs.                                                                                 |
-| `version`              | Yes      | Semver version string.                                                                                                              |
-| `author`               | No       | Publisher or author name shown on the plugin detail page.                                                                           |
-| `summary`              | No       | Short one-line description shown in marketplace lists and the plugin detail view.                                                   |
-| `description`          | No       | Path to a Markdown file (for example `README.md`) with the full plugin description. Rendered in **Settings → Plugins** detail view. |
-| `icon`                 | No       | Path to a square PNG or SVG icon (recommended 128×128 px or larger). Shown in the plugin list and install dialog.                   |
-| `screenshots`          | No       | Gallery images for the plugin detail page. See [Screenshots](#screenshots) below.                                                   |
-| `homepage`             | No       | URL to the plugin's website or documentation. Shown as a link on the detail page.                                                   |
-| `bugs`                 | No       | Issue tracker for bug reports. Use `{ "url": "https://…" }`. Shown as **Report issue** on the detail page.                          |
-| `engines.harborclient` | Yes      | Minimum HarborClient version (for example `>=1.7.0`).                                                                               |
-| `renderer`             | No       | Path to the renderer entry bundle (UI).                                                                                             |
-| `main`                 | No       | Path to the main entry bundle (hooks, IPC, logic).                                                                                  |
-| `permissions`          | Yes      | Capabilities the plugin needs. Summarized in the install confirmation dialog.                                                       |
-| `contributes`          | No       | Declarative UI slots listed before plugin code activates.                                                                           |
+| Field                  | Required | Description                                                                                                                                                                                                                                                                  |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | Yes      | Reverse-DNS identifier. Namespaces storage and plugin updates.                                                                                                                                                                                                               |
+| `name`                 | Yes      | Display name shown in Settings and install dialogs.                                                                                                                                                                                                                          |
+| `version`              | Yes      | Semver version string.                                                                                                                                                                                                                                                       |
+| `author`               | No       | Publisher or author name shown on the plugin detail page.                                                                                                                                                                                                                    |
+| `summary`              | No       | Short one-line description shown in marketplace lists and the plugin detail view.                                                                                                                                                                                            |
+| `description`          | No       | Path to a Markdown file (for example `README.md`) with the full plugin description. Rendered in the plugin detail modal on **File → Plugins** or **File → Themes**.                                                                                                          |
+| `icon`                 | No       | Path to a square PNG or SVG icon (recommended 128×128 px or larger). Shown in the plugin list and install dialog.                                                                                                                                                            |
+| `screenshots`          | No       | Gallery images for the plugin detail page. See [Screenshots](#screenshots) below.                                                                                                                                                                                            |
+| `homepage`             | No       | URL to the plugin's website or documentation. Shown as a link on the detail page.                                                                                                                                                                                            |
+| `bugs`                 | No       | Issue tracker for bug reports. Use `{ "url": "https://…" }`. Shown as **Report issue** on the detail page.                                                                                                                                                                   |
+| `categories`           | No       | Marketplace category slugs (for example `themes`, `editor`, `dark`). Include `themes` for appearance-only packages listed under **File → Themes**. Theme packages should also include one appearance slug — `light`, `dark`, or `high-contrast` — for marketplace filtering. |
+| `engines.harborclient` | Yes      | Minimum HarborClient version (for example `>=1.7.0`).                                                                                                                                                                                                                        |
+| `renderer`             | No       | Path to the renderer entry bundle (UI).                                                                                                                                                                                                                                      |
+| `main`                 | No       | Path to the main entry bundle (hooks, IPC, logic).                                                                                                                                                                                                                           |
+| `permissions`          | Yes      | Capabilities the plugin needs. Summarized in the install confirmation dialog.                                                                                                                                                                                                |
+| `contributes`          | No       | Declarative UI slots listed before plugin code activates.                                                                                                                                                                                                                    |
 
 ## Plugin metadata
 
-Listing metadata is separate from `contributes` — it describes the package for users browsing **Settings → Plugins**, not UI slots inside the app.
+Listing metadata is separate from `contributes` — it describes the package for users browsing **File → Plugins** or **File → Themes**, not UI slots inside the app.
 
 ### summary
 
@@ -136,27 +138,43 @@ Supported formats: PNG, JPEG, WebP. Recommended width **1280 px** or wider; Harb
 
 All URL fields must use `https://` (or `http://` for local development documentation only). HarborClient opens links in the system default browser.
 
+## Theme plugins
+
+Appearance themes are **plugins** — the same `.hcp` packaging, install flow, and permission model as any other extension. A theme plugin:
+
+1. Declares one or more slots in `contributes.themes`
+2. Registers them at activation with `hc.themes.register` (see [Themes and storage](/renderer-data))
+3. Includes `"categories": ["themes", …]` so HarborClient lists the package on **File → Themes** instead of **File → Plugins**. Add one appearance slug — `light`, `dark`, or `high-contrast` — alongside `themes` so users can filter the theme marketplace (for example `"categories": ["themes", "dark"]`).
+
+Appearance categories are marketplace metadata only. `contributes.themes[].type` (`light` or `dark`) remains the runtime hint HarborClient uses when registering theme palettes.
+
+Theme-only packages typically need only the `ui` permission and a renderer entry. Users activate a registered theme from **View → Theme** or **Settings → General → Appearance**.
+
+If your plugin also contributes UI panels, tabs, or hooks alongside a theme, omit the `themes` category so the package stays on the **Plugins** page. Mixed plugins can still register themes; they simply are not classified as theme-only listings.
+
+For a complete walkthrough, see [Solarized theme](/examples/solarized-theme).
+
 ## Contribution types
 
 The `contributes` block declares where your plugin can appear. Each entry's `id` must match the `id` passed to the corresponding `hc.ui.register*` call at activation time.
 
-| Manifest key             | `hc.ui` registrar               | UI surface                                            |
-| ------------------------ | ------------------------------- | ----------------------------------------------------- |
-| `settingsSections`       | `registerSettingsSection`       | Settings sidebar and panel                            |
-| `sidebarPanels`          | `registerSidebarPanel`          | Switchable left sidebar destination                   |
-| `sidebarSections`        | `registerSidebarSection`        | Collapsible block inside the scrollable sidebar       |
-| `mainViews`              | `registerMainView`              | Full main-area overlay (Team Hubs pattern)            |
-| `modals`                 | `registerModal`                 | Application-root modal overlay                        |
-| `requestTabs`            | `registerRequestTab`            | Request editor segmented tabs                         |
-| `responseTabs`           | `registerResponseTab`           | Response viewer tabs                                  |
-| `collectionSettingsTabs` | `registerCollectionSettingsTab` | Collection settings segmented tabs                    |
-| `footerPanels`           | `registerFooterPanel`           | Slide-up footer panel                                 |
-| `requestToolbarActions`  | `registerRequestToolbarAction`  | Button near Send in the URL bar                       |
-| `contextMenus`           | `registerContextMenuItem`       | Row actions on sidebar collections, folders, requests |
-| `statusBarItems`         | `registerStatusBarItem`         | Footer status area (beside sidebar / AI toggles)      |
-| `themes`                 | `hc.themes.register`            | Appearance theme in Settings → General                |
-| `commands`               | `hc.commands.register`          | Command handlers (menus, toolbar, context menus)      |
-| `menus`                  | `registerMenuItem`              | File, Edit, View, or Help application menu            |
+| Manifest key             | `hc.ui` registrar               | UI surface                                                                   |
+| ------------------------ | ------------------------------- | ---------------------------------------------------------------------------- |
+| `settingsSections`       | `registerSettingsSection`       | Settings sidebar and panel                                                   |
+| `sidebarPanels`          | `registerSidebarPanel`          | Switchable left sidebar destination                                          |
+| `sidebarSections`        | `registerSidebarSection`        | Collapsible block inside the scrollable sidebar                              |
+| `mainViews`              | `registerMainView`              | Full main-area overlay (Team Hubs pattern)                                   |
+| `modals`                 | `registerModal`                 | Application-root modal overlay                                               |
+| `requestTabs`            | `registerRequestTab`            | Request editor segmented tabs                                                |
+| `responseTabs`           | `registerResponseTab`           | Response viewer tabs                                                         |
+| `collectionSettingsTabs` | `registerCollectionSettingsTab` | Collection settings segmented tabs                                           |
+| `footerPanels`           | `registerFooterPanel`           | Slide-up footer panel                                                        |
+| `requestToolbarActions`  | `registerRequestToolbarAction`  | Button near Send in the URL bar                                              |
+| `contextMenus`           | `registerContextMenuItem`       | Row actions on sidebar collections, folders, requests                        |
+| `statusBarItems`         | `registerStatusBarItem`         | Footer status area (beside sidebar / AI toggles)                             |
+| `themes`                 | `hc.themes.register`            | Appearance theme in **View → Theme** and **Settings → General → Appearance** |
+| `commands`               | `hc.commands.register`          | Command handlers (menus, toolbar, context menus)                             |
+| `menus`                  | `registerMenuItem`              | File, Edit, View, or Help application menu                                   |
 
 Settings sections ship in the initial plugin release. Other contribution types are part of the target API documented in the [Renderer API](/renderer-overview) and will roll out in subsequent HarborClient versions. Declare them in the manifest now so install dialogs and future host versions can discover slots before your code loads.
 

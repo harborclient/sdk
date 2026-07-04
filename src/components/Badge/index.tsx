@@ -3,7 +3,7 @@ import type { JSX, ReactNode } from 'react';
 /**
  * Visual tone for compact status badges.
  */
-export type BadgeVariant = 'success' | 'danger' | 'muted' | 'accent';
+export type BadgeVariant = 'success' | 'danger' | 'muted' | 'accent' | 'warning';
 
 interface Props {
   /**
@@ -36,6 +36,8 @@ function variantClasses(variant: BadgeVariant): string {
       return 'bg-danger/20 text-danger';
     case 'accent':
       return 'bg-accent/20 text-accent';
+    case 'warning':
+      return 'bg-warning/20 text-warning';
     case 'muted':
     default:
       return 'bg-control text-muted';
@@ -46,11 +48,13 @@ function variantClasses(variant: BadgeVariant): string {
  * Compact pill badge for status labels in lists and settings panels.
  *
  * @param children - Badge text.
- * @param variant - Color preset (`success`, `danger`, `muted`, or `accent`).
+ * @param variant - Color preset (`success`, `danger`, `muted`, `accent`, or `warning`).
  * @param className - Extra classes appended after the variant preset.
  */
 export function Badge({ children, variant = 'muted', className }: Props): JSX.Element {
-  const base = `hc-badge inline-flex shrink-0 items-center rounded px-1.5 py-0.5 text-[14px] ${variantClasses(variant)}`;
+  const base = `hc-badge inline-flex shrink-0 items-center rounded px-1.5 py-0.5 text-[14px] ${variantClasses(
+    variant
+  )}`;
   const classes = className ? `${base} ${className}` : base;
 
   return <span className={classes}>{children}</span>;

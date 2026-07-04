@@ -1,5 +1,9 @@
 # Themes and storage
 
+Theme packages are plugins. Ship the same `.hcp` layout, require the `ui` permission, declare slots in `contributes.themes`, and set `"categories": ["themes"]` when the package should appear under **File → Themes**. Users pick an active theme from **View → Theme** or **Settings → General → Appearance**.
+
+See [Theme plugins](/manifest#theme-plugins) for manifest fields and [Marketplace → Theme listings](/marketplace#theme-listings) for catalog publishing.
+
 ## hc.themes
 
 Custom appearance themes extend the built-in **Light**, **Dark**, **System**, and **High contrast** options in **Settings → General**. Plugin themes appear in the same dropdown once registered.

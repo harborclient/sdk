@@ -1,6 +1,8 @@
 # Solarized theme
 
-This example registers a **Solarized Dark** appearance theme. The user selects it from **Settings → General → Appearance** alongside the built-in options.
+This example is a **theme plugin** — a normal HarborClient plugin that contributes `contributes.themes`, registers a palette with `hc.themes.register`, and uses `"categories": ["themes", "dark"]` so the package appears under **File → Themes** and is listed as a dark theme in the marketplace. The user selects **Solarized Dark** from **View → Theme** or **Settings → General → Appearance** alongside the built-in options.
+
+Install and manage theme plugins from **File → Themes** in the app, or browse the [HarborClient theme catalog](https://harborclient.com/themes).
 
 ## manifest.json
 
@@ -9,6 +11,7 @@ This example registers a **Solarized Dark** appearance theme. The user selects i
   "id": "com.example.solarized",
   "name": "Solarized Theme",
   "version": "1.0.0",
+  "categories": ["themes", "dark"],
   "engines": { "harborclient": ">=1.7.0" },
   "renderer": "dist/renderer.js",
   "permissions": ["ui"],
@@ -64,4 +67,4 @@ registerTheme(hc, {
 
 Include `dist/theme.css` in your `.hcp` package. The host injects it while the theme is registered and removes it on deactivation.
 
-See [hc.themes](/renderer-data#hc-themes) for the full themes API reference.
+See [hc.themes](/renderer-data#hc-themes) for the full themes API reference and [Theme plugins](/manifest#theme-plugins) for manifest classification.

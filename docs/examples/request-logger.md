@@ -57,7 +57,7 @@ request-logger.hcp        # ZIP archive; use .hcp extension
     └── main.js
 ```
 
-Install the `.hcp` file from [Settings → Plugins](https://harborclient.com/settings#plugins). Enable the plugin and send a request — log lines appear in your terminal.
+Install the `.hcp` file from **File → Plugins → Install**. Enable the plugin and send a request — log lines appear in your terminal.
 
 HarborClient also supports built-in request logging via `-vv` / `--very-verbose` (see the app README). A plugin logger runs whenever the plugin is enabled and can use any format you choose.
 

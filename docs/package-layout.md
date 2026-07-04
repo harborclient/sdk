@@ -8,7 +8,7 @@ my-plugin/
 ├── README.md               # or description.md — full Markdown listing (see manifest)
 ├── assets/
 │   ├── icon.png            # plugin icon (referenced by manifest)
-│   └── screenshots/        # gallery images for Settings → Plugins detail
+│   └── screenshots/        # gallery images for the Plugins or Themes detail modal
 │       ├── settings.png
 │       └── sidebar.png
 ├── src/                    # author source (optional, not loaded at runtime)

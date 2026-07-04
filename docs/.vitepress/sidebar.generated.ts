@@ -42,6 +42,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "Utility imports",
         "link": "/usage#utility-imports"
+      },
+      {
+        "text": "Plugin build and tooling baseline",
+        "link": "/usage#plugin-build-and-tooling-baseline"
       }
     ],
     "collapsed": false
@@ -58,6 +62,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "text": "Plugin metadata",
         "link": "/manifest#plugin-metadata",
         "items": [
+          {
+            "text": "summary",
+            "link": "/manifest#summary"
+          },
           {
             "text": "description",
             "link": "/manifest#description"
@@ -83,6 +91,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
           }
         ],
         "collapsed": false
+      },
+      {
+        "text": "Theme plugins",
+        "link": "/manifest#theme-plugins"
       },
       {
         "text": "Contribution types",
@@ -284,6 +296,18 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-ui#hcuiregistermainviewview"
       },
       {
+        "text": "hc.ui.registerModal(modal)",
+        "link": "/renderer-ui#hcuiregistermodalmodal"
+      },
+      {
+        "text": "hc.ui.openModal(modalId, context?)",
+        "link": "/renderer-ui#hcuiopenmodalmodalid-context"
+      },
+      {
+        "text": "hc.ui.closeModal(modalId?)",
+        "link": "/renderer-ui#hcuiclosemodalmodalid"
+      },
+      {
         "text": "hc.ui.registerRequestTab(tab)",
         "link": "/renderer-ui#hcuiregisterrequesttabtab"
       },
@@ -331,6 +355,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-data#hcthemes",
         "items": [
           {
+            "text": "registerTheme(hc, theme)",
+            "link": "/renderer-data#registerthemehc-theme"
+          },
+          {
             "text": "hc.themes.register(theme)",
             "link": "/renderer-data#hcthemesregistertheme"
           },
@@ -375,6 +403,37 @@ export const sidebar: DefaultTheme.SidebarItem[] =
           {
             "text": "hc.storage.set(key, value)",
             "link": "/renderer-data#hcstoragesetkey-value"
+          },
+          {
+            "text": "Storage-backed store (cross-webview sync)",
+            "link": "/renderer-data#storage-backed-store-cross-webview-sync"
+          }
+        ],
+        "collapsed": false
+      },
+      {
+        "text": "hc.database",
+        "link": "/renderer-data#hcdatabase",
+        "items": [
+          {
+            "text": "hc.database.get(sql, params?)",
+            "link": "/renderer-data#hcdatabasegetsql-params"
+          },
+          {
+            "text": "hc.database.all(sql, params?)",
+            "link": "/renderer-data#hcdatabaseallsql-params"
+          },
+          {
+            "text": "hc.database.run(sql, params?)",
+            "link": "/renderer-data#hcdatabaserunsql-params"
+          },
+          {
+            "text": "hc.database.exec(sql)",
+            "link": "/renderer-data#hcdatabaseexecsql"
+          },
+          {
+            "text": "hc.database.transaction(fn)",
+            "link": "/renderer-data#hcdatabasetransactionfn"
           }
         ],
         "collapsed": false
@@ -460,6 +519,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/main-api#hcstorage"
       },
       {
+        "text": "hc.database",
+        "link": "/main-api#hcdatabase"
+      },
+      {
         "text": "hc.http.onBeforeSend(handler)",
         "link": "/main-api#hchttponbeforesendhandler"
       },
@@ -512,6 +575,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "Catalog entry fields",
         "link": "/marketplace#catalog-entry-fields"
+      },
+      {
+        "text": "Theme listings",
+        "link": "/marketplace#theme-listings"
       }
     ],
     "collapsed": false

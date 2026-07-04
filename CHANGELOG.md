@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Update documentation to clarify plugin and theme management. (`36bdeb7`)
+
 ## 1.0.28 - 2026-07-03
 
 - Update Toolbar component styles for improved UI consistency. (`488a52e`)
