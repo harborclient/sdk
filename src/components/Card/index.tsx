@@ -10,6 +10,7 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 /**
+ * Renders a card with an image, title, and description.
  */
 export function Card({ children, className, ...props }: Props): JSX.Element {
   const classes = cn(

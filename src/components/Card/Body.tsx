@@ -8,6 +8,7 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 /**
+ * Renders the body of a card.
  */
 export function Body({ children, className, ...props }: Props): JSX.Element {
   return (

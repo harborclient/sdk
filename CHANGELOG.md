@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor AsyncListState and Card components for improved structure and clarity. (`6a6024c`)
 - Enhance project configuration and component utilities. (`eec167c`)
 
 ## 1.0.29 - 2026-07-04

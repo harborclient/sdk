@@ -16,6 +16,7 @@ interface Props {
 }
 
 /**
+ * Renders a card image.
  */
 export function Image({ src, alt, className }: Props): JSX.Element {
   return (
