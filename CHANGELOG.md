@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- Refactor Toolbar component styles for improved consistency and added pressed state story. (`d1bc41d`)
+
 ## 1.0.35 - 2026-07-04
 
 - Enhance SegmentedTabs component styling for improved alignment. (`4e8ecea`)

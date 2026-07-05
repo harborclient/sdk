@@ -57,6 +57,29 @@ export const ToggleAction: Story = {
   }
 };
 
+export const PressedState: Story = {
+  args: {
+    ariaLabel: 'Collections sidebar',
+    actions: [
+      {
+        id: 'toggle-storage-badges',
+        icon: faDatabase,
+        label: 'Storage location badges',
+        title: 'Hide storage location badges',
+        ariaPressed: true,
+        onClick: fn()
+      },
+      {
+        id: 'close-sidebar',
+        icon: faXmark,
+        label: 'Close sidebar',
+        title: 'Close sidebar',
+        onClick: fn()
+      }
+    ]
+  }
+};
+
 export const AiSidebarActions: Story = {
   args: {
     ariaLabel: 'AI sidebar',

@@ -76,25 +76,10 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'aria
 }
 
 /**
- * Tailwind classes for inactive toolbar icon action buttons.
+ * Tailwind classes for toolbar icon action buttons.
  */
-const TOOLBAR_ACTION_BUTTON_INACTIVE =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-muted hover:bg-selection hover:text-text focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
-
-/**
- * Tailwind classes for pressed toolbar toggles, matching footer layout icon buttons.
- */
-const TOOLBAR_ACTION_BUTTON_ACTIVE =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-control text-text shadow-sm focus-visible:bg-surface focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
-
-/**
- * Resolves toolbar button classes for a declarative action.
- */
-function toolbarActionButton(action: ToolbarAction): string {
-  return action.ariaPressed === true
-    ? TOOLBAR_ACTION_BUTTON_ACTIVE
-    : TOOLBAR_ACTION_BUTTON_INACTIVE;
-}
+const TOOLBAR_ACTION_BUTTON =
+  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
 
 /**
  * Top-of-sidebar toolbar with left-aligned icon actions.
@@ -124,7 +109,7 @@ export function Toolbar({
               <button
                 type="button"
                 ref={action.buttonRef}
-                className={toolbarActionButton(action)}
+                className={TOOLBAR_ACTION_BUTTON}
                 title={title}
                 aria-label={action.label}
                 aria-expanded={action.ariaExpanded}
@@ -135,11 +120,10 @@ export function Toolbar({
               >
                 <FaIcon
                   icon={action.icon}
-                  className={
-                    action.ariaPressed === true
-                      ? 'hc-toolbar-action-icon h-5! w-5!'
-                      : 'hc-toolbar-action-icon h-5! w-5!'
-                  }
+                  className={cn(
+                    'hc-toolbar-action-icon h-5! w-5!',
+                    action.ariaPressed === true ? 'opacity-100' : 'opacity-50'
+                  )}
                 />
               </button>
               {action.popover}
