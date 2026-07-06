@@ -60,3 +60,41 @@ export function createTestPluginDir(pluginId = 'com.example.test-plugin'): {
     }
   };
 }
+
+/**
+ * Creates a minimal snippet bundle directory suitable for signing tests.
+ *
+ * @param catalogId - Snippet bundle id from snippets.json.
+ */
+export function createTestSnippetDir(catalogId = 'com.example.test-snippets'): {
+  pluginDir: string;
+  cleanup: () => void;
+} {
+  const pluginDir = mkdtempSync(join(tmpdir(), 'hc-snippet-sign-'));
+  mkdirSync(join(pluginDir, 'dist'), { recursive: true });
+  writeFileSync(
+    join(pluginDir, 'snippets.json'),
+    JSON.stringify(
+      {
+        id: catalogId,
+        name: 'Test Snippets',
+        version: '1.0.0',
+        summary: 'Test snippet bundle for signing.',
+        author: 'Example Inc.',
+        categories: ['testing'],
+        engines: { harborclient: '>=2.0.0' },
+        snippets: [{ name: 'Tester', where: 'post-request', file: 'dist/tester.js' }]
+      },
+      null,
+      2
+    )
+  );
+  writeFileSync(join(pluginDir, 'dist', 'tester.js'), 'hc.test("ok", () => true);');
+
+  return {
+    pluginDir,
+    cleanup: () => {
+      rmSync(pluginDir, { recursive: true, force: true });
+    }
+  };
+}

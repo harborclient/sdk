@@ -2,7 +2,11 @@ import { describe, expect, it, jest } from '@jest/globals';
 import { existsSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { runSignCli } from './cli.js';
-import { createTestPluginDir, createTestSigningKeys } from './testFixtures.js';
+import {
+  createTestPluginDir,
+  createTestSigningKeys,
+  createTestSnippetDir
+} from './testFixtures.js';
 
 const SIGNING_KEY_ENV = 'HARBORCLIENT_PLUGIN_SIGNING_KEY';
 
@@ -128,6 +132,29 @@ describe('runSignCli', () => {
         ],
         { cwd }
       );
+
+      expect(exitCode).toBe(0);
+      expect(existsSync(join(fixture.pluginDir, 'signature.json'))).toBe(true);
+    } finally {
+      restoreConsole();
+      restoreSigningKeyEnv(previousEnv);
+      rmSync(privateKeyPath, { force: true });
+      fixture.cleanup();
+    }
+  });
+
+  it('signs a snippets-only bundle directory', async () => {
+    const keys = createTestSigningKeys();
+    const fixture = createTestSnippetDir('com.example.cli-snippet-bundle');
+    const previousEnv = process.env[SIGNING_KEY_ENV];
+    const restoreConsole = withMutedConsole();
+    const privateKeyPath = join(dirname(fixture.pluginDir), `${basename(fixture.pluginDir)}.pem`);
+
+    try {
+      writeFileSync(privateKeyPath, keys.privateKeyPem);
+      process.env[SIGNING_KEY_ENV] = privateKeyPath;
+
+      const exitCode = await runSignCli(['node', 'cli-sign.js'], { cwd: fixture.pluginDir });
 
       expect(exitCode).toBe(0);
       expect(existsSync(join(fixture.pluginDir, 'signature.json'))).toBe(true);

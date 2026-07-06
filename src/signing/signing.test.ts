@@ -2,7 +2,11 @@ import { describe, expect, it } from '@jest/globals';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { signPlugin } from './sign.js';
-import { createTestPluginDir, createTestSigningKeys } from './testFixtures.js';
+import {
+  createTestPluginDir,
+  createTestSigningKeys,
+  createTestSnippetDir
+} from './testFixtures.js';
 import { verifyPlugin } from './verify.js';
 
 describe('signPlugin', () => {
@@ -45,6 +49,35 @@ describe('signPlugin', () => {
           privateKeyPem: 'not-a-key'
         })
       ).rejects.toThrow(/invalid ed25519 private key/i);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+
+  it('writes signature.json for a snippets-only bundle directory', async () => {
+    const keys = createTestSigningKeys();
+    const fixture = createTestSnippetDir('com.example.snippets.tester');
+
+    try {
+      const result = await signPlugin({
+        pluginDir: fixture.pluginDir,
+        privateKeyPem: keys.privateKeyPem,
+        keyId: 'snippet-test-key'
+      });
+
+      expect(result.signature.pluginId).toBe('com.example.snippets.tester');
+      expect(result.signature.pluginVersion).toBe('1.0.0');
+      expect(result.signature.keyId).toBe('snippet-test-key');
+      expect(result.signature.files.map((file) => file.path)).toEqual([
+        'dist/tester.js',
+        'snippets.json'
+      ]);
+
+      const verification = await verifyPlugin({
+        pluginDir: fixture.pluginDir,
+        trustedPublicKeysPem: [keys.publicKeyPem]
+      });
+      expect(verification.status).toBe('valid');
     } finally {
       fixture.cleanup();
     }
