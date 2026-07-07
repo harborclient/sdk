@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.41 - 2026-07-07
+
 - fix(docs): update variable references in API documentation and type definitions. (`110f9f1`)
 
 ## 1.0.40 - 2026-07-07
