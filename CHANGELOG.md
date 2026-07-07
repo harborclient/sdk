@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.40 - 2026-07-07
+
 - fix(snippets): correct indentation in HcExpectMatcher interface. (`82b249d`)
 
 ## 1.0.39 - 2026-07-07
