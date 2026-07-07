@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.37 - 2026-07-07
+
 - Enhance signing functionality to support snippets-only bundles. (`de418a0`)
 
 ## 1.0.36 - 2026-07-05
