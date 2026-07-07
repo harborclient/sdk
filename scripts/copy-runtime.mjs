@@ -16,5 +16,6 @@ cpSync(join(root, 'src/runtime/view-host'), join(root, 'dist/runtime/view-host')
   filter: skipTestFiles
 });
 cpSync(join(root, 'src/client.d.ts'), join(root, 'dist/client.d.ts'));
+cpSync(join(root, 'src/snippets.d.ts'), join(root, 'dist/snippets.d.ts'));
 cpSync(join(root, 'src/styles.css'), join(root, 'dist/styles.css'));
 cpSync(join(root, 'src/styles.css.d.ts'), join(root, 'dist/styles.css.d.ts'));

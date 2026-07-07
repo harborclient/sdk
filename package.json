@@ -1,6 +1,6 @@
 {
   "name": "@harborclient/sdk",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "description": "TypeScript SDK for HarborClient development.",
   "keywords": [
     "harborclient",
@@ -66,6 +66,9 @@
     },
     "./main": {
       "types": "./dist/main.d.ts"
+    },
+    "./snippets": {
+      "types": "./dist/snippets.d.ts"
     },
     "./http": {
       "types": "./dist/http/index.d.ts",
@@ -143,6 +146,13 @@
     "./styles.css": {
       "types": "./dist/styles.css.d.ts",
       "default": "./dist/styles.css"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "snippets": [
+        "./dist/snippets.d.ts"
+      ]
     }
   },
   "bin": {
