@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.39 - 2026-07-07
+
 - chore(package): update keywords in package.json to include plugins, themes, and snippets. (`84a709e`)
 
 ## 1.0.37 - 2026-07-07
