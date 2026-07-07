@@ -54,9 +54,9 @@ interface HcExpectMatcher {
     equal(expected: unknown): void;
     eql(expected: unknown): void;
     include(substr: string): void;
-  };
-  be: {
-    ok(): void;
+    be: {
+      ok(): void;
+    };
   };
 }
 

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(snippets): correct indentation in HcExpectMatcher interface. (`82b249d`)
+
 ## 1.0.39 - 2026-07-07
 
 - chore(package): update keywords in package.json to include plugins, themes, and snippets. (`84a709e`)
