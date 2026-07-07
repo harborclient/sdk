@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(docs): update variable references in API documentation and type definitions. (`110f9f1`)
+
 ## 1.0.40 - 2026-07-07
 
 - fix(snippets): correct indentation in HcExpectMatcher interface. (`82b249d`)

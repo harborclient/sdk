@@ -2040,7 +2040,7 @@ export interface PluginScriptContextInit {
   response?: PluginScriptResponseInit;
 
   /**
-   * Merged runtime variables for hc.variables, hc.collection.variables,
+   * Merged runtime variables for hc.request.variables, hc.collection.variables,
    * hc.environment.variables, and hc.globals lookups.
    */
   variables?: Record<string, string>;
@@ -2094,7 +2094,7 @@ export interface PluginScriptRunResult {
   request: PluginScriptRequestInit;
 
   /**
-   * Ephemeral variable sets from hc.variables.set.
+   * Ephemeral variable sets from hc.request.variables.set.
    */
   variableSets: Record<string, string>;
 
@@ -2169,7 +2169,7 @@ export interface PluginScriptContext {
  * Script sandbox factory available on {@link MainPluginContext.scripts}.
  *
  * Runs user scripts with the same hc object as collection and request pre/post scripts
- * (`hc.request`, `hc.variables`, `hc.collection`, `hc.environment`, `hc.globals`,
+ * (`hc.request`, `hc.collection`, `hc.environment`, `hc.globals`,
  * `hc.test`, `hc.expect`, and `hc.response` when a response is provided).
  */
 export interface PluginScripts {

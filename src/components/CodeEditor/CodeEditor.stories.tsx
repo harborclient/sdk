@@ -86,7 +86,7 @@ export const WithVariables: Story = {
 };
 
 const scriptPlaceholder = `hc.request.url = 'https://example.com';
-hc.variables.set('token', 'abc');
+hc.request.variables.set('token', 'abc');
 
 /ask How do I set a request header?`;
 

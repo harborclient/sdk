@@ -11,6 +11,7 @@ HarborClient uses a trusted-extension model similar to VS Code or Obsidian. Perm
 | `filesystem:read`  | Read from allowlisted paths (plugin directory plus granted paths)                                  |
 | `filesystem:write` | Write to allowlisted paths                                                                         |
 | `http`             | Hook into or send HTTP from main via `hc.http`                                                     |
+| `network`          | Outbound HTTP from the renderer via `hc.host.sendHttpRequest` (gated by Settings → General)        |
 | `ipc`              | Register custom IPC handlers via `hc.ipc.handle`                                                   |
 | `server`           | Local HTTP echo server via `hc.server` (express listener in the Electron main process)             |
 

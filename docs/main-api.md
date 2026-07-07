@@ -176,7 +176,7 @@ export function activate(hc: MainPluginContext): void {
   const result = context.run(`
     const data = hc.response.json();
     hc.test('is ok', () => hc.expect(data.ok).to.equal(true));
-    hc.variables.set('lastStatus', String(hc.response.code));
+    hc.request.variables.set('lastStatus', String(hc.response.code));
     data.ok;
   `);
 
@@ -195,6 +195,6 @@ export function activate(hc: MainPluginContext): void {
 
 `run()` returns the full structured result: mutated `request`, `variableSets`, `collectionVariableSets`, `environmentVariableSets`, `globalVariableSets`, `collectionHeaders`, `tests`, `logs`, optional `error`, and `value` (the script's last expression).
 
-The hc surface matches pre/post request scripts: `hc.request`, `hc.variables`, `hc.collection`, `hc.environment`, `hc.globals`, `hc.test`, `hc.expect`, and `hc.response` (when `init.response` is provided). See [Request scripts](https://harborclient.com/request-scripts) for the full hc reference.
+The hc surface matches pre/post request scripts: `hc.request`, `hc.collection`, `hc.environment`, `hc.globals`, `hc.test`, `hc.expect`, and `hc.response` (when `init.response` is provided). See [Request scripts](https://harborclient.com/request-scripts) for the full hc reference.
 
 Tests and logs accumulate across multiple `run()` calls on the same context. Request and variable mutations persist until you create a new context.

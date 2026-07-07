@@ -381,7 +381,7 @@ function AuditTab({ context }: { context: RequestTabContext }) {
 }
 ```
 
-This snapshot reflects the editor state before send. It does not include ephemeral values from `hc.variables.set` during an in-flight send.
+This snapshot reflects the editor state before send. It does not include ephemeral values from `hc.request.variables.set` during an in-flight send.
 
 ### Updating globals from plugins
 
