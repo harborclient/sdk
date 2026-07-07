@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore(package): update keywords in package.json to include plugins, themes, and snippets. (`84a709e`)
+
 ## 1.0.37 - 2026-07-07
 
 - Enhance signing functionality to support snippets-only bundles. (`de418a0`)
