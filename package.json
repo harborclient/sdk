@@ -7,8 +7,7 @@
     "plugins",
     "themes",
     "snippets",
-    "typescript",
-    "types"
+    "typescript"
   ],
   "homepage": "https://github.com/harborclient/sdk",
   "bugs": {

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore(package): remove unused types entry from package.json. (`65bf340`)
+
 ## 1.0.41 - 2026-07-07
 
 - fix(docs): update variable references in API documentation and type definitions. (`110f9f1`)
