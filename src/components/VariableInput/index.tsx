@@ -11,6 +11,8 @@ import {
 import { SuggestionList } from '../Autocomplete/SuggestionList.js';
 import type { AutocompleteSource } from '../Autocomplete/types.js';
 import { useAutocomplete } from '../Autocomplete/useAutocomplete.js';
+import { Button } from '../Button/index.js';
+import { VariableTooltipValue } from '../VariableTooltip/index.js';
 import { Input } from '../forms/index.js';
 import { cn } from '../utils.js';
 
@@ -62,9 +64,11 @@ export interface Props extends Omit<
   wrapperClassName?: string;
 
   /**
-   * Opens collection settings to edit the hovered variable.
+   * Opens settings to edit the hovered variable.
+   *
+   * @param key - Variable name from the hovered {{key}} token.
    */
-  onEditVariable?: () => void;
+  onEditVariable?: (key: string) => void;
 
   /**
    * DOM id forwarded to the underlying input for label association.
@@ -375,32 +379,28 @@ export function VariableInput({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-[14px] text-text shadow-md after:pointer-events-auto after:absolute after:right-0 after:-bottom-2 after:left-0 after:h-2 after:content-['']"
+          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-[16px] text-text shadow-md after:pointer-events-auto after:absolute after:right-0 after:-bottom-2 after:left-0 after:h-2 after:content-['']"
           style={{ top: tooltip.top - 4, left: tooltip.left }}
           onMouseEnter={cancelHide}
           onMouseLeave={scheduleHide}
         >
-          <span
-            className={
-              tooltipContent.muted
-                ? 'hc-variable-input-tooltip-text text-muted'
-                : 'hc-variable-input-tooltip-text'
-            }
-          >
-            {tooltipContent.text}
-          </span>
+          <VariableTooltipValue
+            value={tooltipContent.text}
+            variableKey={tooltip.key}
+            muted={tooltipContent.muted}
+          />
           {onEditVariable && (
-            <button
-              type="button"
-              className="hc-variable-input-tooltip-edit app-no-drag -mx-1 self-start rounded px-1 py-0.5 text-[14px] text-accent hover:underline"
+            <Button
+              variant="secondary"
+              className="hc-variable-input-tooltip-edit self-start"
               aria-label={`Edit value for ${tooltip.key}`}
               onClick={() => {
-                onEditVariable();
+                onEditVariable(tooltip.key);
                 setTooltip(null);
               }}
             >
               Edit value
-            </button>
+            </Button>
           )}
         </div>
       )}

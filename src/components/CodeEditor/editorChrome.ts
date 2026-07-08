@@ -97,20 +97,66 @@ export function createEditorTheme(fontSize: string): ReturnType<typeof EditorVie
       flexDirection: 'column',
       gap: '6px',
       padding: '8px 12px',
-      fontSize,
+      fontSize: '16px',
       color: 'var(--mac-text)'
     },
-    '.cm-variable-tooltip-muted': {
+    '.cm-variable-tooltip-value-row': {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px'
+    },
+    '.cm-variable-tooltip-value': {
+      boxSizing: 'border-box',
+      flex: '1 1 0%',
+      minWidth: '0',
+      borderRadius: '8px',
+      border: '1px solid var(--mac-separator)',
+      backgroundColor: 'var(--mac-field)',
+      padding: '6px 10px',
+      fontSize: '16px',
+      color: 'var(--mac-text)',
+      cursor: 'default'
+    },
+    '.cm-variable-tooltip-value-muted': {
       color: 'var(--mac-muted)'
+    },
+    '.cm-variable-tooltip-copy': {
+      display: 'inline-flex',
+      flexShrink: '0',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '30px',
+      height: '30px',
+      borderRadius: '9999px',
+      border: 'none',
+      backgroundColor: 'transparent',
+      color: 'var(--mac-muted)',
+      cursor: 'pointer'
+    },
+    '.cm-variable-tooltip-copy:hover': {
+      backgroundColor: 'var(--mac-selection)',
+      color: 'var(--mac-text)'
+    },
+    '.cm-variable-tooltip-copy-icon': {
+      display: 'block'
     },
     '.cm-variable-tooltip-edit': {
       alignSelf: 'flex-start',
-      background: 'none',
-      border: 'none',
-      padding: '0',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '32px',
+      borderRadius: '9999px',
+      border: '1px solid var(--mac-separator)',
+      backgroundColor: 'var(--mac-control)',
+      padding: '4px 12px',
+      fontSize: '15px',
+      color: 'var(--mac-text)',
       cursor: 'pointer',
-      fontSize,
-      color: 'var(--mac-accent)'
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+    },
+    '.cm-variable-tooltip-edit:hover': {
+      backgroundColor: 'var(--mac-selection)'
     },
     '.cm-tooltip.cm-tooltip-autocomplete': {
       border: '1px solid var(--mac-separator)',

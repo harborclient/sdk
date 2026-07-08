@@ -36,9 +36,11 @@ export interface Props {
   variables: Variable[];
 
   /**
-   * Opens collection settings to edit a hovered variable.
+   * Opens settings to edit a hovered variable.
+   *
+   * @param key - Variable name from the hovered {{key}} token.
    */
-  onEditVariable?: () => void;
+  onEditVariable?: (key: string) => void;
 
   /**
    * Optional async source for key column autocomplete suggestions.

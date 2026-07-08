@@ -1,5 +1,5 @@
 import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { ComponentPropsWithoutRef, JSX } from 'react';
+import { type ComponentPropsWithoutRef, type JSX, useEffect, useRef } from 'react';
 import type { Variable } from '../../types.js';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
@@ -27,6 +27,11 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'onCh
    * Optional helper text above the table.
    */
   description?: string;
+
+  /**
+   * When set, scrolls to and focuses the Value input for the matching variable key.
+   */
+  focusKey?: string;
 }
 
 /**
@@ -36,9 +41,13 @@ export function VariableTable({
   variables,
   onChange,
   description,
+  focusKey,
   className,
   ...props
 }: Props): JSX.Element {
+  const valueInputRefs = useRef<Map<number, HTMLInputElement>>(new Map());
+  const lastFocusedKeyRef = useRef<string | undefined>(undefined);
+
   /**
    * Updates a single variable row by index.
    */
@@ -63,6 +72,44 @@ export function VariableTable({
     }
     onChange(variables.filter((_, i) => i !== index));
   };
+
+  /**
+   * Scrolls to and focuses the Value input for the row matching `focusKey`.
+   * Runs once per distinct `focusKey` so subsequent edits do not steal focus.
+   */
+  useEffect(() => {
+    const trimmedFocusKey = focusKey?.trim();
+    if (!trimmedFocusKey || trimmedFocusKey === lastFocusedKeyRef.current) {
+      return;
+    }
+
+    const rowIndex = variables.findIndex((variable) => variable.key.trim() === trimmedFocusKey);
+    if (rowIndex < 0) {
+      return;
+    }
+
+    lastFocusedKeyRef.current = trimmedFocusKey;
+
+    /**
+     * Waits two animation frames so the table row can mount after tab navigation.
+     */
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const input = valueInputRefs.current.get(rowIndex);
+        if (
+          input == null ||
+          typeof input.focus !== 'function' ||
+          typeof input.select !== 'function'
+        ) {
+          return;
+        }
+
+        input.scrollIntoView({ block: 'nearest' });
+        input.focus();
+        input.select();
+      });
+    });
+  }, [focusKey, variables]);
 
   return (
     <div {...props} className={cn('hc-variable-table', className)}>
@@ -96,6 +143,10 @@ export function VariableTable({
                 </TableCell>
                 <TableCell>
                   <Input
+                    ref={(element) => {
+                      if (element) valueInputRefs.current.set(index, element);
+                      else valueInputRefs.current.delete(index);
+                    }}
                     type="text"
                     className="w-full"
                     value={variable.value}

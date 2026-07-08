@@ -28,6 +28,9 @@ import type { ComponentPropsWithoutRef, JSX } from 'react';
 import type { CodeEditorSetup, CodeEditorTheme, Variable } from '../../types.js';
 import { normalizeCodeEditorFontSize } from '../../ui/codeEditorSettings.js';
 import { VARIABLE_NAME_CHARS, getVariableTooltipContent } from '../../variables/index.js';
+import { Button } from '../Button/index.js';
+import { buildVariableTooltipDom } from '../VariableTooltip/dom.js';
+import { VariableTooltipValue } from '../VariableTooltip/index.js';
 import { useCodeEditorConfig } from './config.js';
 import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
 import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
@@ -233,9 +236,11 @@ export interface Props extends Omit<
   variables?: Variable[];
 
   /**
-   * Opens collection settings to edit a hovered variable.
+   * Opens settings to edit a hovered variable.
+   *
+   * @param key - Variable name from the hovered {{key}} token.
    */
-  onEditVariable?: () => void;
+  onEditVariable?: (key: string) => void;
 
   /**
    * When set on a JavaScript editor, enables custom autocomplete (e.g. hc API completions).
@@ -486,41 +491,6 @@ function findVariableAtPos(
 }
 
 /**
- * Builds DOM content for a variable tooltip.
- */
-function buildVariableTooltipDom(
-  key: string,
-  variables: Variable[],
-  onEditVariable?: () => void
-): HTMLDivElement {
-  const content = getVariableTooltipContent(key, variables);
-  const dom = document.createElement('div');
-  dom.className = 'cm-variable-tooltip';
-
-  const valueEl = document.createElement('div');
-  valueEl.textContent = content.text;
-  if (content.muted) {
-    valueEl.className = 'cm-variable-tooltip-muted';
-  }
-  dom.appendChild(valueEl);
-
-  if (onEditVariable) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.textContent = 'Edit value';
-    btn.className = 'cm-variable-tooltip-edit';
-    btn.setAttribute('aria-label', `Edit value for ${key}`);
-    btn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      onEditVariable();
-    });
-    dom.appendChild(btn);
-  }
-
-  return dom;
-}
-
-/**
  * Joins non-empty element ids into a space-separated `aria-describedby` value.
  *
  * @returns Merged id string, or undefined when no ids are provided.
@@ -589,14 +559,14 @@ function variableSelectionTooltip(
  */
 function variableTooltipEscapeHandler(
   isOpen: () => boolean,
-  onDismiss: (view: EditorView) => void,
+  onDismiss: () => void,
   getValidationDescribedBy: () => string | undefined
 ): ReturnType<typeof EditorView.domEventHandlers> {
   return EditorView.domEventHandlers({
     keydown(event, view) {
       if (event.key === 'Escape' && isOpen()) {
         event.preventDefault();
-        onDismiss(view);
+        onDismiss();
         setContentDescribedBy(view.dom.querySelector('.cm-content'), getValidationDescribedBy);
         return true;
       }
@@ -610,7 +580,7 @@ function variableTooltipEscapeHandler(
  */
 function variableTooltip(
   getVariables: () => Variable[],
-  getOnEditVariable: () => (() => void) | undefined
+  getOnEditVariable: () => ((key: string) => void) | undefined
 ): ReturnType<typeof hoverTooltip> {
   return hoverTooltip((view, pos) => {
     const match = findVariableAtPos(view.state.doc, pos);
@@ -873,7 +843,7 @@ export function CodeEditor({
    */
   const getVariables = useCallback((): Variable[] => variablesRef.current ?? [], []);
   const getOnEditVariable = useCallback(
-    (): (() => void) | undefined => onEditVariableRef.current,
+    (): ((key: string) => void) | undefined => onEditVariableRef.current,
     []
   );
 
@@ -1107,31 +1077,27 @@ export function CodeEditor({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-code-editor-tooltip app-no-drag pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[14px] text-text shadow-md"
+          className="hc-code-editor-tooltip app-no-drag pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[16px] text-text shadow-md"
           style={{ top: selectionTooltip.top - 4, left: selectionTooltip.left }}
         >
-          <span
-            className={
-              selectionTooltipContent.muted
-                ? 'hc-code-editor-tooltip-text text-muted'
-                : 'hc-code-editor-tooltip-text'
-            }
-          >
-            {selectionTooltipContent.text}
-          </span>
+          <VariableTooltipValue
+            value={selectionTooltipContent.text}
+            variableKey={selectionTooltip.key}
+            muted={selectionTooltipContent.muted}
+          />
           {onEditVariable ? (
-            <button
-              type="button"
-              className="hc-code-editor-tooltip-edit self-start text-[14px] text-accent hover:underline"
+            <Button
+              variant="secondary"
+              className="hc-code-editor-tooltip-edit self-start"
               aria-label={`Edit value for ${selectionTooltip.key}`}
               onMouseDown={(event) => {
                 event.preventDefault();
-                onEditVariable();
+                onEditVariable(selectionTooltip.key);
                 setSelectionTooltip(null);
               }}
             >
               Edit value
-            </button>
+            </Button>
           ) : null}
         </div>
       ) : null}

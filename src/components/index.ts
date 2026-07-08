@@ -102,6 +102,11 @@ export type { TableVariant } from './Table/index.js';
 export { VariableInput } from './VariableInput/index.js';
 export type { Props as VariableInputProps } from './VariableInput/index.js';
 export { VariableTable } from './VariableTable/index.js';
+export {
+  VariableTooltipValue,
+  appendVariableTooltipValueRow,
+  buildVariableTooltipDom
+} from './VariableTooltip/index.js';
 export { cleanVariables, resolveTabListKeyAction } from './utils.js';
 export type { TabListKeyOptions } from './utils.js';
 export { useDialogFocus, getFocusableElements } from './useDialogFocus.js';

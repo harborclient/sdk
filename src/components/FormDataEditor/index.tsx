@@ -31,9 +31,11 @@ export interface Props {
   onSelectFiles: () => Promise<string[]>;
 
   /**
-   * Opens collection settings to edit a hovered variable.
+   * Opens settings to edit a hovered variable.
+   *
+   * @param key - Variable name from the hovered {{key}} token.
    */
-  onEditVariable?: () => void;
+  onEditVariable?: (key: string) => void;
 }
 
 /**
