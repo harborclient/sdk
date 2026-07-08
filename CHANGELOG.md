@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.43 - 2026-07-08
+
 - chore(package): remove unused types entry from package.json. (`65bf340`)
 
 ## 1.0.41 - 2026-07-07
