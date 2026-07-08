@@ -1,6 +1,6 @@
 {
   "name": "@harborclient/sdk",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "description": "TypeScript SDK for HarborClient development.",
   "keywords": [
     "harborclient",
@@ -226,6 +226,7 @@
     "@storybook/react-vite": "^10.4.6",
     "@tailwindcss/vite": "^4.3.1",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/chai": "^4.3.20",
     "@types/node": "^26.0.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

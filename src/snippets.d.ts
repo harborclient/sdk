@@ -4,7 +4,14 @@
  * Keep in sync with the runtime hc sandbox in harborclient
  * `src/main/scripting/scriptApi.ts` and editor completions in
  * `src/renderer/src/scripting/hcCompletions.ts`.
+ *
+ * `hc.expect` is Chai BDD expect — see https://www.chaijs.com/api/bdd/
  */
+
+/// <reference types="chai" />
+
+/** Chai BDD expect factory type for hc.expect. */
+type HcExpectStatic = typeof import('chai').expect;
 
 /**
  * Header helpers on hc.request.headers and hc.collection.headers.
@@ -218,20 +225,6 @@ interface HcSendRequestResponse {
 }
 
 /**
- * Chai-lite matcher returned by hc.expect(actual).
- */
-interface HcExpectMatcher {
-  to: {
-    equal(expected: unknown): void;
-    eql(expected: unknown): void;
-    include(substr: string): void;
-    be: {
-      ok(): void;
-    };
-  };
-}
-
-/**
  * Element surface exposed by hc.response.document() for HTML bodies.
  */
 interface HcResponseElement {
@@ -297,7 +290,8 @@ interface HcScriptApi {
    */
   sendRequest(req: HcSendRequestInput): Promise<HcSendRequestResponse>;
   test(name: string, fn: () => void): void;
-  expect(actual: unknown): HcExpectMatcher;
+  /** Chai BDD expect; see https://www.chaijs.com/api/bdd/ */
+  expect: HcExpectStatic;
   /**
    * Available in post-request scripts after the primary request completes.
    */
