@@ -187,6 +187,7 @@ export interface PluginUi {
   registerFooterPanel(panel: FooterPanelContribution): Disposable;
   registerMenuItem(item: MenuItemContribution): Disposable;
   registerRequestToolbarAction(action: RequestToolbarActionContribution): Disposable;
+  registerScriptEditorAction(action: ScriptEditorActionContribution): Disposable;
   registerContextMenuItem(item: ContextMenuItemContribution): Disposable;
   registerStatusBarItem(item: StatusBarItemContribution): Disposable;
   showToast(message: string, options?: { duration?: number }): void;

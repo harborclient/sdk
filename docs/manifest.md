@@ -45,6 +45,7 @@ Every plugin requires a manifest at the root of the `.hcp` archive. The example 
     "collectionSettingsTabs": [{ "id": "myPlugin.collTab", "title": "Plugin" }],
     "footerPanels": [{ "id": "myPlugin.footer", "title": "My Plugin" }],
     "requestToolbarActions": [{ "id": "myPlugin.sendAction", "title": "Run check" }],
+    "scriptEditorActions": [{ "id": "myPlugin.convert", "title": "Convert" }],
     "contextMenus": [{ "id": "myPlugin.requestMenu", "title": "Plugin action" }],
     "statusBarItems": [{ "id": "myPlugin.status", "title": "Status" }],
     "themes": [{ "id": "solarized", "title": "Solarized Dark", "type": "dark" }],
@@ -170,6 +171,7 @@ The `contributes` block declares where your plugin can appear. Each entry's `id`
 | `collectionSettingsTabs` | `registerCollectionSettingsTab` | Collection settings segmented tabs                                           |
 | `footerPanels`           | `registerFooterPanel`           | Slide-up footer panel                                                        |
 | `requestToolbarActions`  | `registerRequestToolbarAction`  | Button near Send in the URL bar                                              |
+| `scriptEditorActions`    | `registerScriptEditorAction`    | Icon button on each pre/post script editor row                               |
 | `contextMenus`           | `registerContextMenuItem`       | Row actions on sidebar collections, folders, requests                        |
 | `statusBarItems`         | `registerStatusBarItem`         | Footer status area (beside sidebar / AI toggles)                             |
 | `themes`                 | `hc.themes.register`            | Appearance theme in **View → Theme** and **Settings → General → Appearance** |

@@ -3,7 +3,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { StreamLanguage } from '@codemirror/language';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
-import { Prec } from '@codemirror/state';
+import { Compartment, type Extension, Prec } from '@codemirror/state';
 import {
   Decoration,
   type DecorationSet,
@@ -417,6 +417,32 @@ function createSlashCommandCompletionSource(commands: CodeEditorSlashCommand[]):
 }
 
 /**
+ * Combines slash-command and host completion sources so the slash regex is
+ * skipped on non-slash lines (the common case in script bodies).
+ *
+ * @param slash - Prebuilt slash completion source for the registered commands.
+ * @param host - Host-provided completion source (e.g. `hc` API completions).
+ * @returns A single completion source that branches on the current line prefix.
+ */
+function createScriptCompletionSource(
+  slash: CompletionSource,
+  host: CompletionSource
+): CompletionSource {
+  /**
+   * Routes to slash completions when the line starts with optional whitespace
+   * and `/`; otherwise delegates to the host source without running slash logic.
+   */
+  return (context) => {
+    const line = context.state.doc.lineAt(context.pos);
+    const lineText = line.text.slice(0, context.pos - line.from);
+    if (/^\s*\//.test(lineText)) {
+      return slash(context);
+    }
+    return host(context);
+  };
+}
+
+/**
  * Returns an Enter keymap that triggers registered slash commands before default newline handling.
  */
 function slashCommandEnterHandler(
@@ -602,6 +628,184 @@ function variableTooltip(
 /** Size of the native resize-y grip hit target in the bottom-right corner. */
 const RESIZE_GRIP_PX = 16;
 
+/** CodeMirror compartments for partial extension reconfiguration without full editor reset. */
+interface CodeEditorCompartments {
+  core: Compartment;
+  completion: Compartment;
+  a11y: Compartment;
+  placeholder: Compartment;
+}
+
+/**
+ * Builds theme, language, lint, view-state, and variable tooling extensions.
+ *
+ * @returns Extensions that change with language, theme, lint, or variable presence.
+ */
+function buildCoreExtensions(options: {
+  editorThemeExt: Extension;
+  trackViewState: boolean;
+  viewStateSelectionListener: Extension;
+  resolvedTheme: CodeEditorTheme;
+  isDark: boolean;
+  language: CodeEditorLanguage;
+  lint: boolean;
+  hasVariables: boolean;
+  tooltipId: string;
+  getVariables: () => Variable[];
+  getOnEditVariable: () => ((key: string) => void) | undefined;
+  getValidationDescribedBy: () => string | undefined;
+  onSelectionTooltipChange: (state: SelectionTooltipState | null) => void;
+  isSelectionTooltipOpen: () => boolean;
+  onDismissSelectionTooltip: () => void;
+}): Extension[] {
+  const next: Extension[] = [options.editorThemeExt];
+  if (options.trackViewState) {
+    next.push(options.viewStateSelectionListener);
+  }
+  const themeExtension = getCodeEditorThemeExtension(options.resolvedTheme);
+  if (themeExtension) {
+    next.push(themeExtension);
+  } else {
+    next.push(createBuiltInSyntaxHighlighting(options.isDark));
+  }
+  if (options.language === 'json') {
+    next.push(json());
+  }
+  if (options.language === 'javascript') {
+    next.push(javascript());
+  }
+  if (options.language === 'shell') {
+    next.push(StreamLanguage.define(shell));
+  }
+  if (options.lint) {
+    if (options.language === 'json') {
+      next.push(createJsonSyntaxLinter());
+    }
+    if (options.language === 'javascript') {
+      next.push(createJavascriptSyntaxLinter());
+    }
+  }
+  if (options.hasVariables) {
+    next.push(
+      variableHighlighter,
+      variableTooltip(options.getVariables, options.getOnEditVariable),
+      variableSelectionTooltip(
+        options.tooltipId,
+        options.onSelectionTooltipChange,
+        options.getValidationDescribedBy
+      ),
+      variableTooltipEscapeHandler(
+        options.isSelectionTooltipOpen,
+        options.onDismissSelectionTooltip,
+        options.getValidationDescribedBy
+      )
+    );
+  }
+  return next;
+}
+
+/**
+ * Builds JavaScript slash-command and autocompletion extensions.
+ *
+ * @returns Extensions that change with slash commands or a host completion source.
+ */
+function buildCompletionExtensions(options: {
+  language: CodeEditorLanguage;
+  slashCommands: CodeEditorSlashCommand[] | undefined;
+  hasCompletionSource: boolean;
+  stableCompletionSource: CompletionSource;
+  slashCompletionSource: CompletionSource | null;
+  onSlashCommand: (trigger: CodeEditorSlashTrigger) => void;
+}): Extension[] {
+  if (options.language !== 'javascript') {
+    return [];
+  }
+
+  const next: Extension[] = [];
+  const slashCommands = options.slashCommands;
+  const hasSlashCommands = slashCommands != null && slashCommands.length > 0;
+
+  // Register the slash Enter handler before autocompletion so that, at equal
+  // Prec.highest precedence, this handler wins the tie and fires before the
+  // completion keymap's Enter->accept binding.
+  if (hasSlashCommands) {
+    next.push(slashCommandEnterHandler(slashCommands, options.onSlashCommand));
+  }
+
+  const completionOverrides: CompletionSource[] = [];
+  if (hasSlashCommands && options.hasCompletionSource && options.slashCompletionSource) {
+    completionOverrides.push(
+      createScriptCompletionSource(options.slashCompletionSource, options.stableCompletionSource)
+    );
+  } else if (hasSlashCommands && options.slashCompletionSource) {
+    completionOverrides.push(options.slashCompletionSource);
+  } else if (options.hasCompletionSource) {
+    completionOverrides.push(options.stableCompletionSource);
+  }
+  if (completionOverrides.length > 0) {
+    next.push(
+      autocompletion({
+        activateOnTyping: true,
+        activateOnTypingDelay: 75,
+        maxRenderedOptions: 20,
+        override: completionOverrides
+      })
+    );
+  }
+  if (hasSlashCommands) {
+    next.push(createSlashCommandHighlighter(slashCommands));
+  }
+  return next;
+}
+
+/**
+ * Builds accessibility content attributes for the editable region.
+ *
+ * @returns Extensions that change with aria props or the editor id.
+ */
+function buildA11yExtensions(options: {
+  id: string | undefined;
+  ariaLabel: string | undefined;
+  ariaLabelledBy: string | undefined;
+  ariaInvalid: boolean | 'true' | 'false' | undefined;
+  ariaDescribedBy: string | undefined;
+}): Extension[] {
+  const contentAttrs: Record<string, string> = {};
+  if (options.id) contentAttrs.id = options.id;
+  if (options.ariaLabel) contentAttrs['aria-label'] = options.ariaLabel;
+  if (options.ariaLabelledBy) contentAttrs['aria-labelledby'] = options.ariaLabelledBy;
+  if (options.ariaInvalid != null) contentAttrs['aria-invalid'] = String(options.ariaInvalid);
+  if (options.ariaDescribedBy) contentAttrs['aria-describedby'] = options.ariaDescribedBy;
+  if (Object.keys(contentAttrs).length === 0) {
+    return [];
+  }
+  return [EditorView.contentAttributes.of(contentAttrs)];
+}
+
+/**
+ * Builds muted syntax-highlighted placeholder ghost layers for empty JavaScript editors.
+ *
+ * @returns Extensions that change with placeholder text, theme, or slash commands.
+ */
+function buildPlaceholderExtensions(options: {
+  useHighlightedPlaceholder: boolean;
+  placeholder: string | undefined;
+  resolvedFontSize: string;
+  isDark: boolean;
+  resolvedTheme: CodeEditorTheme;
+  slashCommands: CodeEditorSlashCommand[] | undefined;
+}): Extension[] {
+  if (!options.useHighlightedPlaceholder || !options.placeholder) {
+    return [];
+  }
+  return createSyntaxHighlightedPlaceholder(options.placeholder, {
+    fontSize: options.resolvedFontSize,
+    isDark: options.isDark,
+    theme: options.resolvedTheme,
+    slashCommands: options.slashCommands
+  });
+}
+
 /**
  * CodeMirror wrapper for editable request bodies and read-only response views.
  *
@@ -682,6 +886,21 @@ export function CodeEditor({
   const scrollListenerCleanupRef = useRef<(() => void) | null>(null);
   const scheduleViewStateFlushRef = useRef<() => void>(() => undefined);
   const getValidationDescribedBy = (): string | undefined => ariaDescribedByRef.current;
+  const compartmentsRef = useRef<CodeEditorCompartments | null>(null);
+  if (!compartmentsRef.current) {
+    compartmentsRef.current = {
+      core: new Compartment(),
+      completion: new Compartment(),
+      a11y: new Compartment(),
+      placeholder: new Compartment()
+    };
+  }
+  const {
+    core: coreCompartment,
+    completion: completionCompartment,
+    a11y: a11yCompartment,
+    placeholder: placeholderCompartment
+  } = compartmentsRef.current;
 
   /**
    * Reads the current scroll and selection snapshot from an editor view.
@@ -720,38 +939,6 @@ export function CodeEditor({
       }, VIEW_STATE_DEBOUNCE_MS);
     };
   }, [flushViewState]);
-
-  /**
-   * Restores persisted scroll/selection and wires scroll tracking when the view is created.
-   */
-  const stableOnCreateEditor = useCallback((view: EditorView): void => {
-    editorViewRef.current = view;
-
-    const restoredSelection = initialSelectionRef.current;
-    if (restoredSelection) {
-      const clamped = clampSelection(view.state.doc.length, restoredSelection);
-      view.dispatch({
-        selection: { anchor: clamped.anchor, head: clamped.head }
-      });
-    }
-
-    const restoredScrollTop = initialScrollTopRef.current;
-    if (restoredScrollTop != null && Number.isFinite(restoredScrollTop) && restoredScrollTop >= 0) {
-      view.scrollDOM.scrollTop = restoredScrollTop;
-    }
-
-    /**
-     * Schedules persistence when the user scrolls the editor content.
-     */
-    const handleScroll = (): void => {
-      scheduleViewStateFlushRef.current();
-    };
-
-    view.scrollDOM.addEventListener('scroll', handleScroll, { passive: true });
-    scrollListenerCleanupRef.current = (): void => {
-      view.scrollDOM.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   /**
    * Flushes scroll/selection on unmount so collapsed script rows retain view state.
@@ -877,128 +1064,241 @@ export function CodeEditor({
   );
 
   /**
-   * Assembles CodeMirror extensions for language mode, theme, and optional variable tooling.
+   * Memoized slash completion source so completion bucket rebuilds stay cheap.
    */
-  const extensions = useMemo(() => {
-    const next = [EditorView.lineWrapping, editorThemeExt];
-    if (onViewStateChange != null) {
-      next.push(viewStateSelectionListener);
-    }
-    const themeExtension = getCodeEditorThemeExtension(resolvedTheme);
-    if (themeExtension) {
-      next.push(themeExtension);
-    } else {
-      next.push(createBuiltInSyntaxHighlighting(isDark));
-    }
-    if (language === 'json') {
-      next.push(json());
-    }
-    if (language === 'javascript') {
-      next.push(javascript());
-      // Register the slash Enter handler before autocompletion so that, at equal
-      // Prec.highest precedence, this handler wins the tie and fires before the
-      // completion keymap's Enter->accept binding.
-      if (slashCommands && slashCommands.length > 0) {
-        next.push(
-          slashCommandEnterHandler(slashCommands, (trigger) => {
-            onSlashCommandRef.current?.(trigger);
-          })
-        );
+  const slashCompletionSource = useMemo(
+    () =>
+      slashCommands != null && slashCommands.length > 0
+        ? createSlashCommandCompletionSource(slashCommands)
+        : null,
+    [slashCommands]
+  );
+
+  /**
+   * Stable slash-command callback reading the latest host handler from a ref.
+   */
+  const stableOnSlashCommand = useCallback((trigger: CodeEditorSlashTrigger): void => {
+    onSlashCommandRef.current?.(trigger);
+  }, []);
+
+  /**
+   * Theme, language, lint, view-state, and variable tooling extensions.
+   */
+  const coreExtensions = useMemo(
+    () =>
+      buildCoreExtensions({
+        editorThemeExt,
+        trackViewState: onViewStateChange != null,
+        viewStateSelectionListener,
+        resolvedTheme,
+        isDark,
+        language,
+        lint,
+        hasVariables,
+        tooltipId,
+        getVariables,
+        getOnEditVariable,
+        getValidationDescribedBy,
+        onSelectionTooltipChange: (state) => {
+          setSelectionTooltipRef.current(state);
+        },
+        isSelectionTooltipOpen: () => selectionTooltipRef.current != null,
+        onDismissSelectionTooltip: () => {
+          setSelectionTooltipRef.current(null);
+        }
+      }),
+    [
+      editorThemeExt,
+      onViewStateChange,
+      viewStateSelectionListener,
+      resolvedTheme,
+      isDark,
+      language,
+      lint,
+      hasVariables,
+      tooltipId,
+      getVariables,
+      getOnEditVariable
+    ]
+  );
+
+  /**
+   * Slash-command and autocompletion extensions for JavaScript editors.
+   */
+  const completionExtensions = useMemo(
+    () =>
+      buildCompletionExtensions({
+        language,
+        slashCommands,
+        hasCompletionSource,
+        stableCompletionSource,
+        slashCompletionSource,
+        onSlashCommand: stableOnSlashCommand
+      }),
+    [
+      language,
+      slashCommands,
+      hasCompletionSource,
+      stableCompletionSource,
+      slashCompletionSource,
+      stableOnSlashCommand
+    ]
+  );
+
+  /**
+   * Accessibility attributes on the editable content element.
+   */
+  const a11yExtensions = useMemo(
+    () =>
+      buildA11yExtensions({
+        id,
+        ariaLabel,
+        ariaLabelledBy,
+        ariaInvalid,
+        ariaDescribedBy
+      }),
+    [id, ariaLabel, ariaLabelledBy, ariaInvalid, ariaDescribedBy]
+  );
+
+  /**
+   * Syntax-highlighted placeholder ghost layers for empty JavaScript editors.
+   */
+  const placeholderExtensions = useMemo(
+    () =>
+      buildPlaceholderExtensions({
+        useHighlightedPlaceholder,
+        placeholder,
+        resolvedFontSize,
+        isDark,
+        resolvedTheme,
+        slashCommands
+      }),
+    [useHighlightedPlaceholder, placeholder, resolvedFontSize, isDark, resolvedTheme, slashCommands]
+  );
+
+  const coreExtensionsRef = useRef(coreExtensions);
+  coreExtensionsRef.current = coreExtensions;
+  const completionExtensionsRef = useRef(completionExtensions);
+  completionExtensionsRef.current = completionExtensions;
+  const a11yExtensionsRef = useRef(a11yExtensions);
+  a11yExtensionsRef.current = a11yExtensions;
+  const placeholderExtensionsRef = useRef(placeholderExtensions);
+  placeholderExtensionsRef.current = placeholderExtensions;
+
+  /**
+   * Restores persisted scroll/selection, syncs compartment extensions, and wires scroll tracking.
+   */
+  const stableOnCreateEditor = useCallback(
+    (view: EditorView): void => {
+      editorViewRef.current = view;
+
+      view.dispatch({
+        effects: [
+          coreCompartment.reconfigure(coreExtensionsRef.current),
+          completionCompartment.reconfigure(completionExtensionsRef.current),
+          a11yCompartment.reconfigure(a11yExtensionsRef.current),
+          placeholderCompartment.reconfigure(placeholderExtensionsRef.current)
+        ]
+      });
+
+      const trackViewState =
+        onViewStateChangeRef.current != null ||
+        initialScrollTopRef.current != null ||
+        initialSelectionRef.current != null;
+      if (!trackViewState) {
+        return;
       }
-      const completionOverrides: CompletionSource[] = [];
-      if (slashCommands && slashCommands.length > 0) {
-        completionOverrides.push(createSlashCommandCompletionSource(slashCommands));
+
+      const restoredSelection = initialSelectionRef.current;
+      if (restoredSelection) {
+        const clamped = clampSelection(view.state.doc.length, restoredSelection);
+        view.dispatch({
+          selection: { anchor: clamped.anchor, head: clamped.head }
+        });
       }
-      if (hasCompletionSource) {
-        completionOverrides.push(stableCompletionSource);
+
+      const restoredScrollTop = initialScrollTopRef.current;
+      if (
+        restoredScrollTop != null &&
+        Number.isFinite(restoredScrollTop) &&
+        restoredScrollTop >= 0
+      ) {
+        view.scrollDOM.scrollTop = restoredScrollTop;
       }
-      if (completionOverrides.length > 0) {
-        next.push(
-          autocompletion({
-            activateOnTyping: true,
-            override: completionOverrides
-          })
-        );
-      }
-      if (slashCommands && slashCommands.length > 0) {
-        next.push(createSlashCommandHighlighter(slashCommands));
-      }
+
+      /**
+       * Schedules persistence when the user scrolls the editor content.
+       */
+      const handleScroll = (): void => {
+        scheduleViewStateFlushRef.current();
+      };
+
+      view.scrollDOM.addEventListener('scroll', handleScroll, { passive: true });
+      scrollListenerCleanupRef.current = (): void => {
+        view.scrollDOM.removeEventListener('scroll', handleScroll);
+      };
+    },
+    [a11yCompartment, completionCompartment, coreCompartment, placeholderCompartment]
+  );
+
+  /**
+   * Stable top-level extensions array; bucket contents update via compartment reconfigure.
+   */
+  const stableExtensionsRef = useRef<Extension[] | null>(null);
+  if (!stableExtensionsRef.current) {
+    stableExtensionsRef.current = [
+      EditorView.lineWrapping,
+      coreCompartment.of(coreExtensions),
+      completionCompartment.of(completionExtensions),
+      a11yCompartment.of(a11yExtensions),
+      placeholderCompartment.of(placeholderExtensions)
+    ];
+  }
+  const stableExtensions = stableExtensionsRef.current;
+
+  /**
+   * Reconfigures core extensions when theme, language, lint, or variable tooling changes.
+   */
+  useEffect(() => {
+    const view = editorViewRef.current;
+    if (!view) {
+      return;
     }
-    if (language === 'shell') {
-      next.push(StreamLanguage.define(shell));
+    view.dispatch({ effects: coreCompartment.reconfigure(coreExtensions) });
+  }, [coreCompartment, coreExtensions]);
+
+  /**
+   * Reconfigures completion extensions when slash commands or host completion changes.
+   */
+  useEffect(() => {
+    const view = editorViewRef.current;
+    if (!view) {
+      return;
     }
-    if (lint) {
-      if (language === 'json') {
-        next.push(createJsonSyntaxLinter());
-      }
-      if (language === 'javascript') {
-        next.push(createJavascriptSyntaxLinter());
-      }
+    view.dispatch({ effects: completionCompartment.reconfigure(completionExtensions) });
+  }, [completionCompartment, completionExtensions]);
+
+  /**
+   * Reconfigures accessibility attributes when aria props or id change.
+   */
+  useEffect(() => {
+    const view = editorViewRef.current;
+    if (!view) {
+      return;
     }
-    if (hasVariables) {
-      next.push(
-        variableHighlighter,
-        variableTooltip(getVariables, getOnEditVariable),
-        variableSelectionTooltip(
-          tooltipId,
-          (state) => {
-            setSelectionTooltipRef.current(state);
-          },
-          getValidationDescribedBy
-        ),
-        variableTooltipEscapeHandler(
-          () => selectionTooltipRef.current != null,
-          () => {
-            setSelectionTooltipRef.current(null);
-          },
-          getValidationDescribedBy
-        )
-      );
+    view.dispatch({ effects: a11yCompartment.reconfigure(a11yExtensions) });
+  }, [a11yCompartment, a11yExtensions]);
+
+  /**
+   * Reconfigures placeholder ghost layers when placeholder text or theme changes.
+   */
+  useEffect(() => {
+    const view = editorViewRef.current;
+    if (!view) {
+      return;
     }
-    const contentAttrs: Record<string, string> = {};
-    if (id) contentAttrs.id = id;
-    if (ariaLabel) contentAttrs['aria-label'] = ariaLabel;
-    if (ariaLabelledBy) contentAttrs['aria-labelledby'] = ariaLabelledBy;
-    if (ariaInvalid != null) contentAttrs['aria-invalid'] = String(ariaInvalid);
-    if (ariaDescribedBy) contentAttrs['aria-describedby'] = ariaDescribedBy;
-    if (Object.keys(contentAttrs).length > 0) {
-      next.push(EditorView.contentAttributes.of(contentAttrs));
-    }
-    if (useHighlightedPlaceholder && placeholder) {
-      next.push(
-        ...createSyntaxHighlightedPlaceholder(placeholder, {
-          fontSize: resolvedFontSize,
-          isDark,
-          theme: resolvedTheme,
-          slashCommands
-        })
-      );
-    }
-    return next;
-  }, [
-    editorThemeExt,
-    resolvedTheme,
-    isDark,
-    language,
-    lint,
-    hasVariables,
-    hasCompletionSource,
-    stableCompletionSource,
-    getVariables,
-    getOnEditVariable,
-    slashCommands,
-    useHighlightedPlaceholder,
-    placeholder,
-    resolvedFontSize,
-    id,
-    ariaLabel,
-    ariaLabelledBy,
-    ariaInvalid,
-    ariaDescribedBy,
-    tooltipId,
-    onViewStateChange,
-    viewStateSelectionListener
-  ]);
+    view.dispatch({ effects: placeholderCompartment.reconfigure(placeholderExtensions) });
+  }, [placeholderCompartment, placeholderExtensions]);
 
   /**
    * Resolves CodeMirror basicSetup from persisted settings or read-only defaults.
@@ -1055,15 +1355,13 @@ export function CodeEditor({
     : null;
 
   const wrapperStyle = height ? { height } : undefined;
-  const shouldTrackViewState =
-    onViewStateChange != null || initialScrollTop != null || initialSelection != null;
 
   return (
     <div ref={wrapperRef} {...props} className={wrapperClassName} style={wrapperStyle}>
       {createElement(CodeMirrorImport, {
         value,
         onChange: readOnly ? undefined : stableOnChange,
-        extensions,
+        extensions: stableExtensions,
         theme: 'none',
         editable: resolvedEditable,
         readOnly,
@@ -1071,7 +1369,7 @@ export function CodeEditor({
         minHeight,
         ...(height ? { height: '100%' } : {}),
         basicSetup,
-        ...(shouldTrackViewState ? { onCreateEditor: stableOnCreateEditor } : {})
+        onCreateEditor: stableOnCreateEditor
       })}
       {selectionTooltip && selectionTooltipContent && variables ? (
         <div

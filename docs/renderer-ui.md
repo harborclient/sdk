@@ -334,6 +334,36 @@ hc.subscriptions.push(
 );
 ```
 
+## hc.ui.registerScriptEditorAction(action)
+
+**Signature:** `(action: ScriptEditorActionContribution) => Disposable`
+
+**Manifest:** `contributes.scriptEditorActions` plus a matching `contributes.commands` entry
+
+| Parameter | Type            | Description                                             |
+| --------- | --------------- | ------------------------------------------------------- |
+| `id`      | `string`        | Action id                                               |
+| `title`   | `string`        | Button label or tooltip                                 |
+| `command` | `string`        | Command id to run on click                              |
+| `icon`    | `string`        | Optional icon name                                      |
+| `order`   | `number`        | Sort order within the row action group                  |
+| `phases`  | `ScriptPhase[]` | Optional filter — show only in `pre` and/or `post` tabs |
+
+Adds an icon button to each script row in the pre/post request script editor. The command handler receives a single {@link ScriptEditorActionContext} argument with `phase`, `scriptId`, and `code`.
+
+```typescript
+hc.commands.register('myPlugin.convert', (context: ScriptEditorActionContext) => {
+  hc.ui.openModal('preview', context);
+});
+hc.subscriptions.push(
+  hc.ui.registerScriptEditorAction({
+    id: 'myPlugin.convert',
+    title: 'Convert',
+    command: 'myPlugin.convert'
+  })
+);
+```
+
 ## hc.ui.registerContextMenuItem(item)
 
 **Signature:** `(item: ContextMenuItemContribution) => Disposable`

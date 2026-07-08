@@ -4,6 +4,25 @@ import { type Diagnostic, linter } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 
+/** Maximum wait before running deferred lint when the browser stays busy. */
+const LINT_IDLE_TIMEOUT_MS = 500;
+
+/**
+ * Schedules work during browser idle time, with a timeout fallback for test environments.
+ *
+ * @param callback - Work to run when idle or after the timeout elapses.
+ * @param timeout - Maximum milliseconds to wait before forcing the callback.
+ * @returns Cancels the scheduled callback when invoked.
+ */
+function scheduleIdle(callback: () => void, timeout: number): () => void {
+  if (typeof requestIdleCallback === 'function') {
+    const handle = requestIdleCallback(callback, { timeout });
+    return () => cancelIdleCallback(handle);
+  }
+  const handle = setTimeout(callback, 0);
+  return () => clearTimeout(handle);
+}
+
 /**
  * Collects Lezer parse-tree error nodes as CodeMirror diagnostics.
  *
@@ -28,9 +47,22 @@ function collectJavascriptSyntaxErrors(view: EditorView): Diagnostic[] {
 
 /**
  * Returns a lint extension that underlines JavaScript syntax errors.
+ *
+ * Defers the syntax-tree walk to idle time so lint does not contend with
+ * autocomplete on the main thread while typing in script editors.
  */
 export function createJavascriptSyntaxLinter(): Extension {
-  return linter(collectJavascriptSyntaxErrors);
+  let cancelPending: (() => void) | null = null;
+
+  return linter((view) => {
+    cancelPending?.();
+    return new Promise<Diagnostic[]>((resolve) => {
+      cancelPending = scheduleIdle(() => {
+        cancelPending = null;
+        resolve(collectJavascriptSyntaxErrors(view));
+      }, LINT_IDLE_TIMEOUT_MS);
+    });
+  });
 }
 
 /**

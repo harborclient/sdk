@@ -491,6 +491,32 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           }
         };
       },
+      registerScriptEditorAction: (action) => {
+        assertManifestContribution('scriptEditorActions', action.id);
+        if (!isAgent) {
+          return noopDisposable();
+        }
+        void bridgeInvoke('registerContribution', {
+          kind: 'scriptEditorActions',
+          contribution: {
+            pluginId,
+            id: action.id,
+            title: action.title,
+            command: action.command,
+            icon: action.icon,
+            order: action.order,
+            phases: action.phases
+          }
+        });
+        return {
+          dispose: () => {
+            void bridgeInvoke('unregisterContribution', {
+              kind: 'scriptEditorActions',
+              contributionId: action.id
+            });
+          }
+        };
+      },
       registerContextMenuItem: (item) => {
         assertManifestContribution('contextMenus', item.id);
         if (!isAgent) {

@@ -627,6 +627,66 @@ export interface RequestToolbarActionContribution {
 }
 
 /**
+ * Context passed to a script editor action command when the user clicks a row button.
+ */
+export interface ScriptEditorActionContext {
+  /**
+   * Script phase for the row that triggered the action.
+   */
+  phase: ScriptPhase;
+
+  /**
+   * Stable script row id from the active request draft.
+   */
+  scriptId: string;
+
+  /**
+   * Current script source shown in the editor (inline code or resolved snippet body).
+   */
+  code: string;
+}
+
+/**
+ * Adds an icon button to each script row in the pre/post request script editor.
+ *
+ * Register the command handler with {@link PluginCommands.register} separately.
+ * The handler receives a single {@link ScriptEditorActionContext} argument.
+ * Manifest: `contributes.scriptEditorActions` plus a matching `contributes.commands` entry.
+ * Requires the `ui` permission.
+ */
+export interface ScriptEditorActionContribution {
+  /**
+   * Action id — must match an entry in `contributes.scriptEditorActions`.
+   */
+  id: string;
+
+  /**
+   * Button label or tooltip text.
+   */
+  title: string;
+
+  /**
+   * Command id to run on click — must match a registered command and manifest entry.
+   */
+  command: string;
+
+  /**
+   * Optional icon name.
+   */
+  icon?: string;
+
+  /**
+   * Sort order within the row action group. Lower values appear first.
+   */
+  order?: number;
+
+  /**
+   * When set, limits the action to specific script phases. Omit to show in both pre and post.
+   */
+  phases?: ScriptPhase[];
+}
+
+/**
  * Sidebar row type that a context menu item applies to.
  *
  * Used by {@link ContextMenuItemContribution.when} to filter which rows show the action.
@@ -1224,6 +1284,16 @@ export interface PluginUi {
    * @returns A {@link Disposable} that unregisters the action when disposed.
    */
   registerRequestToolbarAction(action: RequestToolbarActionContribution): Disposable;
+
+  /**
+   * Adds an icon button to each script row in the pre/post request script editor.
+   *
+   * Manifest: `contributes.scriptEditorActions` plus a matching `contributes.commands` entry.
+   *
+   * @param action - Script editor action contribution.
+   * @returns A {@link Disposable} that unregisters the action when disposed.
+   */
+  registerScriptEditorAction(action: ScriptEditorActionContribution): Disposable;
 
   /**
    * Adds an action to sidebar row context menus.

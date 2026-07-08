@@ -277,10 +277,11 @@ interface HcResponseAssertionBe {
 
 /**
  * Chai assertion chain for Postman-style hc.response.to.* matchers.
+ * Extends Chai.Assertion so generic matchers (equal, eql, include, …) type-check too.
  */
-interface HcResponseAssertion {
-  readonly have: HcResponseAssertionHave;
-  readonly be: HcResponseAssertionBe;
+interface HcResponseAssertion extends Chai.Assertion {
+  readonly have: HcResponseAssertionHave & Chai.Assertion;
+  readonly be: HcResponseAssertionBe & Chai.Assertion;
   readonly not: HcResponseAssertion;
 }
 
