@@ -40,3 +40,5 @@ What this means for you:
   triggers a release.
 - Don't run version-bump commands locally (`pnpm version`, `npm version`,
   etc.); use the release workflow instead so the changelog and tags stay in sync.
+- Never create `chore(release):` commits or manually bump `package.json`
+  version — push feature commits and let the workflow release.

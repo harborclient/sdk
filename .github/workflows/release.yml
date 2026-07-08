@@ -1,10 +1,13 @@
 name: Release
 
 # Release workflow for @harborclient/sdk. Runs when changes land on `main`.
-# Bumps the `version` field in package.json (patch semver), renames
-# `## Unreleased` in CHANGELOG.md to the new version, commits + tags +
-# pushes back to `main`, and publishes to npm. Skips when `## Unreleased`
-# has no content (release commits use `[skip ci]` and do not re-trigger).
+# Releases when either:
+#   - `## Unreleased` in CHANGELOG.md has content (bumps patch, renames section,
+#     commits, tags, publishes), or
+#   - package.json version has no matching git tag (publishes current version
+#     as-is; recovery path for manual version bumps).
+# Skips only when the version is already tagged and Unreleased is empty.
+# Release commits use `[skip ci]` and do not re-trigger.
 #
 # Required setup BEFORE the first run:
 #
@@ -31,35 +34,72 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ready: ${{ steps.check.outputs.ready }}
+      mode: ${{ steps.check.outputs.mode }}
+      reason: ${{ steps.check.outputs.reason }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check for Unreleased changelog content
+      - name: Check release readiness
         id: check
         run: |
           set -euo pipefail
+
+          CURRENT=$(node -p "require('./package.json').version")
+
           if python3 - <<'PY'
           import re
           import pathlib
-          import sys
 
           path = pathlib.Path("CHANGELOG.md")
           if not path.exists():
-              sys.exit(1)
+              raise SystemExit(1)
           text = path.read_text()
           match = re.search(r"^## Unreleased\s*\n(.*?)(?=^## |\Z)", text, flags=re.S | re.M)
           if not match or not match.group(1).strip():
-              sys.exit(1)
+              raise SystemExit(1)
           PY
           then
+            HAS_UNRELEASED=true
+          else
+            HAS_UNRELEASED=false
+          fi
+
+          if git rev-parse -q --verify "refs/tags/v${CURRENT}" >/dev/null; then
+            TAG_EXISTS=true
+          else
+            TAG_EXISTS=false
+          fi
+
+          if [ "$HAS_UNRELEASED" = true ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "mode=unreleased" >> "$GITHUB_OUTPUT"
+            echo "Unreleased changelog content found; releasing."
+          elif [ "$TAG_EXISTS" = false ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "mode=untagged" >> "$GITHUB_OUTPUT"
+            echo "Version v${CURRENT} has no git tag; publishing current version."
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "No Unreleased changelog content; skipping release."
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            echo "reason=Version v${CURRENT} is already tagged and Unreleased is empty." >> "$GITHUB_OUTPUT"
+            echo "Version v${CURRENT} is already tagged and Unreleased is empty; skipping release."
           fi
+
+  release-skipped:
+    needs: changelog
+    if: needs.changelog.outputs.ready == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize skip reason
+        run: |
+          {
+            echo "## Release skipped"
+            echo
+            echo "${{ needs.changelog.outputs.reason }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   release:
     needs: [ci, changelog]
@@ -88,15 +128,33 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Bump version
+      - name: Resolve release version (unreleased)
+        if: needs.changelog.outputs.mode == 'unreleased'
         run: |
           set -euo pipefail
           VERSION=$(pnpm version patch --no-git-tag-version | tail -n1 | sed 's/^v//')
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Bumped to $VERSION"
 
-      - name: Update CHANGELOG.md for release
+      - name: Resolve release version (untagged)
+        if: needs.changelog.outputs.mode == 'untagged'
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Publishing untagged version $VERSION"
+
+      - name: Verify tag does not exist
         if: env.VERSION != ''
+        run: |
+          set -euo pipefail
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "::error::Tag v${VERSION} already exists; aborting release."
+            exit 1
+          fi
+
+      - name: Update CHANGELOG.md for release
+        if: needs.changelog.outputs.mode == 'unreleased' && env.VERSION != ''
         run: |
           set -euo pipefail
           python3 - "$VERSION" "$(date -u +%Y-%m-%d)" <<'PY'
@@ -128,7 +186,8 @@ jobs:
           path.write_text(new_text)
           PY
 
-      - name: Commit, tag, and push
+      - name: Commit, tag, and push (unreleased)
+        if: needs.changelog.outputs.mode == 'unreleased' && env.VERSION != ''
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -138,12 +197,23 @@ jobs:
           git tag -a "v${VERSION}" -m "Release v${VERSION}"
           git push origin HEAD:main --follow-tags
 
+      - name: Tag and push (untagged)
+        if: needs.changelog.outputs.mode == 'untagged' && env.VERSION != ''
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "refs/tags/v${VERSION}"
+
       - name: Publish to npm
+        if: env.VERSION != ''
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public --no-git-checks
 
       - name: Create GitHub release
+        if: env.VERSION != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create "v${VERSION}" --generate-notes --title "v${VERSION}"
