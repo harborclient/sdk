@@ -6,6 +6,7 @@
  * `src/renderer/src/scripting/hcCompletions.ts`.
  *
  * `hc.expect` is Chai BDD expect — see https://www.chaijs.com/api/bdd/
+ * `hc.response.to` provides Postman-style response matchers.
  */
 
 /// <reference types="chai" />
@@ -244,11 +245,55 @@ interface HcResponseDocument {
 /**
  * Response snapshot available in post-request scripts as hc.response.
  */
+interface HcResponseAssertionHave {
+  status(codeOrText: number | string): void;
+  header(name: string): void;
+  header(name: string, value: string): void;
+  body(): void;
+  body(expected: string | RegExp): void;
+  jsonBody(): void;
+  jsonBody(expected: object): void;
+}
+
+/**
+ * Status-class and body shortcuts on hc.response.to.be.*.
+ */
+interface HcResponseAssertionBe {
+  readonly success: void;
+  readonly redirection: void;
+  readonly clientError: void;
+  readonly serverError: void;
+  readonly error: void;
+  readonly ok: void;
+  readonly accepted: void;
+  readonly badRequest: void;
+  readonly unauthorized: void;
+  readonly forbidden: void;
+  readonly notFound: void;
+  readonly rateLimited: void;
+  readonly json: void;
+  readonly withBody: void;
+}
+
+/**
+ * Chai assertion chain for Postman-style hc.response.to.* matchers.
+ */
+interface HcResponseAssertion {
+  readonly have: HcResponseAssertionHave;
+  readonly be: HcResponseAssertionBe;
+  readonly not: HcResponseAssertion;
+}
+
+/**
+ * Response snapshot available in post-request scripts as hc.response.
+ */
 interface HcResponseApi {
   readonly code: number;
   readonly status: string;
   readonly headers: Record<string, string>;
   readonly responseTime: number;
+  /** Postman-style response assertions (hc.response.to.have.status(200), etc.). */
+  readonly to: HcResponseAssertion;
   text(): string;
   json(): unknown;
   document(): HcResponseDocument;
