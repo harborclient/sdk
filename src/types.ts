@@ -724,6 +724,7 @@ export interface StatusBarItemContribution {
  * - `selection` — selected row / highlight fill
  * - `danger`, `danger-light`, `warning`, `success`, `info` — status colors
  * - `method-get`, `method-post`, `method-put`, `method-patch`, `method-delete`, `method-head`, `method-options` — HTTP method badge colors
+ * - `scrollbar-track`, `scrollbar-thumb`, `scrollbar-thumb-hover`, `scrollbar-thumb-active` — scrollbar track and thumb colors
  */
 export type ThemeColorToken =
   | 'surface'
@@ -748,7 +749,11 @@ export type ThemeColorToken =
   | 'method-patch'
   | 'method-delete'
   | 'method-head'
-  | 'method-options';
+  | 'method-options'
+  | 'scrollbar-track'
+  | 'scrollbar-thumb'
+  | 'scrollbar-thumb-hover'
+  | 'scrollbar-thumb-active';
 
 /**
  * Custom appearance theme registered via {@link PluginThemes.register}.
