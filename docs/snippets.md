@@ -38,7 +38,7 @@ Snippets use ordinary ESM export syntax:
 /// <reference types="@harborclient/sdk/snippets" />
 
 export function passTest(value) {
-  hc.test("value is truthy", () => {
+  hc.test('value is truthy', () => {
     hc.expect(value).to.be.true;
   });
 }
@@ -56,10 +56,9 @@ Use a **relative** path that matches the snippet **Name**:
 
 ```javascript
 /// <reference types="@harborclient/sdk/snippets" />
-
-import { passTest } from "./pass-testing.js";
-import formatStatus from "./format-status.js";
-import { formatDate } from "./utils/format-date.js";
+import formatStatus from './format-status.js';
+import { passTest } from './pass-testing.js';
+import { formatDate } from './utils/format-date.js';
 
 passTest(hc.response.status === 200);
 ```
@@ -70,11 +69,11 @@ At send time, HarborClient bundles relative imports against your snippet library
 
 ## Limits
 
-| Supported | Not supported yet |
-| --------- | ----------------- |
+| Supported                                             | Not supported yet                           |
+| ----------------------------------------------------- | ------------------------------------------- |
 | Relative `./snippet-name.js` imports between snippets | Bare npm imports (`import x from "lodash"`) |
-| `export` / `import` ESM syntax | `require()` |
-| Top-level `await` | Node.js built-ins (`fs`, `path`, …) |
+| `export` / `import` ESM syntax                        | `require()`                                 |
+| Top-level `await`                                     | Node.js built-ins (`fs`, `path`, …)         |
 
 Duplicate importable snippet names produce an **ambiguous import** error at send time.
 
