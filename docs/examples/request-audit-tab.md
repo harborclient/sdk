@@ -21,7 +21,6 @@ This example adds a read-only **Audit** tab to the request editor. It summarizes
 ## src/renderer.tsx
 
 ```tsx
-import { installReact } from '@harborclient/sdk';
 import type { PluginContext, RequestTabContext } from '@harborclient/sdk';
 
 function AuditTab({ context }: { context: RequestTabContext }) {
@@ -42,7 +41,6 @@ function AuditTab({ context }: { context: RequestTabContext }) {
 }
 
 export function activate(hc: PluginContext): void {
-  installReact(hc.react);
   hc.subscriptions.push(
     hc.ui.registerRequestTab({
       id: 'audit',

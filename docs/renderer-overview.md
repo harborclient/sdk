@@ -282,7 +282,7 @@ The same React instance HarborClient uses in the renderer. Do not import or bund
 
 ## React and JSX
 
-Plugins must share the host React instance. `@harborclient/sdk` ships a small JSX runtime and hook barrel that forwards to `hc.react` after you call `installReact(hc.react)` at the start of `activate()`.
+Plugins must share the host React instance. HarborClient installs `hc.react` before `activate(hc)` runs. `@harborclient/sdk` ships a small JSX runtime and hook barrel that forwards to that instance — no plugin-side setup call is required.
 
 **TypeScript** (`tsconfig.json`):
 
@@ -307,11 +307,9 @@ esbuild src/renderer.tsx \
 **Renderer entry:**
 
 ```tsx
-import { installReact } from '@harborclient/sdk';
 import type { PluginContext } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
-  installReact(hc.react);
   // register contributions…
 }
 ```
@@ -325,10 +323,10 @@ import { useEffect, useState } from '@harborclient/sdk/react';
 **Single-file escape hatch** — `createPluginComponent` builds a component from a factory that receives host React:
 
 ```tsx
-import { createPluginComponent, installReact } from '@harborclient/sdk';
+import { createPluginComponent } from '@harborclient/sdk';
+import type { PluginContext } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
-  installReact(hc.react);
   const Panel = createPluginComponent((React) => {
     return function Panel() {
       const [count, setCount] = React.useState(0);

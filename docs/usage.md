@@ -5,12 +5,9 @@ Install `@harborclient/sdk` first — see [Install](/install).
 ## Renderer entry
 
 ```tsx
-import { installReact } from '@harborclient/sdk';
 import type { PluginContext } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
-  installReact(hc.react);
-
   hc.subscriptions.push(
     hc.http.onAfterSend(async (request, response) => {
       // react to completed requests without a main entry

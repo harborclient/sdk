@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- docs: update React integration instructions across multiple documents. (`3268077`)
+
 ## 1.0.43 - 2026-07-08
 
 - chore(package): remove unused types entry from package.json. (`65bf340`)
