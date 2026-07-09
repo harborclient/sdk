@@ -340,16 +340,20 @@ hc.subscriptions.push(
 
 **Manifest:** `contributes.scriptEditorActions` plus a matching `contributes.commands` entry
 
-| Parameter | Type            | Description                                             |
-| --------- | --------------- | ------------------------------------------------------- |
-| `id`      | `string`        | Action id                                               |
-| `title`   | `string`        | Button label or tooltip                                 |
-| `command` | `string`        | Command id to run on click                              |
-| `icon`    | `string`        | Optional icon name                                      |
-| `order`   | `number`        | Sort order within the row action group                  |
-| `phases`  | `ScriptPhase[]` | Optional filter — show only in `pre` and/or `post` tabs |
+| Parameter | Type            | Description                                                               |
+| --------- | --------------- | ------------------------------------------------------------------------- |
+| `id`      | `string`        | Action id                                                                 |
+| `title`   | `string`        | Button label or tooltip                                                   |
+| `command` | `string`        | Command id to run on click                                                |
+| `icon`    | `string`        | Optional icon name                                                        |
+| `order`   | `number`        | Sort order within the row action group                                    |
+| `phases`  | `ScriptPhase[]` | Optional filter — show only in pre-request and/or post-request stage tabs |
 
-Adds an icon button to each script row in the pre/post request script editor. The command handler receives a single {@link ScriptEditorActionContext} argument with `phase`, `scriptId`, and `code`.
+HarborClient uses **request stage** for the pre-request and post-request script lists (`ScriptPhase`: `pre` | `post`) and **script stage** for timing within a list (`ScriptStage`: `before-all`, `before-each`, `main`, `after-each`, `after-all`).
+
+Script rows carry a {@link ScriptStage} value that controls when the script runs within its request stage. Plugin script editor actions are not filtered by script stage today — use `phases` only.
+
+Adds an icon button to each script row in the pre-request and post-request stage editors. The command handler receives a single {@link ScriptEditorActionContext} argument with `phase` (request stage), `scriptId`, and `code`.
 
 ```typescript
 hc.commands.register('myPlugin.convert', (context: ScriptEditorActionContext) => {

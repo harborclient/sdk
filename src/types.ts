@@ -90,9 +90,18 @@ export interface FormDataPart {
 }
 
 /**
- * Script execution phase relative to the HTTP request.
+ * Request stage relative to the HTTP send: pre-request or post-request.
  */
 export type ScriptPhase = 'pre' | 'post';
+
+/**
+ * Script stage within a request stage's ordered script list.
+ *
+ * `before-all` and `after-all` run once before or after the main scripts.
+ * `before-each` and `after-each` wrap every `main` script. `main` is the default
+ * main script stage.
+ */
+export type ScriptStage = 'before-all' | 'before-each' | 'main' | 'after-each' | 'after-all';
 
 /**
  * Named CodeMirror syntax themes available in settings.

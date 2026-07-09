@@ -53,3 +53,20 @@ export const SingleGroup: Story = {
   },
   render: (args) => <RowActionsMenuDemo {...args} />
 };
+
+export const WithCheckedItems: Story = {
+  args: {
+    menuId: 'row-3',
+    groups: [
+      [
+        { label: 'Before all', checked: false, onSelect: fn() },
+        { label: 'Before each', checked: false, onSelect: fn() },
+        { label: 'Main', checked: true, onSelect: fn() },
+        { label: 'After each', checked: false, onSelect: fn() },
+        { label: 'After all', checked: false, onSelect: fn() }
+      ],
+      [{ label: 'Delete', onSelect: fn(), variant: 'danger' }]
+    ]
+  },
+  render: (args) => <RowActionsMenuDemo {...args} />
+};

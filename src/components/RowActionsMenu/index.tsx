@@ -1,4 +1,4 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useEffect, useMemo, useRef, useState } from '@harborclient/sdk/react';
 import type { ComponentPropsWithoutRef, JSX, KeyboardEvent } from 'react';
 import { Button } from '../Button/index.js';
@@ -9,6 +9,12 @@ export type MenuItem = {
   label: string;
   onSelect: () => void;
   variant?: 'default' | 'danger';
+
+  /**
+   * When set, renders the item as a checkbox-style menu entry with a leading
+   * checkmark slot. `true` shows the check; `false` reserves the slot for alignment.
+   */
+  checked?: boolean;
 };
 
 interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
@@ -41,7 +47,7 @@ const TYPEAHEAD_TIMEOUT_MS = 500;
  */
 function menuItemClass(variant: MenuItem['variant']): string {
   const base =
-    'block w-full cursor-pointer border-none bg-transparent px-3.5 py-1.5 text-left text-[16px] app-no-drag';
+    'flex w-full cursor-pointer items-center gap-2 border-none bg-transparent px-3.5 py-1.5 text-left text-[16px] app-no-drag';
 
   return variant === 'danger'
     ? `${base} text-text hover:bg-danger/15 hover:text-danger`
@@ -271,6 +277,7 @@ export function RowActionsMenu({
               >
                 {group.map((item) => {
                   const itemIndex = flatIndex++;
+                  const isCheckboxItem = item.checked !== undefined;
                   return (
                     <button
                       key={item.label}
@@ -278,7 +285,8 @@ export function RowActionsMenu({
                         itemRefs.current[itemIndex] = el;
                       }}
                       type="button"
-                      role="menuitem"
+                      role={isCheckboxItem ? 'menuitemcheckbox' : 'menuitem'}
+                      aria-checked={isCheckboxItem ? item.checked : undefined}
                       tabIndex={itemIndex === focusedIndex ? 0 : -1}
                       className={cn('hc-row-actions-menu-item', menuItemClass(item.variant))}
                       onClick={(e) => {
@@ -287,7 +295,15 @@ export function RowActionsMenu({
                         item.onSelect();
                       }}
                     >
-                      {item.label}
+                      {isCheckboxItem ? (
+                        <span
+                          className="hc-row-actions-menu-item-check inline-flex w-4 shrink-0 justify-center"
+                          aria-hidden
+                        >
+                          {item.checked ? <FaIcon icon={faCheck} className="h-3 w-3" /> : null}
+                        </span>
+                      ) : null}
+                      <span className="hc-row-actions-menu-item-label min-w-0">{item.label}</span>
                     </button>
                   );
                 })}

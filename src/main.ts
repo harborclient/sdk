@@ -22,5 +22,6 @@ export type {
   PluginScriptTestResult,
   PluginServer,
   PluginStorage,
-  ScriptPhase
+  ScriptPhase,
+  ScriptStage
 } from './types.js';
