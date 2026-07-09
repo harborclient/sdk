@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- docs: add snippets documentation and update sidebar. (`83b61ad`)
+
 ## 1.0.53 - 2026-07-09
 
 - docs: enhance hc.data documentation and introduce new data property. (`ac16ba6`)

@@ -20,6 +20,7 @@ To install or manage plugins in the app, see [Plugins](https://harborclient.com/
 - [UI contributions](/renderer-ui) — settings panels, tabs, menus, and toolbar actions
 - [Themes and storage](/renderer-data) — themes, commands, storage, and filesystem
 - [Main API](/main-api) — HTTP hooks and IPC in the SES utilityProcess
+- [Snippets](/snippets) — types and import syntax for request script snippet files
 - [Components](/storybook/index.html) — interactive component explorer (Storybook)
 - [Examples](/examples/) — request logger, audit tab, and Solarized theme
 - [Marketplace](/marketplace) — publish to the HarborClient plugin catalog

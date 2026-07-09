@@ -332,6 +332,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-ui#hcuiregisterrequesttoolbaractionaction"
       },
       {
+        "text": "hc.ui.registerScriptEditorAction(action)",
+        "link": "/renderer-ui#hcuiregisterscripteditoractionaction"
+      },
+      {
         "text": "hc.ui.registerContextMenuItem(item)",
         "link": "/renderer-ui#hcuiregistercontextmenuitemitem"
       },
@@ -541,6 +545,37 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "hc.scripts",
         "link": "/main-api#hcscripts"
+      }
+    ],
+    "collapsed": false
+  },
+  {
+    "text": "Snippets",
+    "link": "/snippets",
+    "items": [
+      {
+        "text": "TypeScript and editor support",
+        "link": "/snippets#typescript-and-editor-support"
+      },
+      {
+        "text": "Importable snippet names",
+        "link": "/snippets#importable-snippet-names"
+      },
+      {
+        "text": "Exporting from snippets",
+        "link": "/snippets#exporting-from-snippets"
+      },
+      {
+        "text": "Importing snippets",
+        "link": "/snippets#importing-snippets"
+      },
+      {
+        "text": "Limits",
+        "link": "/snippets#limits"
+      },
+      {
+        "text": "See also",
+        "link": "/snippets#see-also"
       }
     ],
     "collapsed": false

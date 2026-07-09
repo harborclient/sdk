@@ -34,6 +34,7 @@ export const docsNav = [
   { kind: 'page', slug: 'renderer-ui', title: 'UI contributions', maxDepth: 3 },
   { kind: 'page', slug: 'renderer-data', title: 'Themes and storage', maxDepth: 3 },
   { kind: 'page', slug: 'main-api', title: 'Main API', maxDepth: 2 },
+  { kind: 'page', slug: 'snippets', title: 'Snippets', maxDepth: 2 },
   {
     kind: 'group',
     slug: 'examples',

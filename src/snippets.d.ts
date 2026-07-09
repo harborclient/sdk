@@ -1,9 +1,25 @@
 /**
- * Ambient globals for HarborClient request/post-request script snippets.
+ * Ambient globals for HarborClient request/post-request scripts and snippet `.js` files.
+ *
+ * Enable in your editor with:
+ *
+ * ```ts
+ * /// <reference types="@harborclient/sdk/snippets" />
+ * ```
  *
  * Keep in sync with the runtime hc sandbox in harborclient
  * `src/main/scripting/scriptApi.ts` and editor completions in
  * `src/renderer/src/scripting/hcCompletions.ts`.
+ *
+ * **Import and export** — snippets whose **Name** ends in `.js` (for example
+ * `pass-testing.js` or `utils/helpers.js`) may be imported from scripts with
+ * relative ESM paths: `import { fn } from './pass-testing.js'`. Use standard
+ * `export function`, `export const`, and `export default` in snippet source.
+ * Cross-snippet imports are resolved at send time in HarborClient; the SDK does
+ * not type-check import paths between snippet files.
+ *
+ * **Not supported:** npm package imports, `require`, and Node.js built-ins.
+ * See [Request scripts — Snippets](https://harborclient.com/scripting#snippets).
  *
  * `hc.expect` is Chai BDD expect — see https://www.chaijs.com/api/bdd/
  * `hc.response.to` provides Postman-style response matchers.
