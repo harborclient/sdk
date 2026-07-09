@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.49 - 2026-07-09
+
 - docs: update React integration instructions across multiple documents. (`3268077`)
 
 ## 1.0.43 - 2026-07-08
