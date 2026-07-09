@@ -72,7 +72,7 @@ export function PageSidebar<T extends string>({
     <nav
       {...props}
       className={cn(
-        'hc-page-sidebar flex w-[180px] shrink-0 flex-col gap-1 border-r border-separator bg-sidebar px-2 py-3',
+        'hc-page-sidebar flex w-[220px] shrink-0 flex-col gap-1 border-r border-separator bg-sidebar px-2 py-3',
         className
       )}
       aria-label={ariaLabel}
