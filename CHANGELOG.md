@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.54 - 2026-07-09
+
 - docs(snippets): standardize import syntax and improve formatting. (`b6b0630`)
 - docs: add snippets documentation and update sidebar. (`83b61ad`)
 
