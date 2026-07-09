@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.53 - 2026-07-09
+
 - docs: enhance hc.data documentation and introduce new data property. (`ac16ba6`)
 
 ## 1.0.52 - 2026-07-09
