@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 - style(PageSidebar): increase width of sidebar from 180px to 220px for improved layout. (`a6679c8`)
+
+## 1.0.49 - 2026-07-09
+
 - docs: update React integration instructions across multiple documents. (`3268077`)
 
 ## 1.0.43 - 2026-07-08
