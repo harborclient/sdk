@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(types): add new script stage accent colors to ThemeColorToken. (`35ff9d7`)
+
 ## 1.0.50 - 2026-07-09
 
 - style(PageSidebar): increase width of sidebar from 180px to 220px for improved layout. (`a6679c8`)
