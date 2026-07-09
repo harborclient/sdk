@@ -2144,6 +2144,11 @@ export interface PluginScriptContextInit {
    * Environment metadata for hc.environment.* APIs.
    */
   environment?: PluginScriptEnvironmentInit;
+
+  /**
+   * Initial value for hc.data when creating the context.
+   */
+  data?: Record<string, unknown>;
 }
 
 /**
@@ -2217,6 +2222,11 @@ export interface PluginScriptRunResult {
    * Captured console.log and console.error output unless console was overridden.
    */
   logs: string[];
+
+  /**
+   * Mutable hc.data bag after this run; persists across subsequent run() calls on the same context.
+   */
+  data: Record<string, unknown>;
 
   /**
    * Sanitized runtime error when script evaluation throws.

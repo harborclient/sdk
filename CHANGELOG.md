@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- docs: enhance hc.data documentation and introduce new data property. (`ac16ba6`)
+
 ## 1.0.52 - 2026-07-09
 
 - feat(types): add new script stage accent colors to ThemeColorToken. (`35ff9d7`)

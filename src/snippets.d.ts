@@ -325,6 +325,11 @@ interface HcScriptApi {
   };
   globals: HcVariableBagApi;
   cookies: HcCookieApi;
+  /**
+   * Mutable object shared across scripts in the current send (pre through post).
+   * Use for structured ephemeral data; use variable bags for strings and persistence.
+   */
+  data: Record<string, unknown>;
   execution: HcExecutionApi;
   /** Read-only metadata about the current script run (Postman pm.info equivalent). */
   info: HcInfoApi;
