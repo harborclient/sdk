@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.50 - 2026-07-09
+
 - style(PageSidebar): increase width of sidebar from 180px to 220px for improved layout. (`a6679c8`)
 
 ## 1.0.49 - 2026-07-09
