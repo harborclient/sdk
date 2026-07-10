@@ -1,5 +1,6 @@
 import type { Variable } from '../types.js';
 import { getDynamicVariableDescription, resolveDynamicVariable } from './dynamic.js';
+import { type FilterCall, applyFilters } from './filters.js';
 
 /**
  * A segment of text, optionally marking a {{variable}} token.
@@ -7,6 +8,18 @@ import { getDynamicVariableDescription, resolveDynamicVariable } from './dynamic
 export interface VariableToken {
   text: string;
   key?: string;
+  filters?: FilterCall[];
+}
+
+/**
+ * A parsed `{{ variable | filter }}` placeholder with source offsets.
+ */
+export interface ParsedVariableToken {
+  raw: string;
+  key: string;
+  filters: FilterCall[];
+  start: number;
+  end: number;
 }
 
 /**
@@ -16,12 +29,95 @@ export interface VariableToken {
 export const VARIABLE_NAME_CHARS = '\\w$.-';
 
 /**
- * Global regex matching `{{variableName}}` placeholders in request text.
+ * Global regex matching `{{variableName}}` and filter chains for editor highlighting.
  */
 export const VARIABLE_TOKEN_PATTERN = new RegExp(
-  `\\{\\{\\s*([${VARIABLE_NAME_CHARS}]+)\\s*\\}\\}`,
+  `\\{\\{\\s*([${VARIABLE_NAME_CHARS}]+)(\\s*\\|\\s*[${VARIABLE_NAME_CHARS}]+)*\\s*\\}\\}`,
   'g'
 );
+
+const VALID_NAME_PATTERN = new RegExp(`^[${VARIABLE_NAME_CHARS}]+$`);
+
+/**
+ * Returns whether a variable key or filter name uses only allowed characters.
+ *
+ * @param name - Identifier from inside `{{...}}` braces.
+ */
+function isValidName(name: string): boolean {
+  return name.length > 0 && VALID_NAME_PATTERN.test(name);
+}
+
+/**
+ * Parses the inner expression of a `{{...}}` token into a key and filter chain.
+ *
+ * @param inner - Text between opening and closing braces.
+ * @returns Parsed key and filters, or null when malformed.
+ */
+function parseVariableExpression(inner: string): { key: string; filters: FilterCall[] } | null {
+  const segments = inner.split('|').map((segment) => segment.trim());
+  if (segments.length === 0 || segments[0] === '') {
+    return null;
+  }
+
+  const key = segments[0];
+  if (!isValidName(key)) {
+    return null;
+  }
+
+  const filters: FilterCall[] = [];
+  for (let i = 1; i < segments.length; i++) {
+    const name = segments[i];
+    if (!isValidName(name)) {
+      return null;
+    }
+    filters.push({ name, args: [] });
+  }
+
+  return { key, filters };
+}
+
+/**
+ * Scans text for `{{ variable | filter }}` placeholders using a hand-written lexer.
+ *
+ * @param text - Text containing variable placeholders.
+ * @returns Parsed tokens with character offsets; malformed `{{` sequences are skipped.
+ */
+export function parseVariableTokens(text: string): ParsedVariableToken[] {
+  const tokens: ParsedVariableToken[] = [];
+  let index = 0;
+
+  while (index < text.length) {
+    const open = text.indexOf('{{', index);
+    if (open === -1) {
+      break;
+    }
+
+    const close = text.indexOf('}}', open + 2);
+    if (close === -1) {
+      break;
+    }
+
+    const raw = text.slice(open, close + 2);
+    const inner = text.slice(open + 2, close);
+    const parsed = parseVariableExpression(inner);
+
+    if (parsed) {
+      tokens.push({
+        raw,
+        key: parsed.key,
+        filters: parsed.filters,
+        start: open,
+        end: close + 2
+      });
+      index = close + 2;
+      continue;
+    }
+
+    index = open + 2;
+  }
+
+  return tokens;
+}
 
 /**
  * Builds a lookup map from collection variables.
@@ -38,23 +134,87 @@ function variableLookup(variables: Variable[]): Map<string, string> {
 }
 
 /**
+ * Resolves a variable key to a string value using a lookup function and dynamic variables.
+ *
+ * @param key - Base variable name from a parsed token.
+ * @param resolveKey - Resolver for static/runtime variables.
+ * @returns Resolved value, or undefined when the key is not defined.
+ */
+function resolveKeyValue(
+  key: string,
+  resolveKey: (key: string) => string | undefined
+): string | undefined {
+  const value = resolveKey(key);
+  if (value !== undefined) {
+    return value;
+  }
+  return resolveDynamicVariable(key);
+}
+
+/**
+ * Substitutes parsed variable tokens in text using a key resolver.
+ *
+ * Unknown variables and unknown filters leave the original token unchanged.
+ *
+ * @param text - Text containing variable placeholders.
+ * @param resolveKey - Resolver for static/runtime variables.
+ * @returns Text with known variables substituted and filters applied.
+ */
+function substituteWithResolver(
+  text: string,
+  resolveKey: (key: string) => string | undefined
+): string {
+  const parsedTokens = parseVariableTokens(text);
+  if (parsedTokens.length === 0) {
+    return text;
+  }
+
+  let result = '';
+  let lastIndex = 0;
+
+  for (const token of parsedTokens) {
+    result += text.slice(lastIndex, token.start);
+    const resolved = resolveKeyValue(token.key, resolveKey);
+
+    if (resolved === undefined) {
+      result += token.raw;
+    } else {
+      const filtered = applyFilters(resolved, token.filters);
+      result += filtered ?? token.raw;
+    }
+
+    lastIndex = token.end;
+  }
+
+  result += text.slice(lastIndex);
+  return result;
+}
+
+/**
  * Splits text into plain and {{variable}} segments.
  *
  * @param text - Text containing variable placeholders.
  * @returns Ordered tokens for rendering or further processing.
  */
 export function tokenizeVariables(text: string): VariableToken[] {
+  const parsedTokens = parseVariableTokens(text);
+  if (parsedTokens.length === 0) {
+    return [{ text }];
+  }
+
   const tokens: VariableToken[] = [];
-  const pattern = new RegExp(VARIABLE_TOKEN_PATTERN.source, 'g');
   let lastIndex = 0;
 
-  for (const match of text.matchAll(pattern)) {
-    const index = match.index ?? 0;
-    if (index > lastIndex) {
-      tokens.push({ text: text.slice(lastIndex, index) });
+  for (const token of parsedTokens) {
+    if (token.start > lastIndex) {
+      tokens.push({ text: text.slice(lastIndex, token.start) });
     }
-    tokens.push({ text: match[0], key: match[1] });
-    lastIndex = index + match[0].length;
+    tokens.push({
+      text: token.raw,
+      key: token.key,
+      filters: token.filters.length > 0 ? token.filters : undefined
+    });
+    lastIndex = token.end;
   }
 
   if (lastIndex < text.length) {
@@ -71,6 +231,7 @@ export interface VariableTokenMatch {
   key: string;
   start: number;
   end: number;
+  filters?: FilterCall[];
 }
 
 /**
@@ -87,7 +248,12 @@ export function getVariableTokenAtOffset(text: string, offset: number): Variable
     const start = position;
     const end = position + token.text.length;
     if (token.key && offset >= start && offset <= end) {
-      return { key: token.key, start, end };
+      return {
+        key: token.key,
+        start,
+        end,
+        filters: token.filters
+      };
     }
     position = end;
   }
@@ -150,14 +316,33 @@ export function resolveVariable(key: string, variables: Variable[]): string | un
  */
 export function substituteVariables(text: string, variables: Variable[]): string {
   const lookup = variableLookup(variables);
-  const pattern = new RegExp(VARIABLE_TOKEN_PATTERN.source, 'g');
+  return substituteWithResolver(text, (key) => lookup.get(key));
+}
 
-  return text.replace(pattern, (match, key: string) => {
-    const value = lookup.get(key);
-    if (value !== undefined) {
-      return value;
-    }
-    const dynamic = resolveDynamicVariable(key);
-    return dynamic !== undefined ? dynamic : match;
-  });
+/**
+ * Replaces {{key}} placeholders using a custom key resolver.
+ *
+ * @param text - Text containing variable placeholders.
+ * @param resolveKey - Resolver for static/runtime variables; undefined leaves token unchanged.
+ * @returns Text with known variables substituted and filters applied.
+ */
+export function substituteVariablesWithResolver(
+  text: string,
+  resolveKey: (key: string) => string | undefined
+): string {
+  return substituteWithResolver(text, resolveKey);
+}
+
+/**
+ * Replaces {{key}} placeholders using a runtime variable map.
+ *
+ * @param text - Text containing variable placeholders.
+ * @param runtimeVars - Current runtime variable values.
+ * @returns Text with known variables substituted and filters applied.
+ */
+export function substituteVariablesFromMap(
+  text: string,
+  runtimeVars: Record<string, string>
+): string {
+  return substituteWithResolver(text, (key) => runtimeVars[key]);
 }

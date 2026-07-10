@@ -11,12 +11,13 @@
  * `src/main/scripting/scriptApi.ts` and editor completions in
  * `src/renderer/src/scripting/hcCompletions.ts`.
  *
- * **Import and export** — snippets whose **Name** ends in `.js` (for example
- * `pass-testing.js` or `utils/helpers.js`) may be imported from scripts with
- * relative ESM paths: `import { fn } from './pass-testing.js'`. Use standard
- * `export function`, `export const`, and `export default` in snippet source.
- * Cross-snippet imports are resolved at send time in HarborClient; the SDK does
- * not type-check import paths between snippet files.
+ * **Import and export** — scripts or snippets whose **Name** ends in `.js` (for example
+ * `pass-testing.js`, `before.js`, or `utils/helpers.js`) may be imported from scripts with
+ * relative ESM paths: `import { fn } from './pass-testing.js'`. Import targets include
+ * the snippet library and inline scripts in the same request and collection. Use standard
+ * `export function`, `export const`, and `export default` in module source.
+ * Cross-module imports are resolved at send time in HarborClient; the SDK does
+ * not type-check import paths between snippet or inline script files.
  *
  * **Not supported:** npm package imports, `require`, and Node.js built-ins.
  * See [Request scripts — Snippets](https://harborclient.com/scripting#snippets).

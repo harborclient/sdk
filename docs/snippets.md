@@ -3,7 +3,7 @@
 HarborClient **snippets** are reusable JavaScript blocks stored in your snippet library. Use them in collection and request scripts in two ways:
 
 1. **Script-list reference** — add a snippet with **Select snippet…** so it runs as its own stage slot (see [Request scripts — Snippets](https://harborclient.com/scripting#snippets)).
-2. **ESM import** — `import` importable snippets by filename from inline scripts or other snippets.
+2. **ESM import** — `import` importable snippets or sibling inline scripts by filename from inline scripts or other snippets.
 
 This page covers types, import syntax, and editor setup. For marketplace bundles and library management, see [Using snippets](https://harborclient.com/using-snippets) on the main docs site.
 
@@ -21,12 +21,15 @@ For the full `hc` API reference, see [Request scripts](https://harborclient.com/
 
 ## Importable snippet names
 
-Only snippets whose **Name** looks like a filename ending in `.js` can be imported. Valid examples:
+Only scripts or snippets whose **Name** looks like a filename ending in `.js` can be imported. Valid examples:
 
 - `pass-testing.js`
 - `utils/format-date.js`
+- `before.js` (inline script row in a request or collection script list)
 
 Human-readable names such as `Pass Testing` work with **Select snippet…** but cannot be import targets. Path segments use letters, digits, dots, underscores, and hyphens. Names must not start with `/` or contain `..`.
+
+Import targets come from your **snippet library** and from **inline scripts** in the same request and its collection (pre- and post-request lists). A disabled inline script with an importable name remains importable as a helper-only module even when it does not run as its own slot.
 
 When a name is import-valid, **Settings → Snippets** shows a hint that other scripts may import it. Renaming may break existing `import './…'` references.
 
@@ -65,7 +68,7 @@ passTest(hc.response.status === 200);
 
 HarborClient script editors autocomplete `./` import paths — top-level files, folder segments (`utils/`), and nested files.
 
-At send time, HarborClient bundles relative imports against your snippet library, then evaluates the result in the SES sandbox. Imported module top-level side effects run once per bundled script execution. Module state does not persist across sends; use `hc.data` for structured data shared within one send.
+At send time, HarborClient bundles relative imports against your snippet library and sibling inline scripts, then evaluates the result in the SES sandbox. Imported module top-level side effects run once per bundled script execution. Module state does not persist across sends; use `hc.data` for structured data shared within one send.
 
 ## Limits
 
@@ -75,7 +78,7 @@ At send time, HarborClient bundles relative imports against your snippet library
 | `export` / `import` ESM syntax                        | `require()`                                 |
 | Top-level `await`                                     | Node.js built-ins (`fs`, `path`, …)         |
 
-Duplicate importable snippet names produce an **ambiguous import** error at send time.
+Duplicate importable names (library snippets or inline scripts) produce an **ambiguous import** error at send time.
 
 ## See also
 

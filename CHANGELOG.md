@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(variables): enhance variable substitution with filter support. (`3968373`)
+
 ## 1.0.54 - 2026-07-09
 
 - docs(snippets): standardize import syntax and improve formatting. (`b6b0630`)

@@ -3,6 +3,7 @@ import type { Variable } from '../types.js';
 import {
   getVariableTokenAtOffset,
   getVariableTooltipContent,
+  parseVariableTokens,
   resolveVariable,
   substituteVariables,
   tokenizeVariables
@@ -104,6 +105,63 @@ describe('substituteVariables', () => {
 
     expect(result).toBe('{{$notRegistered}}');
   });
+
+  it('applies a single filter to a resolved variable', () => {
+    const result = substituteVariables('{{name|upper}}', [variable('name', 'hello')]);
+
+    expect(result).toBe('HELLO');
+  });
+
+  it('chains filters left-to-right', () => {
+    const result = substituteVariables('{{name|trim|upper}}', [variable('name', '  hello  ')]);
+
+    expect(result).toBe('HELLO');
+  });
+
+  it('leaves the token unchanged when a filter is unknown', () => {
+    const result = substituteVariables('{{name|unknown}}', [variable('name', 'hello')]);
+
+    expect(result).toBe('{{name|unknown}}');
+  });
+
+  it('url-encodes resolved values', () => {
+    const result = substituteVariables('{{q|urlencode}}', [variable('q', 'a b')]);
+
+    expect(result).toBe('a%20b');
+  });
+});
+
+describe('parseVariableTokens', () => {
+  it('parses a bare variable token', () => {
+    expect(parseVariableTokens('https://{{host}}/api')).toEqual([
+      {
+        raw: '{{host}}',
+        key: 'host',
+        filters: [],
+        start: 8,
+        end: 16
+      }
+    ]);
+  });
+
+  it('parses variable tokens with chained filters', () => {
+    expect(parseVariableTokens('{{ name | trim | upper }}')).toEqual([
+      {
+        raw: '{{ name | trim | upper }}',
+        key: 'name',
+        filters: [
+          { name: 'trim', args: [] },
+          { name: 'upper', args: [] }
+        ],
+        start: 0,
+        end: 25
+      }
+    ]);
+  });
+
+  it('skips malformed tokens without a closing brace', () => {
+    expect(parseVariableTokens('{{host')).toEqual([]);
+  });
 });
 
 describe('tokenizeVariables', () => {
@@ -133,6 +191,16 @@ describe('tokenizeVariables', () => {
   it('tokenizeVariables recognizes dynamic variable keys with $ prefix', () => {
     expect(tokenizeVariables('{{$randomUUID}}')).toEqual([
       { text: '{{$randomUUID}}', key: '$randomUUID' }
+    ]);
+  });
+
+  it('includes filter metadata on variable tokens', () => {
+    expect(tokenizeVariables('{{name|upper}}')).toEqual([
+      {
+        text: '{{name|upper}}',
+        key: 'name',
+        filters: [{ name: 'upper', args: [] }]
+      }
     ]);
   });
 });

@@ -57,6 +57,14 @@ describe('substituteVariables', () => {
   it('prefers runtime variables over dynamic variables', () => {
     expect(substituteVariables('{{$timestamp}}', { $timestamp: 'fixed' })).toBe('fixed');
   });
+
+  it('applies filters to runtime variable values', () => {
+    expect(substituteVariables('{{name|upper}}', { name: 'hello' })).toBe('HELLO');
+  });
+
+  it('leaves tokens unchanged when a filter is unknown', () => {
+    expect(substituteVariables('{{name|unknown}}', { name: 'hello' })).toBe('{{name|unknown}}');
+  });
 });
 
 describe('resolveAuthVariables', () => {
