@@ -23,10 +23,12 @@ export type { CodeEditorConfig } from './CodeEditor/config.js';
 export type {
   Props as CodeEditorProps,
   CodeEditorLanguage,
+  CodeEditorSelectionAction,
   CodeEditorSelectionRange,
   CodeEditorSlashCommand,
   CodeEditorSlashCoords,
   CodeEditorSlashTrigger,
+  CodeEditorTextSelection,
   CodeEditorViewState
 } from './CodeEditor/index.js';
 export { EmptyState } from './EmptyState/index.js';

@@ -14,6 +14,7 @@ import {
   hoverTooltip,
   keymap
 } from '@codemirror/view';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import {
   createElement,
   useCallback,
@@ -29,8 +30,10 @@ import type { CodeEditorSetup, CodeEditorTheme, Variable } from '../../types.js'
 import { normalizeCodeEditorFontSize } from '../../ui/codeEditorSettings.js';
 import { VARIABLE_NAME_CHARS, getVariableTooltipContent } from '../../variables/index.js';
 import { Button } from '../Button/index.js';
+import { FaIcon } from '../FaIcon/index.js';
 import { buildVariableTooltipDom } from '../VariableTooltip/dom.js';
 import { VariableTooltipValue } from '../VariableTooltip/index.js';
+import { portalToBody } from '../portalToBody.js';
 import { useCodeEditorConfig } from './config.js';
 import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
 import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
@@ -147,6 +150,66 @@ export interface CodeEditorViewState {
   selection: CodeEditorSelectionRange;
 }
 
+/**
+ * Selected text range passed to {@link CodeEditorSelectionAction.onSelect}.
+ */
+export interface CodeEditorTextSelection {
+  /**
+   * Selected document text.
+   */
+  text: string;
+
+  /**
+   * Start offset (inclusive) in the document.
+   */
+  from: number;
+
+  /**
+   * End offset (exclusive) in the document.
+   */
+  to: number;
+}
+
+/**
+ * One action offered in the floating toolbar when the user selects text.
+ */
+export interface CodeEditorSelectionAction {
+  /**
+   * Stable action id for host routing.
+   */
+  id: string;
+
+  /**
+   * Visible button label.
+   */
+  label: string;
+
+  /**
+   * Accessible name for the action button.
+   */
+  ariaLabel: string;
+
+  /**
+   * Called when the user activates this action on the current selection.
+   */
+  onSelect: (selection: CodeEditorTextSelection) => void;
+
+  /**
+   * Optional leading icon shown before the action label.
+   */
+  icon?: IconDefinition;
+
+  /**
+   * Optional shortcut hint shown after the label (for example `Ctrl+L`).
+   */
+  shortcutHint?: string;
+
+  /**
+   * Optional CodeMirror key binding that triggers this action on the current selection.
+   */
+  key?: string;
+}
+
 export interface Props extends Omit<
   ComponentPropsWithoutRef<'div'>,
   | 'children'
@@ -258,6 +321,11 @@ export interface Props extends Omit<
   onSlashCommand?: (trigger: CodeEditorSlashTrigger) => void;
 
   /**
+   * Actions shown in a floating toolbar when the user selects non-empty text.
+   */
+  selectionActions?: CodeEditorSelectionAction[];
+
+  /**
    * When true, shows inline syntax-error squiggles for supported languages.
    * Defaults to true.
    */
@@ -322,6 +390,12 @@ function clampSelection(
 
 /** Debounce interval for {@link Props.onViewStateChange} notifications. */
 const VIEW_STATE_DEBOUNCE_MS = 300;
+
+/** Delay before showing the selection action toolbar after selection settles. */
+const SELECTION_TOOLBAR_SHOW_DELAY_MS = 450;
+
+/** Extra viewport gap between the selection top edge and the portaled toolbar. */
+const SELECTION_TOOLBAR_OFFSET_PX = 16;
 
 const variableMatcher = new MatchDecorator({
   regexp: new RegExp(`\\{\\{\\s*([${VARIABLE_NAME_CHARS}]+)\\s*\\}\\}`, 'g'),
@@ -494,6 +568,14 @@ interface SelectionTooltipState {
   left: number;
 }
 
+interface SelectionActionToolbarState {
+  top: number;
+  left: number;
+  text: string;
+  from: number;
+  to: number;
+}
+
 /**
  * Finds the {{variable}} token at a document position, if any.
  *
@@ -602,6 +684,266 @@ function variableTooltipEscapeHandler(
 }
 
 /**
+ * Computes viewport anchor coordinates for the selection action toolbar.
+ *
+ * @param view - CodeMirror editor view.
+ * @param selectionFrom - Start offset (inclusive) of the selection.
+ * @param selectionTo - End offset (exclusive) of the selection.
+ * @returns Toolbar anchor position, or null when coords are unavailable.
+ */
+function computeSelectionActionToolbarCoords(
+  view: EditorView,
+  selectionFrom: number,
+  selectionTo: number
+): { top: number; left: number } | null {
+  const startCoords = view.coordsAtPos(selectionFrom);
+  if (!startCoords) {
+    return null;
+  }
+
+  const endCoords = view.coordsAtPos(selectionTo);
+  const startCenter = startCoords.left + (startCoords.right - startCoords.left) / 2;
+  const endCenter = endCoords
+    ? endCoords.left + (endCoords.right - endCoords.left) / 2
+    : startCenter;
+
+  return {
+    top: startCoords.top,
+    left: (startCenter + endCenter) / 2
+  };
+}
+
+/**
+ * Shared debounce and pointer-drag state for the selection action toolbar.
+ */
+interface SelectionActionToolbarController {
+  showTimer: ReturnType<typeof setTimeout> | undefined;
+  isPointerSelecting: boolean;
+  isToolbarOpen: boolean;
+  pendingState: SelectionActionToolbarState | null;
+}
+
+/**
+ * Builds update and pointer handlers that debounce toolbar display until selection settles.
+ */
+function createSelectionActionToolbarExtensions(
+  onToolbarChange: (state: SelectionActionToolbarState | null) => void,
+  isEnabled: () => boolean,
+  isOpen: () => boolean,
+  onDismiss: () => void
+): Extension[] {
+  const controller: SelectionActionToolbarController = {
+    showTimer: undefined,
+    isPointerSelecting: false,
+    isToolbarOpen: false,
+    pendingState: null
+  };
+
+  /**
+   * Clears a scheduled toolbar reveal without changing open state.
+   */
+  const clearShowTimer = (): void => {
+    if (controller.showTimer) {
+      clearTimeout(controller.showTimer);
+      controller.showTimer = undefined;
+    }
+  };
+
+  /**
+   * Notifies React of toolbar visibility while keeping controller state in sync.
+   */
+  const notifyToolbarChange = (state: SelectionActionToolbarState | null): void => {
+    controller.isToolbarOpen = state != null;
+    if (state == null) {
+      controller.pendingState = null;
+    }
+    onToolbarChange(state);
+  };
+
+  /**
+   * Hides the toolbar immediately and cancels any pending reveal.
+   */
+  const dismissToolbar = (): void => {
+    clearShowTimer();
+    if (controller.isToolbarOpen || controller.pendingState != null) {
+      notifyToolbarChange(null);
+    }
+  };
+
+  /**
+   * Schedules toolbar display after the configured settle delay.
+   */
+  const scheduleShow = (state: SelectionActionToolbarState): void => {
+    controller.pendingState = state;
+    clearShowTimer();
+
+    if (controller.isPointerSelecting) {
+      return;
+    }
+
+    controller.showTimer = setTimeout(() => {
+      controller.showTimer = undefined;
+      if (controller.isPointerSelecting) {
+        return;
+      }
+      notifyToolbarChange(state);
+    }, SELECTION_TOOLBAR_SHOW_DELAY_MS);
+  };
+
+  /**
+   * Repositions or reveals the toolbar without waiting when it is already open.
+   */
+  const showImmediately = (state: SelectionActionToolbarState): void => {
+    clearShowTimer();
+    notifyToolbarChange(state);
+  };
+
+  const updateListener = EditorView.updateListener.of((update) => {
+    if (!isEnabled()) {
+      dismissToolbar();
+      return;
+    }
+
+    if (!update.selectionSet && !update.docChanged && !update.viewportChanged) {
+      return;
+    }
+
+    const { from, to } = update.state.selection.main;
+    if (from === to) {
+      dismissToolbar();
+      return;
+    }
+
+    const selectionFrom = Math.min(from, to);
+    const selectionTo = Math.max(from, to);
+    const text = update.state.sliceDoc(selectionFrom, selectionTo);
+    if (!text.trim()) {
+      dismissToolbar();
+      return;
+    }
+
+    const coords = computeSelectionActionToolbarCoords(update.view, selectionFrom, selectionTo);
+    if (!coords) {
+      dismissToolbar();
+      return;
+    }
+
+    const nextState: SelectionActionToolbarState = {
+      top: coords.top,
+      left: coords.left,
+      text,
+      from: selectionFrom,
+      to: selectionTo
+    };
+
+    if (isOpen() && !update.selectionSet && update.viewportChanged) {
+      showImmediately(nextState);
+      return;
+    }
+
+    if (isOpen() && update.selectionSet) {
+      scheduleShow(nextState);
+      return;
+    }
+
+    scheduleShow(nextState);
+  });
+
+  const pointerGuard = EditorView.domEventHandlers({
+    /**
+     * Suppresses toolbar reveal while the user is drag-selecting with the primary button.
+     */
+    pointerdown(event) {
+      if (event.button === 0) {
+        controller.isPointerSelecting = true;
+        clearShowTimer();
+      }
+      return false;
+    },
+    /**
+     * Resumes debounced reveal after drag-select completes.
+     */
+    pointerup() {
+      controller.isPointerSelecting = false;
+      if (controller.pendingState != null && !isOpen()) {
+        scheduleShow(controller.pendingState);
+      }
+      return false;
+    }
+  });
+
+  const dismissHandler = EditorView.domEventHandlers({
+    keydown(event) {
+      if (event.key === 'Escape' && isOpen()) {
+        event.preventDefault();
+        dismissToolbar();
+        onDismiss();
+        return true;
+      }
+      return false;
+    }
+  });
+
+  const cleanupPlugin = ViewPlugin.fromClass(
+    class {
+      /**
+       * Clears any pending toolbar reveal when the editor extension is destroyed.
+       */
+      destroy(): void {
+        clearShowTimer();
+      }
+    }
+  );
+
+  return [updateListener, pointerGuard, dismissHandler, cleanupPlugin];
+}
+
+/**
+ * Registers keyboard shortcuts for selection toolbar actions.
+ *
+ * @param actions - Selection actions that define a {@link CodeEditorSelectionAction.key}.
+ * @param onToolbarChange - Clears the floating toolbar after a shortcut fires.
+ */
+function createSelectionActionKeymap(
+  actions: CodeEditorSelectionAction[],
+  onToolbarChange: (state: SelectionActionToolbarState | null) => void
+): Extension | null {
+  const keyedActions = actions.filter((action) => action.key);
+  if (keyedActions.length === 0) {
+    return null;
+  }
+
+  return Prec.highest(
+    keymap.of(
+      keyedActions.map((action) => ({
+        key: action.key!,
+        run(view) {
+          const { from, to } = view.state.selection.main;
+          if (from === to) {
+            return false;
+          }
+
+          const selectionFrom = Math.min(from, to);
+          const selectionTo = Math.max(from, to);
+          const text = view.state.sliceDoc(selectionFrom, selectionTo);
+          if (!text.trim()) {
+            return false;
+          }
+
+          action.onSelect({
+            text,
+            from: selectionFrom,
+            to: selectionTo
+          });
+          onToolbarChange(null);
+          return true;
+        }
+      }))
+    )
+  );
+}
+
+/**
  * Builds a hover tooltip extension for {{variable}} tokens.
  */
 function variableTooltip(
@@ -657,6 +999,11 @@ function buildCoreExtensions(options: {
   onSelectionTooltipChange: (state: SelectionTooltipState | null) => void;
   isSelectionTooltipOpen: () => boolean;
   onDismissSelectionTooltip: () => void;
+  hasSelectionActions: boolean;
+  selectionActions: CodeEditorSelectionAction[];
+  onSelectionActionToolbarChange: (state: SelectionActionToolbarState | null) => void;
+  isSelectionActionToolbarOpen: () => boolean;
+  onDismissSelectionActionToolbar: () => void;
 }): Extension[] {
   const next: Extension[] = [options.editorThemeExt];
   if (options.trackViewState) {
@@ -700,6 +1047,23 @@ function buildCoreExtensions(options: {
         options.getValidationDescribedBy
       )
     );
+  }
+  if (options.hasSelectionActions) {
+    next.push(
+      ...createSelectionActionToolbarExtensions(
+        options.onSelectionActionToolbarChange,
+        () => options.hasSelectionActions,
+        options.isSelectionActionToolbarOpen,
+        options.onDismissSelectionActionToolbar
+      )
+    );
+    const keymapExtension = createSelectionActionKeymap(
+      options.selectionActions,
+      options.onSelectionActionToolbarChange
+    );
+    if (keymapExtension) {
+      next.push(keymapExtension);
+    }
   }
   return next;
 }
@@ -832,6 +1196,7 @@ export function CodeEditor({
   completionSource,
   slashCommands,
   onSlashCommand,
+  selectionActions,
   lint = true,
   themeOverride,
   setupOverride,
@@ -856,6 +1221,16 @@ export function CodeEditor({
   selectionTooltipRef.current = selectionTooltip;
   const setSelectionTooltipRef = useRef(setSelectionTooltip);
   setSelectionTooltipRef.current = setSelectionTooltip;
+  const [selectionActionToolbar, setSelectionActionToolbar] =
+    useState<SelectionActionToolbarState | null>(null);
+  const selectionActionToolbarRef = useRef(selectionActionToolbar);
+  selectionActionToolbarRef.current = selectionActionToolbar;
+  const setSelectionActionToolbarRef = useRef(setSelectionActionToolbar);
+  setSelectionActionToolbarRef.current = setSelectionActionToolbar;
+  const selectionToolbarElementRef = useRef<HTMLDivElement | null>(null);
+  const selectionActionsRef = useRef(selectionActions);
+  selectionActionsRef.current = selectionActions;
+  const hasSelectionActions = selectionActions != null && selectionActions.length > 0;
   const ariaDescribedByRef = useRef(ariaDescribedBy);
   ariaDescribedByRef.current = ariaDescribedBy;
   const onSlashCommandRef = useRef(onSlashCommand);
@@ -954,6 +1329,38 @@ export function CodeEditor({
       editorViewRef.current = null;
     };
   }, [flushViewState]);
+
+  /**
+   * Dismisses the portaled selection toolbar when the user clicks outside the editor and toolbar.
+   */
+  useEffect(() => {
+    if (!selectionActionToolbar) {
+      return;
+    }
+
+    /**
+     * Closes the toolbar on outside pointer interaction without racing editor blur during selection.
+     */
+    const handlePointerDown = (event: PointerEvent): void => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+
+      const editorRoot = editorViewRef.current?.dom;
+      const toolbar = selectionToolbarElementRef.current;
+      if (editorRoot?.contains(target) || toolbar?.contains(target)) {
+        return;
+      }
+
+      setSelectionActionToolbar(null);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+    };
+  }, [selectionActionToolbar]);
 
   /**
    * Persists wrapper height only after the user finishes a native resize-y drag on the grip.
@@ -1105,6 +1512,15 @@ export function CodeEditor({
         isSelectionTooltipOpen: () => selectionTooltipRef.current != null,
         onDismissSelectionTooltip: () => {
           setSelectionTooltipRef.current(null);
+        },
+        hasSelectionActions,
+        selectionActions: selectionActions ?? [],
+        onSelectionActionToolbarChange: (state) => {
+          setSelectionActionToolbarRef.current(state);
+        },
+        isSelectionActionToolbarOpen: () => selectionActionToolbarRef.current != null,
+        onDismissSelectionActionToolbar: () => {
+          setSelectionActionToolbarRef.current(null);
         }
       }),
     [
@@ -1116,6 +1532,8 @@ export function CodeEditor({
       language,
       lint,
       hasVariables,
+      hasSelectionActions,
+      selectionActions,
       tooltipId,
       getVariables,
       getOnEditVariable
@@ -1355,6 +1773,46 @@ export function CodeEditor({
     : null;
 
   const wrapperStyle = height ? { height } : undefined;
+  const activeSelectionActions = selectionActionsRef.current ?? [];
+  const selectionActionToolbarNode =
+    selectionActionToolbar && hasSelectionActions ? (
+      <div
+        ref={selectionToolbarElementRef}
+        role="toolbar"
+        aria-label="Selection actions"
+        className="hc-code-editor-selection-toolbar app-no-drag pointer-events-auto fixed z-50 flex -translate-x-1/2 -translate-y-full items-center gap-1 bg-transparent p-0 text-[14px] text-text"
+        style={{
+          top: selectionActionToolbar.top - SELECTION_TOOLBAR_OFFSET_PX,
+          left: selectionActionToolbar.left
+        }}
+      >
+        {activeSelectionActions.map((action) => (
+          <button
+            key={action.id}
+            type="button"
+            className="hc-code-editor-selection-action inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-separator bg-control px-2 py-1 text-[14px] text-text shadow-sm hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent"
+            aria-label={action.ariaLabel}
+            onMouseDown={(event) => {
+              event.preventDefault();
+            }}
+            onClick={() => {
+              action.onSelect({
+                text: selectionActionToolbar.text,
+                from: selectionActionToolbar.from,
+                to: selectionActionToolbar.to
+              });
+              setSelectionActionToolbar(null);
+            }}
+          >
+            {action.icon ? <FaIcon icon={action.icon} className="h-3.5 w-3.5" /> : null}
+            <span>{action.label}</span>
+            {action.shortcutHint ? (
+              <span className="text-[14px] text-muted">{action.shortcutHint}</span>
+            ) : null}
+          </button>
+        ))}
+      </div>
+    ) : null;
 
   return (
     <div ref={wrapperRef} {...props} className={wrapperClassName} style={wrapperStyle}>
@@ -1399,6 +1857,7 @@ export function CodeEditor({
           ) : null}
         </div>
       ) : null}
+      {selectionActionToolbarNode ? portalToBody(selectionActionToolbarNode) : null}
     </div>
   );
 }

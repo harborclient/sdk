@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(code-editor): enhance selection action toolbar and tooltip functionality. (`5718362`)
+
 ## 1.0.58 - 2026-07-10
 
 - feat(toolbar): add support for right-aligned toggles and refactor action rendering. (`b2d4002`)

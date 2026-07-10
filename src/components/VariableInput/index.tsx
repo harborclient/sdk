@@ -24,6 +24,12 @@ interface TooltipState {
   left: number;
 }
 
+/** Delay after the pointer stops moving before a hover tooltip is shown. */
+const TOOLTIP_SHOW_DELAY_MS = 500;
+
+/** Grace period before hiding so the pointer can reach the tooltip. */
+const TOOLTIP_HIDE_DELAY_MS = 400;
+
 export interface Props extends Omit<
   ComponentPropsWithoutRef<'div'>,
   'children' | 'className' | 'id' | 'aria-label' | 'aria-labelledby' | 'onKeyDown' | 'onChange'
@@ -117,6 +123,7 @@ export function VariableInput({
   const backdropRef = useRef<HTMLDivElement>(null);
   const spanRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
   const hideTimer = useRef<number | null>(null);
+  const showTimer = useRef<number | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   const tooltipId = useId();
 
@@ -158,22 +165,16 @@ export function VariableInput({
    */
   const scheduleHide = (): void => {
     cancelHide();
-    hideTimer.current = window.setTimeout(() => setTooltip(null), 400);
+    hideTimer.current = window.setTimeout(() => setTooltip(null), TOOLTIP_HIDE_DELAY_MS);
   };
 
   /**
-   * Clears any pending tooltip hide timer when the component unmounts.
+   * Clears any pending tooltip show timer.
    */
-  useEffect(() => () => cancelHide(), []);
-
-  /**
-   * Keeps the colored backdrop aligned with horizontal scroll in the input.
-   */
-  const syncScroll = (): void => {
-    const input = inputRef.current;
-    const backdrop = backdropRef.current;
-    if (input && backdrop) {
-      backdrop.scrollLeft = input.scrollLeft;
+  const cancelShow = (): void => {
+    if (showTimer.current != null) {
+      window.clearTimeout(showTimer.current);
+      showTimer.current = null;
     }
   };
 
@@ -188,6 +189,43 @@ export function VariableInput({
       top,
       left
     });
+  };
+
+  /**
+   * Shows the tooltip once the pointer has stopped moving for {@link TOOLTIP_SHOW_DELAY_MS}.
+   *
+   * @param key - Variable name from the hovered {{key}} token.
+   * @param top - Screen Y coordinate for tooltip placement.
+   * @param left - Screen X coordinate for tooltip placement.
+   */
+  const scheduleShow = (key: string, top: number, left: number): void => {
+    cancelShow();
+    showTimer.current = window.setTimeout(() => {
+      showTimer.current = null;
+      showTooltipForKey(key, top, left);
+    }, TOOLTIP_SHOW_DELAY_MS);
+  };
+
+  /**
+   * Clears pending tooltip timers when the component unmounts.
+   */
+  useEffect(
+    () => () => {
+      cancelHide();
+      cancelShow();
+    },
+    []
+  );
+
+  /**
+   * Keeps the colored backdrop aligned with horizontal scroll in the input.
+   */
+  const syncScroll = (): void => {
+    const input = inputRef.current;
+    const backdrop = backdropRef.current;
+    if (input && backdrop) {
+      backdrop.scrollLeft = input.scrollLeft;
+    }
   };
 
   /**
@@ -226,7 +264,7 @@ export function VariableInput({
   };
 
   /**
-   * Shows a tooltip when the pointer is over a variable token span.
+   * Shows a tooltip when the pointer rests over a variable token span.
    */
   const handleMouseMove = (e: MouseEvent<HTMLInputElement>): void => {
     cancelHide();
@@ -244,11 +282,20 @@ export function VariableInput({
         e.clientY >= rect.top &&
         e.clientY <= rect.bottom
       ) {
-        showTooltipForKey(token.key, rect.top, rect.left + rect.width / 2);
+        scheduleShow(token.key, rect.top, rect.left + rect.width / 2);
         return;
       }
     }
 
+    cancelShow();
+    scheduleHide();
+  };
+
+  /**
+   * Cancels a pending show and hides the tooltip when the pointer leaves the input.
+   */
+  const handleMouseLeave = (): void => {
+    cancelShow();
     scheduleHide();
   };
 
@@ -359,7 +406,7 @@ export function VariableInput({
         onClick={updateTooltipFromCaret}
         onScroll={syncScroll}
         onMouseMove={handleMouseMove}
-        onMouseLeave={scheduleHide}
+        onMouseLeave={handleMouseLeave}
       />
 
       {source && (

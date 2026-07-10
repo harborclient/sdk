@@ -82,9 +82,19 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'aria
 
 /**
  * Tailwind classes for toolbar icon action buttons.
+ *
+ * @param pressed - Whether the action is in a pressed/toggled-on state.
+ * @returns Class string for the action button.
  */
-const TOOLBAR_ACTION_BUTTON =
-  'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
+function toolbarActionButtonClasses(pressed: boolean): string {
+  return cn(
+    'hc-toolbar-action app-no-drag inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md border-none text-text',
+    pressed
+      ? 'bg-selection'
+      : 'bg-transparent hover:bg-selection focus-visible:bg-selection focus-visible:text-text',
+    'disabled:cursor-not-allowed disabled:opacity-50'
+  );
+}
 
 /**
  * Renders a single toolbar icon action with optional popover content.
@@ -100,7 +110,7 @@ function renderAction(action: ToolbarAction): JSX.Element {
       <button
         type="button"
         ref={action.buttonRef}
-        className={TOOLBAR_ACTION_BUTTON}
+        className={toolbarActionButtonClasses(action.ariaPressed === true)}
         title={title}
         aria-label={action.label}
         aria-expanded={action.ariaExpanded}
