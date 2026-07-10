@@ -3,10 +3,7 @@ import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn } from '../utils.js';
 
-interface Props extends Omit<
-  ComponentPropsWithoutRef<'button'>,
-  'aria-label' | 'aria-pressed' | 'title'
-> {
+interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'aria-label' | 'aria-pressed'> {
   /**
    * Font Awesome icon shown inside the footer toggle button.
    */
@@ -22,6 +19,11 @@ interface Props extends Omit<
    * `"Hide sidebar"` / `"Show sidebar"`.
    */
   label: string;
+
+  /**
+   * Optional tooltip text. Defaults to the computed show/hide label.
+   */
+  title?: string;
 }
 
 /**
@@ -42,6 +44,7 @@ export function FooterIcon({
   active,
   onClick,
   label,
+  title,
   className,
   ...props
 }: Props): JSX.Element {
@@ -54,7 +57,7 @@ export function FooterIcon({
       onClick={onClick}
       aria-pressed={active}
       aria-label={accessibleLabel}
-      title={accessibleLabel}
+      title={title ?? accessibleLabel}
     >
       <FaIcon icon={icon} className="hc-footer-icon-icon h-4 w-4" />
     </button>

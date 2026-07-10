@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(actions): introduce action registration for dynamic menu commands. (`5e78027`)
+
 ## 1.0.60 - 2026-07-10
 
 - feat(autocomplete): enhance AutocompleteInput and SuggestionList functionality. (`16907c0`)

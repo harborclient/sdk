@@ -1065,6 +1065,30 @@ export interface PluginCommands {
 }
 
 /**
+ * Map of action labels to handlers registered for the Action menu quick-open palette.
+ */
+export type ActionHandlerMap = Record<string, (...args: unknown[]) => void | Promise<void>>;
+
+/**
+ * Registers namespaced quick-open actions surfaced when users type `#` in the Action menu.
+ *
+ * Requires the `ui` permission. Push returned disposables onto
+ * {@link PluginContext.subscriptions}.
+ */
+export interface PluginActions {
+  /**
+   * Registers one or more actions under a namespace (for example `cURL: View`).
+   *
+   * Handlers run in the plugin agent webview when the user selects a matching row.
+   *
+   * @param namespace - Group prefix shown before each action label.
+   * @param handlers - Label-to-handler map keyed by the action label.
+   * @returns A {@link Disposable} that unregisters every action when disposed.
+   */
+  register(namespace: string, handlers: ActionHandlerMap): Disposable;
+}
+
+/**
  * Options for picking a file through {@link PluginFs.pickFile}.
  */
 export interface PluginFsPickFileOptions {
@@ -1660,6 +1684,11 @@ export interface PluginContext {
    * Command registration and execution. Requires the `ui` permission.
    */
   commands: PluginCommands;
+
+  /**
+   * Action menu quick-open registration. Requires the `ui` permission.
+   */
+  actions: PluginActions;
 
   /**
    * Plugin-scoped persistent storage. Requires the `storage` permission.

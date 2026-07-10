@@ -305,6 +305,39 @@ hc.subscriptions.push(
 );
 ```
 
+## hc.actions.register(namespace, handlers)
+
+**Signature:** `(namespace: string, handlers: Record<string, () => void | Promise<void>>) => Disposable`
+
+**Manifest:** none. Requires the `ui` permission.
+
+| Parameter   | Type                                          | Description                                       |
+| ----------- | --------------------------------------------- | ------------------------------------------------- |
+| `namespace` | `string`                                      | Prefix shown before each action label             |
+| `handlers`  | `Record<string, () => void \| Promise<void>>` | Action labels mapped to handlers run on selection |
+
+Registers plugin actions in HarborClient's Action menu. Users open the Action menu, type `#`, and see actions grouped as `Namespace: Label`.
+
+Use this for lightweight commands that should be discoverable without adding a persistent menu item or toolbar button. Because actions are dynamic, they do not need `manifest.contributes.commands` entries, but the plugin must include the `ui` permission.
+
+```typescript
+hc.subscriptions.push(
+  hc.actions.register('cURL', {
+    View: () => {
+      hc.ui.showToast('Viewing generated cURL command');
+    },
+    Close: () => {
+      hc.ui.showToast('Closed cURL preview');
+    }
+  })
+);
+```
+
+With that plugin installed, typing `#curl` in the Action menu shows:
+
+- `cURL: View`
+- `cURL: Close`
+
 ## hc.ui.registerRequestToolbarAction(action)
 
 **Signature:** `(action: RequestToolbarActionContribution) => Disposable`

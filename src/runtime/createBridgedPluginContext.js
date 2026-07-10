@@ -272,6 +272,50 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
         await bridgeInvoke('commands.executeRemote', { pluginId: ownerId, commandId, args });
       }
     },
+    actions: {
+      register: (namespace, handlers) => {
+        assertUi();
+        if (!isAgent) {
+          return noopDisposable();
+        }
+
+        const disposables = [];
+        for (const [label, handler] of Object.entries(handlers ?? {})) {
+          const commandId = `action:${namespace}:${label}`;
+          const scopedId = `${pluginId}:${commandId}`;
+          const commandHandlersForId = commandHandlers.get(scopedId) ?? new Set();
+          commandHandlersForId.add(handler);
+          commandHandlers.set(scopedId, commandHandlersForId);
+          disposables.push(createCommandDisposable(scopedId, handler));
+
+          void bridgeInvoke('registerContribution', {
+            kind: 'actions',
+            contribution: {
+              pluginId,
+              namespace,
+              label,
+              commandId
+            }
+          });
+          disposables.push({
+            dispose: () => {
+              void bridgeInvoke('unregisterContribution', {
+                kind: 'actions',
+                contributionId: `${namespace}:${label}`
+              });
+            }
+          });
+        }
+
+        return {
+          dispose: () => {
+            for (const disposable of disposables) {
+              disposable.dispose();
+            }
+          }
+        };
+      }
+    },
     themes: {
       register: (theme) => {
         assertUi();

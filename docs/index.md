@@ -17,7 +17,7 @@ To install or manage plugins in the app, see [Plugins](https://harborclient.com/
 - [Building](/building) — bundling and packaging as `.hcp`
 - [Dev workflow](/dev-workflow) — unpacked loading, hot reload, and startup options
 - [Renderer API](/renderer-overview) — `PluginContext`, React/JSX, and host integration
-- [UI contributions](/renderer-ui) — settings panels, tabs, menus, and toolbar actions
+- [UI contributions](/renderer-ui) — settings panels, tabs, menus, Action menu actions, and toolbar actions
 - [Themes and storage](/renderer-data) — themes, commands, storage, and filesystem
 - [Main API](/main-api) — HTTP hooks and IPC in the SES utilityProcess
 - [Snippets](/snippets) — types and import syntax for request script snippet files

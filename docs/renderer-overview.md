@@ -176,6 +176,12 @@ export interface PluginCommands {
   execute(id: string, ...args: unknown[]): Promise<void>;
 }
 
+export type ActionHandlerMap = Record<string, (...args: unknown[]) => void | Promise<void>>;
+
+export interface PluginActions {
+  register(namespace: string, handlers: ActionHandlerMap): Disposable;
+}
+
 export interface PluginUi {
   registerSettingsSection(section: SettingsSectionContribution): Disposable;
   registerSidebarPanel(panel: SidebarPanelContribution): Disposable;
@@ -199,6 +205,7 @@ export interface PluginContext {
   ui: PluginUi;
   themes: PluginThemes;
   commands: PluginCommands;
+  actions: PluginActions;
   storage: PluginStorage;
   fs: PluginFs;
   http: PluginRendererHttp;
@@ -420,6 +427,6 @@ await hc.host.sendRequest();
 
 ## Related reference
 
-- [UI contributions](/renderer-ui) — `hc.ui.register*` methods
+- [UI contributions](/renderer-ui) — `hc.ui.register*` methods and `hc.actions.register`
 - [Themes and storage](/renderer-data) — themes, commands, storage, and filesystem
 - [Main API](/main-api) — HTTP hooks and IPC in the main entry
