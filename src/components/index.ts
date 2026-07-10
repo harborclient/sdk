@@ -107,6 +107,8 @@ export {
   appendVariableTooltipValueRow,
   buildVariableTooltipDom
 } from './VariableTooltip/index.js';
+export { VisibilityMenu } from './VisibilityMenu/index.js';
+export type { VisibilityMenuItem } from './VisibilityMenu/index.js';
 export { cleanVariables, resolveTabListKeyAction } from './utils.js';
 export type { TabListKeyOptions } from './utils.js';
 export { useDialogFocus, getFocusableElements } from './useDialogFocus.js';

@@ -4,23 +4,37 @@ import type { JSX, KeyboardEvent, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn, resolveTabListKeyAction } from '../utils.js';
-import type { TabItem } from './types.js';
+
+/**
+ * One entry in a {@link VisibilityMenu} that can be shown or hidden.
+ */
+export interface VisibilityMenuItem<T extends string> {
+  /**
+   * Unique item identifier.
+   */
+  value: T;
+
+  /**
+   * Item label or custom content.
+   */
+  label: ReactNode;
+}
 
 interface Props<T extends string> {
   /**
-   * Tabs that can be shown or hidden via the menu.
+   * Items that can be shown or hidden via the menu.
    */
-  tabs: TabItem<T>[];
+  items: VisibilityMenuItem<T>[];
 
   /**
-   * Tab values currently shown in the tab strip.
+   * Item values currently visible in the parent UI.
    */
-  visibleTabValues: T[];
+  visibleValues: T[];
 
   /**
-   * Called when the user toggles a tab's visibility in the menu.
+   * Called when the user toggles an item's visibility in the menu.
    */
-  onToggle: (tabValue: T) => void;
+  onToggle: (value: T) => void;
 }
 
 const menuItemClass =
@@ -30,11 +44,11 @@ const triggerClassName =
   '!rounded-full hover:!bg-[rgba(0,122,255,0.18)] dark:hover:!bg-[rgba(10,132,255,0.22)]';
 
 /**
- * Caret-triggered menu for toggling which segmented tabs are visible.
+ * Caret-triggered menu for toggling which items are visible in a parent control.
  */
-export function SegmentedTabsVisibilityMenu<T extends string>({
-  tabs,
-  visibleTabValues,
+export function VisibilityMenu<T extends string>({
+  items,
+  visibleValues,
   onToggle
 }: Props<T>): JSX.Element {
   const menuId = useId();
@@ -45,7 +59,7 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
   const wasOpenRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const visibleSet = new Set(visibleTabValues);
+  const visibleSet = new Set(visibleValues);
 
   /**
    * Closes the menu and returns focus to the trigger button.
@@ -62,11 +76,11 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
    */
   const openMenu = useCallback(
     (focusLast = false): void => {
-      if (tabs.length === 0) return;
-      setFocusedIndex(focusLast ? tabs.length - 1 : 0);
+      if (items.length === 0) return;
+      setFocusedIndex(focusLast ? items.length - 1 : 0);
       setIsOpen(true);
     },
-    [tabs.length]
+    [items.length]
   );
 
   /**
@@ -150,14 +164,14 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
    * Handles keyboard navigation within the open menu.
    */
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (tabs.length === 0) return;
+    if (items.length === 0) return;
 
     if (event.key === 'Tab') {
       closeMenu();
       return;
     }
 
-    const arrowIndex = resolveTabListKeyAction(event.key, focusedIndex, tabs.length);
+    const arrowIndex = resolveTabListKeyAction(event.key, focusedIndex, items.length);
     if (arrowIndex !== null) {
       event.preventDefault();
       focusItem(arrowIndex);
@@ -165,12 +179,12 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
   };
 
   return (
-    <div ref={rootRef} className="hc-segmented-tabs-visibility-menu relative shrink-0">
+    <div ref={rootRef} className="hc-visibility-menu relative shrink-0">
       <Button
         innerRef={triggerRef}
         type="button"
         variant="icon"
-        className={cn('hc-segmented-tabs-visibility-menu-trigger', triggerClassName)}
+        className={cn('hc-visibility-menu-trigger', triggerClassName)}
         aria-label="Customize visible tabs"
         aria-haspopup="menu"
         aria-expanded={isOpen}
@@ -190,21 +204,21 @@ export function SegmentedTabsVisibilityMenu<T extends string>({
         <div
           id={menuElementId}
           role="menu"
-          className="hc-segmented-tabs-visibility-menu-panel app-no-drag absolute top-full right-0 z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md"
+          className="hc-visibility-menu-panel app-no-drag absolute top-full right-0 z-10 mt-0.5 min-w-[140px] rounded-md border border-separator bg-surface py-1 shadow-md"
           onKeyDown={handleMenuKeyDown}
         >
-          {tabs.map((tab, index) => {
-            const checked = visibleSet.has(tab.value);
+          {items.map((item, index) => {
+            const checked = visibleSet.has(item.value);
             return (
               <MenuCheckboxItem
-                key={tab.value}
+                key={item.value}
                 ref={(element) => {
                   itemRefs.current[index] = element;
                 }}
                 checked={checked}
                 tabIndex={index === focusedIndex ? 0 : -1}
-                label={tab.label}
-                onSelect={() => onToggle(tab.value)}
+                label={item.label}
+                onSelect={() => onToggle(item.value)}
               />
             );
           })}
@@ -223,7 +237,7 @@ interface MenuCheckboxItemProps {
 }
 
 /**
- * Single checkbox-style row in the tab visibility menu.
+ * Single checkbox-style row in the visibility menu.
  */
 function MenuCheckboxItem({
   checked,
@@ -239,19 +253,19 @@ function MenuCheckboxItem({
       role="menuitemcheckbox"
       aria-checked={checked}
       tabIndex={tabIndex}
-      className={cn('hc-segmented-tabs-visibility-menu-item', menuItemClass)}
+      className={cn('hc-visibility-menu-item', menuItemClass)}
       onClick={(e) => {
         e.stopPropagation();
         onSelect();
       }}
     >
       <span
-        className="hc-segmented-tabs-visibility-menu-item-check inline-flex w-4 shrink-0 justify-center"
+        className="hc-visibility-menu-item-check inline-flex w-4 shrink-0 justify-center"
         aria-hidden
       >
         {checked ? <FaIcon icon={faCheck} className="h-3 w-3" /> : null}
       </span>
-      <span className="hc-segmented-tabs-visibility-menu-item-label min-w-0">{label}</span>
+      <span className="hc-visibility-menu-item-label min-w-0">{label}</span>
     </button>
   );
 }

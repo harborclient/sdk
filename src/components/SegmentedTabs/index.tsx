@@ -8,11 +8,11 @@ import {
   useState
 } from '@harborclient/sdk/react';
 import type { ComponentPropsWithoutRef, JSX, KeyboardEvent } from 'react';
+import { VisibilityMenu } from '../VisibilityMenu/index.js';
 import { segment, segmentGroup } from '../classes.js';
 import { getFocusableElements } from '../useDialogFocus.js';
 import { cn, resolveTabListKeyAction } from '../utils.js';
 import { SegmentedTabsContext } from './SegmentedTabsContext.js';
-import { SegmentedTabsVisibilityMenu } from './SegmentedTabsVisibilityMenu.js';
 import type { TabItem } from './types.js';
 
 export { SegmentedTabsGroup } from './SegmentedTabsGroup.js';
@@ -389,9 +389,9 @@ export function SegmentedTabs<T extends string>({
         })}
       </div>
       {editable && (
-        <SegmentedTabsVisibilityMenu
-          tabs={editableTabs}
-          visibleTabValues={visibleTabValues}
+        <VisibilityMenu
+          items={editableTabs}
+          visibleValues={visibleTabValues}
           onToggle={handleVisibilityToggle}
         />
       )}

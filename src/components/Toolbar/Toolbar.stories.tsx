@@ -1,4 +1,11 @@
-import { faClockRotateLeft, faDatabase, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAnglesUp,
+  faClockRotateLeft,
+  faDatabase,
+  faFolder,
+  faPlus,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { Toolbar } from './index.js';
@@ -105,6 +112,39 @@ export const AiSidebarActions: Story = {
         icon: faXmark,
         label: 'Close AI sidebar',
         title: 'Close AI sidebar',
+        onClick: fn()
+      }
+    ]
+  }
+};
+
+export const RightAlignedToggles: Story = {
+  args: {
+    ariaLabel: 'Collections sidebar',
+    actions: [
+      {
+        id: 'toggle-collections-section',
+        icon: faFolder,
+        label: 'Collections',
+        title: 'Hide collections section',
+        ariaPressed: true,
+        onClick: fn()
+      },
+      {
+        id: 'toggle-storage-badges',
+        icon: faDatabase,
+        label: 'Storage location badges',
+        title: 'Hide storage location badges',
+        ariaPressed: true,
+        onClick: fn()
+      }
+    ],
+    toggles: [
+      {
+        id: 'collapse-all',
+        icon: faAnglesUp,
+        label: 'Collapse all',
+        title: 'Collapse all collections and folders',
         onClick: fn()
       }
     ]

@@ -65,9 +65,14 @@ export interface ToolbarAction {
 
 interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'aria-label'> {
   /**
-   * Icon actions rendered in the toolbar.
+   * Icon actions rendered left-aligned in the toolbar.
    */
   actions: ToolbarAction[];
+
+  /**
+   * Icon actions rendered right-aligned in the toolbar (e.g. toggles).
+   */
+  toggles?: ToolbarAction[];
 
   /**
    * Accessible name for the toolbar landmark.
@@ -82,10 +87,47 @@ const TOOLBAR_ACTION_BUTTON =
   'hc-toolbar-action inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text disabled:cursor-not-allowed disabled:opacity-50 app-no-drag';
 
 /**
- * Top-of-sidebar toolbar with left-aligned icon actions.
+ * Renders a single toolbar icon action with optional popover content.
+ *
+ * @param action - Declarative action to render as an icon button.
+ * @returns Toolbar action button wrapped with optional popover anchor.
+ */
+function renderAction(action: ToolbarAction): JSX.Element {
+  const title = action.title ?? action.label;
+
+  return (
+    <div key={action.id} className="hc-toolbar-action-wrap relative">
+      <button
+        type="button"
+        ref={action.buttonRef}
+        className={TOOLBAR_ACTION_BUTTON}
+        title={title}
+        aria-label={action.label}
+        aria-expanded={action.ariaExpanded}
+        aria-pressed={action.ariaPressed}
+        aria-haspopup={action.ariaHaspopup}
+        disabled={action.disabled}
+        onClick={action.onClick}
+      >
+        <FaIcon
+          icon={action.icon}
+          className={cn(
+            'hc-toolbar-action-icon h-5! w-5!',
+            action.ariaPressed === true ? 'opacity-100' : 'opacity-50'
+          )}
+        />
+      </button>
+      {action.popover}
+    </div>
+  );
+}
+
+/**
+ * Top-of-sidebar toolbar with left-aligned actions and optional right-aligned toggles.
  */
 export function Toolbar({
   actions,
+  toggles,
   ariaLabel = 'Toolbar',
   className,
   ...props
@@ -100,37 +142,14 @@ export function Toolbar({
         className
       )}
     >
-      <div className="hc-toolbar-actions flex items-center gap-1">
-        {actions.map((action) => {
-          const title = action.title ?? action.label;
-
-          return (
-            <div key={action.id} className="hc-toolbar-action-wrap relative">
-              <button
-                type="button"
-                ref={action.buttonRef}
-                className={TOOLBAR_ACTION_BUTTON}
-                title={title}
-                aria-label={action.label}
-                aria-expanded={action.ariaExpanded}
-                aria-pressed={action.ariaPressed}
-                aria-haspopup={action.ariaHaspopup}
-                disabled={action.disabled}
-                onClick={action.onClick}
-              >
-                <FaIcon
-                  icon={action.icon}
-                  className={cn(
-                    'hc-toolbar-action-icon h-5! w-5!',
-                    action.ariaPressed === true ? 'opacity-100' : 'opacity-50'
-                  )}
-                />
-              </button>
-              {action.popover}
-            </div>
-          );
-        })}
+      <div className="hc-toolbar-actions flex items-center gap-1 leading-none">
+        {actions.map(renderAction)}
       </div>
+      {toggles && toggles.length > 0 ? (
+        <div className="hc-toolbar-toggles ml-auto flex items-center gap-1">
+          {toggles.map(renderAction)}
+        </div>
+      ) : null}
     </div>
   );
 }

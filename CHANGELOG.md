@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(toolbar): add support for right-aligned toggles and refactor action rendering. (`b2d4002`)
+
 ## 1.0.57 - 2026-07-10
 
 - feat(editor): enhance syntax-highlighted placeholder functionality. (`4d1fe81`)
