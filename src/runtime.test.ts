@@ -26,7 +26,7 @@ describe('registerImportHandler', () => {
     const hc = createMockPluginContext();
     const handler = {
       canImport: () => true,
-      import: async () => { }
+      import: async () => {}
     };
     const registerHandlerMock = jest.fn(() => ({
       dispose: jest.fn()
