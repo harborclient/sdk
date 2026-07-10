@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.57 - 2026-07-10
+
 - feat(editor): enhance syntax-highlighted placeholder functionality. (`4d1fe81`)
 
 ## 1.0.55 - 2026-07-10
