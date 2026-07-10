@@ -398,6 +398,44 @@ Each row uses `PluginVariableInput`: `key`, `value`, optional `defaultValue`, op
 
 To create or update **environment** variables instead, use `hc.host.createEnvironmentWithVariables` and `hc.host.updateEnvironmentVariables`.
 
+## hc.imports
+
+Register handlers for **File → Import** so plugins can participate in the unified import flow instead of adding separate File menu items.
+
+Requires the `ui` permission. Push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerImportHandler(hc, extensions, handler)` from `@harborclient/sdk` which registers the handler and pushes the disposable for you.
+
+Built-in HarborClient formats (Postman, Bruno, HAR, and native exports) are detected first. Plugin handlers run only when the selected file is not recognized as a built-in format and its extension matches a registered handler.
+
+Handlers run in registration order. The first handler whose `canImport` returns true receives the file. Throw an `Error` from `import` to surface a blocking failure in the host.
+
+### registerImportHandler(hc, extensions, handler)
+
+**Signature:** `(hc: PluginContext, extensions: string | string[], handler: ImportHandler) => Disposable`
+
+Convenience wrapper around `hc.imports.registerHandler` that also pushes the returned disposable onto `hc.subscriptions`.
+
+```typescript
+import { registerImportHandler } from '@harborclient/sdk';
+
+registerImportHandler(hc, ['.json', '.yaml', '.yml'], {
+  canImport: (file) => file.contents.includes('openapi:'),
+  import: async (file) => {
+    // Open a preview UI or create a collection from file.contents
+  }
+});
+```
+
+### hc.imports.registerHandler(extensions, handler)
+
+**Signature:** `(extensions: string | string[], handler: ImportHandler) => Disposable`
+
+| Callback    | Type                                                | Description                                         |
+| ----------- | --------------------------------------------------- | --------------------------------------------------- |
+| `canImport` | `(file: ImportFile) => boolean \| Promise<boolean>` | Returns whether this handler should import the file |
+| `import`    | `(file: ImportFile) => void \| Promise<void>`       | Performs the import workflow                        |
+
+`ImportFile` includes `name`, `path`, `extension` (dot-prefixed, lowercase), and UTF-8 `contents`.
+
 ## hc.subscriptions
 
 **Type:** `Disposable[]`

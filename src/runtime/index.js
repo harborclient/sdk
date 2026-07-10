@@ -56,6 +56,20 @@ export function registerTheme(hc, theme) {
 }
 
 /**
+ * Registers a File -> Import handler and tracks its disposable for cleanup.
+ *
+ * @param {import('../types').PluginContext} hc - Renderer plugin context.
+ * @param {string | string[]} extensions - File extensions such as `.json` or `yaml`.
+ * @param {import('../types').ImportHandler} handler - Import detection and execution callbacks.
+ * @returns {import('../types').Disposable} Disposable that unregisters the handler.
+ */
+export function registerImportHandler(hc, extensions, handler) {
+  const disposable = hc.imports.registerHandler(extensions, handler);
+  hc.subscriptions.push(disposable);
+  return disposable;
+}
+
+/**
  * Identity helper that applies `ThemeContribution` typing to a theme literal.
  *
  * @param {import('../types').ThemeContribution} theme - Theme definition.

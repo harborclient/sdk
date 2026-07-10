@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from '@jest/globals';
-import { defineTheme, registerTheme } from './runtime/index.js';
+import { defineTheme, registerImportHandler, registerTheme } from './runtime/index.js';
 import type { PluginContext, ThemeContribution } from './types';
 
 /**
@@ -20,6 +20,24 @@ function createMockPluginContext(): PluginContext & {
     registerMock: jest.MockedFunction<PluginContext['themes']['register']>;
   };
 }
+
+describe('registerImportHandler', () => {
+  it('registers the handler, pushes the disposable onto subscriptions, and returns it', () => {
+    const hc = createMockPluginContext();
+    const handler = {
+      canImport: () => true,
+      import: async () => {}
+    };
+    const registerHandlerMock = jest.fn(() => ({ dispose: jest.fn() }));
+    hc.imports = { registerHandler: registerHandlerMock };
+
+    const disposable = registerImportHandler(hc, ['.json', '.yaml'], handler);
+
+    expect(registerHandlerMock).toHaveBeenCalledWith(['.json', '.yaml'], handler);
+    expect(hc.subscriptions).toHaveLength(1);
+    expect(hc.subscriptions[0]).toBe(disposable);
+  });
+});
 
 describe('registerTheme', () => {
   it('registers the theme, pushes the disposable onto subscriptions, and returns it', () => {

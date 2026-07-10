@@ -1089,6 +1089,73 @@ export interface PluginActions {
 }
 
 /**
+ * File selected through **File → Import** and forwarded to plugin import handlers.
+ */
+export interface ImportFile {
+  /**
+   * Base file name including extension.
+   */
+  name: string;
+
+  /**
+   * Absolute path to the selected file.
+   */
+  path: string;
+
+  /**
+   * Normalized extension with a leading dot (for example `.json`).
+   */
+  extension: string;
+
+  /**
+   * Raw UTF-8 file contents.
+   */
+  contents: string;
+}
+
+/**
+ * Callbacks registered for one import format through {@link PluginImports.registerHandler}.
+ */
+export interface ImportHandler {
+  /**
+   * Returns whether this handler should process the file.
+   *
+   * Called only after built-in HarborClient import formats are ruled out.
+   *
+   * @param file - Selected import file from the host.
+   */
+  canImport(file: ImportFile): boolean | Promise<boolean>;
+
+  /**
+   * Performs the import workflow (for example opening a preview UI or creating a collection).
+   *
+   * @param file - Selected import file from the host.
+   */
+  import(file: ImportFile): void | Promise<void>;
+}
+
+/**
+ * **File → Import** handler registration available on {@link PluginContext.imports}.
+ *
+ * Requires the `ui` permission. Push returned disposables onto
+ * {@link PluginContext.subscriptions}.
+ */
+export interface PluginImports {
+  /**
+   * Registers a handler for one or more file extensions.
+   *
+   * Extensions may include or omit a leading dot; they are normalized to lowercase
+   * with a dot prefix. Handlers run in registration order. The first handler whose
+   * `canImport` returns true receives the file.
+   *
+   * @param extensions - File extensions such as `.json`, `yaml`, or `['.yaml', '.yml']`.
+   * @param handler - Import detection and execution callbacks.
+   * @returns A {@link Disposable} that unregisters the handler when disposed.
+   */
+  registerHandler(extensions: string | string[], handler: ImportHandler): Disposable;
+}
+
+/**
  * Options for picking a file through {@link PluginFs.pickFile}.
  */
 export interface PluginFsPickFileOptions {
@@ -1720,6 +1787,11 @@ export interface PluginContext {
    * Typed wrappers for built-in request editor commands. Requires the `ui` permission.
    */
   host: PluginHost;
+
+  /**
+   * **File → Import** handler registration. Requires the `ui` permission.
+   */
+  imports: PluginImports;
 
   /**
    * Disposables to clean up on deactivation.
