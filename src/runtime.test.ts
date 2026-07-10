@@ -26,9 +26,11 @@ describe('registerImportHandler', () => {
     const hc = createMockPluginContext();
     const handler = {
       canImport: () => true,
-      import: async () => {}
+      import: async () => { }
     };
-    const registerHandlerMock = jest.fn(() => ({ dispose: jest.fn() }));
+    const registerHandlerMock = jest.fn(() => ({
+      dispose: jest.fn()
+    })) as jest.MockedFunction<PluginContext['imports']['registerHandler']>;
     hc.imports = { registerHandler: registerHandlerMock };
 
     const disposable = registerImportHandler(hc, ['.json', '.yaml'], handler);

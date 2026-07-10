@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(tests): update import handler test for consistent formatting. (`89509d1`)
 - feat(imports): add file import handler registration functionality. (`8d85a8f`)
 
 ## 1.0.63 - 2026-07-10
