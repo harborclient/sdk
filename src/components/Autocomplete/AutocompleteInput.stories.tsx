@@ -4,6 +4,59 @@ import { fn } from 'storybook/test';
 import { AutocompleteInput } from './AutocompleteInput.js';
 import type { AutocompleteSource } from './types.js';
 
+const US_STATES = [
+  'Alabama',
+  'Alaska',
+  'Arizona',
+  'Arkansas',
+  'California',
+  'Colorado',
+  'Connecticut',
+  'Delaware',
+  'Florida',
+  'Georgia',
+  'Hawaii',
+  'Idaho',
+  'Illinois',
+  'Indiana',
+  'Iowa',
+  'Kansas',
+  'Kentucky',
+  'Louisiana',
+  'Maine',
+  'Maryland',
+  'Massachusetts',
+  'Michigan',
+  'Minnesota',
+  'Mississippi',
+  'Missouri',
+  'Montana',
+  'Nebraska',
+  'Nevada',
+  'New Hampshire',
+  'New Jersey',
+  'New Mexico',
+  'New York',
+  'North Carolina',
+  'North Dakota',
+  'Ohio',
+  'Oklahoma',
+  'Oregon',
+  'Pennsylvania',
+  'Rhode Island',
+  'South Carolina',
+  'South Dakota',
+  'Tennessee',
+  'Texas',
+  'Utah',
+  'Vermont',
+  'Virginia',
+  'Washington',
+  'West Virginia',
+  'Wisconsin',
+  'Wyoming'
+];
+
 /**
  * Creates an in-memory async autocomplete source backed by React state.
  */
@@ -31,13 +84,7 @@ function createMemorySource(initial: string[]): {
   };
 }
 
-const headerKeys = createMemorySource([
-  'Accept',
-  'Authorization',
-  'Content-Type',
-  'User-Agent',
-  'X-Request-Id'
-]);
+const stateSource = createMemorySource(US_STATES);
 
 const meta = {
   title: 'Components/AutocompleteInput',
@@ -45,8 +92,8 @@ const meta = {
   tags: ['autodocs'],
   args: {
     value: '',
-    placeholder: 'Header name',
-    'aria-label': 'Header name'
+    placeholder: 'State',
+    'aria-label': 'State'
   }
 } satisfies Meta<typeof AutocompleteInput>;
 
@@ -68,8 +115,8 @@ export const WithSource: Story = {
     onChange: fn()
   },
   render: (args) => {
-    const [value, setValue] = useState('Auth');
-    const { useSource } = headerKeys;
+    const [value, setValue] = useState('Cal');
+    const { useSource } = stateSource;
     const source = useSource();
 
     return (
@@ -78,8 +125,8 @@ export const WithSource: Story = {
         value={value}
         onChange={setValue}
         source={source}
-        placeholder="Header name"
-        aria-label="Header name"
+        placeholder="State"
+        aria-label="State"
       />
     );
   }

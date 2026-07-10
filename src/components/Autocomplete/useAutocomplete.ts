@@ -144,6 +144,7 @@ export function useAutocomplete({
   const cacheRef = useRef<string[]>([]);
   const loadedRef = useRef(false);
   const loadPromiseRef = useRef<Promise<string[]> | null>(null);
+  const openRequestRef = useRef(0);
   const mountedRef = useRef(true);
   const listboxId = useId();
   const safeValue = value ?? '';
@@ -245,8 +246,10 @@ export function useAutocomplete({
       return;
     }
 
+    const requestId = ++openRequestRef.current;
+
     await ensureLoaded();
-    if (!mountedRef.current) {
+    if (!mountedRef.current || requestId !== openRequestRef.current) {
       return;
     }
 
@@ -263,6 +266,7 @@ export function useAutocomplete({
     if (!mountedRef.current) {
       return;
     }
+    openRequestRef.current++;
     setOpen(false);
     setActiveIndex(-1);
   }, []);
@@ -274,8 +278,8 @@ export function useAutocomplete({
    */
   const selectItem = useCallback(
     (item: string): void => {
-      onSelect(item);
       closeSuggestions();
+      onSelect(item);
     },
     [closeSuggestions, onSelect]
   );

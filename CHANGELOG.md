@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(autocomplete): enhance AutocompleteInput and SuggestionList functionality. (`16907c0`)
+
 ## 1.0.59 - 2026-07-10
 
 - feat(code-editor): enhance selection action toolbar and tooltip functionality. (`5718362`)

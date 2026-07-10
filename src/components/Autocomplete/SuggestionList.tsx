@@ -164,8 +164,10 @@ export function SuggestionList({
               : 'hc-suggestion-list-option cursor-pointer px-2 py-1 hover:bg-selection'
           }
           onMouseEnter={() => onActiveIndexChange(index)}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => onSelect(item)}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            onSelect(item);
+          }}
         >
           {item}
         </li>
