@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.63 - 2026-07-10
+
 - feat(footer-icon): add `activeStyle` prop with toolbar-matching `selection` variant.
 
 ## 1.0.61 - 2026-07-10
