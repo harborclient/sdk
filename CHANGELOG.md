@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(footer-icon): add `activeStyle` prop with toolbar-matching `selection` variant.
+
 ## 1.0.61 - 2026-07-10
 
 - feat(actions): introduce action registration for dynamic menu commands. (`5e78027`)

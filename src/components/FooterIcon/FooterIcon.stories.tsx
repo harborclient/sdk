@@ -35,3 +35,17 @@ export const Visible: Story = {
     active: true
   }
 };
+
+export const ToolbarMatchHidden: Story = {
+  args: {
+    active: false,
+    activeStyle: 'selection'
+  }
+};
+
+export const ToolbarMatchVisible: Story = {
+  args: {
+    active: true,
+    activeStyle: 'selection'
+  }
+};
