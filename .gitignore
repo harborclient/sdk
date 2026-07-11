@@ -12,7 +12,6 @@ pnpm-debug.log*
 
 .DS_Store
 .idea/
-.vscode/
 docs/.vitepress/cache/
 docs/.vitepress/dist/
 docs/.vitepress/static/storybook/

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore(.gitignore): remove .vscode directory from ignore list. (`c85f9c1`)
 - feat(footer-button): make `active` and `controlsId` props optional. (`83bbd48`)
 
 ## 1.0.66 - 2026-07-11
