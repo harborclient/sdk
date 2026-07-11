@@ -1,3 +1,4 @@
+import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { useState } from '@harborclient/sdk/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, ReactElement } from 'react';
@@ -66,6 +67,98 @@ export const WithCheckedItems: Story = {
         { label: 'After all', checked: false, onSelect: fn() }
       ],
       [{ label: 'Delete', onSelect: fn(), variant: 'danger' }]
+    ]
+  },
+  render: (args) => <RowActionsMenuDemo {...args} />
+};
+
+export const InsideOverflowHidden: Story = {
+  args: {
+    menuId: 'row-overflow',
+    groups: [
+      [
+        { label: 'Copy', onSelect: fn() },
+        { label: 'Run', onSelect: fn() },
+        { label: 'Move up', onSelect: fn() },
+        { label: 'Move down', onSelect: fn() }
+      ],
+      [{ label: 'Delete', onSelect: fn(), variant: 'danger' }]
+    ]
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-[220px] overflow-hidden rounded-md border border-separator bg-sidebar p-2">
+        <div className="flex items-center justify-end rounded-md px-1 py-1 hover:bg-selection">
+          <Story />
+        </div>
+      </div>
+    )
+  ],
+  render: (args) => <RowActionsMenuDemo {...args} />
+};
+
+export const LabeledTrigger: Story = {
+  args: {
+    menuId: 'snippet-library',
+    triggerVariant: 'secondary',
+    triggerIcon: faCode,
+    triggerLabel: 'Snippets',
+    triggerAriaLabel: 'Snippets',
+    triggerClassName: 'inline-flex shrink-0 items-center gap-2 whitespace-nowrap',
+    groups: [
+      [{ label: 'Create a snippet', onSelect: fn() }],
+      [
+        { label: 'Auth helper', onSelect: fn() },
+        { label: 'Parse JSON body', onSelect: fn() }
+      ]
+    ]
+  },
+  decorators: [
+    (Story) => (
+      <div className="flex items-center gap-2 rounded-md border border-separator px-3 py-2">
+        <Story />
+      </div>
+    )
+  ],
+  render: (args) => <RowActionsMenuDemo {...args} />
+};
+
+export const WithSubmenu: Story = {
+  args: {
+    menuId: 'row-submenu',
+    groups: [
+      [{ label: 'Run', onSelect: fn() }],
+      [
+        {
+          label: 'New',
+          submenu: [
+            [
+              { label: 'New Folder', onSelect: fn() },
+              { label: 'New Request', onSelect: fn() },
+              { label: 'New Markdown', onSelect: fn() }
+            ]
+          ]
+        },
+        { label: 'Import', onSelect: fn() },
+        { label: 'Export', onSelect: fn() }
+      ],
+      [{ label: 'Delete', onSelect: fn(), variant: 'danger' }]
+    ]
+  },
+  render: (args) => <RowActionsMenuDemo {...args} />
+};
+
+export const WithDisabledItems: Story = {
+  args: {
+    menuId: 'row-disabled',
+    triggerVariant: 'secondary',
+    triggerIcon: faCode,
+    triggerLabel: 'Snippets',
+    triggerAriaLabel: 'Snippets',
+    triggerClassName: 'inline-flex shrink-0 items-center gap-2 whitespace-nowrap',
+    groups: [
+      [{ label: 'Create a snippet', onSelect: fn() }],
+      [{ label: 'No snippets saved yet', disabled: true, onSelect: fn() }]
     ]
   },
   render: (args) => <RowActionsMenuDemo {...args} />

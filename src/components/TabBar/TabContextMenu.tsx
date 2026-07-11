@@ -8,20 +8,9 @@ import {
 } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent } from 'react';
 import type { MenuItem } from '../RowActionsMenu/index.js';
+import { type MenuPosition, clampMenuPosition } from '../menuPosition.js';
 import { portalToBody } from '../portalToBody.js';
 import { cn, resolveTabListKeyAction } from '../utils.js';
-
-interface Position {
-  /**
-   * Viewport X coordinate where the menu was opened.
-   */
-  x: number;
-
-  /**
-   * Viewport Y coordinate where the menu was opened.
-   */
-  y: number;
-}
 
 interface Props {
   /**
@@ -32,7 +21,7 @@ interface Props {
   /**
    * Cursor position used to anchor the menu panel.
    */
-  position: Position;
+  position: MenuPosition;
 
   /**
    * Called when the menu should close without selecting an item.
@@ -52,22 +41,6 @@ function menuItemClass(variant: MenuItem['variant']): string {
   return variant === 'danger'
     ? `${base} text-text hover:bg-danger/15 hover:text-danger`
     : `${base} text-text hover:bg-selection`;
-}
-
-/**
- * Clamps a menu position so the panel stays fully inside the viewport.
- *
- * @param position - Requested top-left coordinates.
- * @param size - Measured menu width and height.
- */
-function clampMenuPosition(position: Position, size: { width: number; height: number }): Position {
-  const margin = 8;
-  const maxX = Math.max(margin, window.innerWidth - size.width - margin);
-  const maxY = Math.max(margin, window.innerHeight - size.height - margin);
-  return {
-    x: Math.min(Math.max(position.x, margin), maxX),
-    y: Math.min(Math.max(position.y, margin), maxY)
-  };
 }
 
 /**
@@ -207,7 +180,7 @@ export function TabContextMenu({ groups, position, onClose }: Props): JSX.Elemen
                   onClick={(event) => {
                     event.stopPropagation();
                     closeMenu();
-                    item.onSelect();
+                    item.onSelect?.();
                   }}
                 >
                   {item.label}

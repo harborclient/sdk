@@ -49,10 +49,10 @@ describe('buildTabCloseMenuGroups', () => {
       'Close all'
     ]);
 
-    groups.flat()[0].onSelect();
-    groups.flat()[1].onSelect();
-    groups.flat()[2].onSelect();
-    groups.flat()[4].onSelect();
+    groups.flat()[0].onSelect?.();
+    groups.flat()[1].onSelect?.();
+    groups.flat()[2].onSelect?.();
+    groups.flat()[4].onSelect?.();
 
     expect(onClose).toHaveBeenCalledWith('b');
     expect(onCloseMany).toHaveBeenCalledWith(['a', 'c']);
