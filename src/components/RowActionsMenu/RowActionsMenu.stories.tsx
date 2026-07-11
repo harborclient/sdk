@@ -1,4 +1,4 @@
-import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faSun } from '@fortawesome/free-solid-svg-icons';
 import { useState } from '@harborclient/sdk/react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, ReactElement } from 'react';
@@ -116,6 +116,35 @@ export const LabeledTrigger: Story = {
   decorators: [
     (Story) => (
       <div className="flex items-center gap-2 rounded-md border border-separator px-3 py-2">
+        <Story />
+      </div>
+    )
+  ],
+  render: (args) => <RowActionsMenuDemo {...args} />
+};
+
+export const FooterEnvironmentPicker: Story = {
+  args: {
+    menuId: 'footer-environment-menu',
+    placement: 'up',
+    triggerVariant: 'toolbar',
+    triggerIcon: faSun,
+    triggerLabel: 'Production API environment',
+    triggerTitle: 'Production API environment',
+    triggerAriaLabel: 'Select environment',
+    triggerClassName:
+      'hc-footer-button w-[12rem] min-w-[12rem] justify-start gap-1 overflow-hidden rounded-md border-none bg-transparent px-2 py-0.5 text-left text-[16px] text-muted hover:bg-transparent hover:text-text',
+    groups: [
+      [
+        { label: 'Development', checked: false, onSelect: fn() },
+        { label: 'Staging', checked: false, onSelect: fn() },
+        { label: 'Production API environment', checked: true, onSelect: fn() }
+      ]
+    ]
+  },
+  decorators: [
+    (Story) => (
+      <div className="inline-flex min-w-0 items-center rounded-md border border-separator bg-sidebar p-0.5">
         <Story />
       </div>
     )

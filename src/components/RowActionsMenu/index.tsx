@@ -114,6 +114,11 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
    * Additional classes merged onto the trigger button.
    */
   triggerClassName?: string;
+
+  /**
+   * Whether the menu opens below or above the trigger. Defaults to opening downward.
+   */
+  placement?: 'down' | 'up';
 }
 
 const TYPEAHEAD_TIMEOUT_MS = 500;
@@ -143,6 +148,7 @@ export function RowActionsMenu({
   triggerAriaLabel,
   triggerTitle,
   triggerClassName,
+  placement = 'down',
   className,
   ...props
 }: Props): JSX.Element {
@@ -334,7 +340,7 @@ export function RowActionsMenu({
       width: panelRect?.width ?? MENU_MIN_WIDTH_PX,
       height: panelRect?.height ?? 0
     };
-    const requested = getTriggerAnchoredMenuPosition(triggerRect, menuSize);
+    const requested = getTriggerAnchoredMenuPosition(triggerRect, menuSize, placement);
 
     if (menuSize.height > 0) {
       setMenuPosition(clampMenuPosition(requested, menuSize));
@@ -342,7 +348,7 @@ export function RowActionsMenu({
     }
 
     setMenuPosition(requested);
-  }, []);
+  }, [placement]);
 
   /**
    * Moves focus into the menu after it opens and item refs are mounted.
@@ -672,8 +678,10 @@ export function RowActionsMenu({
       }}
       onKeyDown={handleTriggerKeyDown}
     >
-      <FaIcon icon={triggerIcon} className="h-3.5 w-3.5" aria-hidden />
-      {triggerLabel}
+      <FaIcon icon={triggerIcon} className="h-[1em] w-[1em] shrink-0" aria-hidden />
+      <span className="hc-row-actions-menu-trigger-label inline-flex min-w-0 flex-1 items-center truncate overflow-hidden leading-none">
+        {triggerLabel}
+      </span>
     </Button>
   ) : (
     <Button

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(row-actions-menu): add placement option for menu positioning. (`c44408e`)
+
 ## 1.0.69 - 2026-07-11
 
 - feat(row-actions-menu): enhance menu item functionality and styling. (`6a7a702`)

@@ -46,19 +46,25 @@ export function clampMenuPosition(position: MenuPosition, size: MenuSize): MenuP
 }
 
 /**
- * Computes menu coordinates anchored below and right-aligned to a trigger button.
+ * Computes menu coordinates anchored to a trigger button, right-aligned with the
+ * trigger's trailing edge. Opens below by default or above when `placement` is
+ * `up`.
  *
  * @param triggerRect - Trigger bounding rect in viewport coordinates.
  * @param menuSize - Measured or estimated menu dimensions.
+ * @param placement - Whether the panel opens below or above the trigger.
  */
 export function getTriggerAnchoredMenuPosition(
   triggerRect: DOMRect,
-  menuSize: MenuSize
+  menuSize: MenuSize,
+  placement: 'down' | 'up' = 'down'
 ): MenuPosition {
-  return {
-    x: triggerRect.right - menuSize.width,
-    y: triggerRect.bottom + MENU_TRIGGER_OFFSET_PX
-  };
+  const x = triggerRect.right - menuSize.width;
+  const y =
+    placement === 'up'
+      ? triggerRect.top - MENU_TRIGGER_OFFSET_PX - menuSize.height
+      : triggerRect.bottom + MENU_TRIGGER_OFFSET_PX;
+  return { x, y };
 }
 
 /**
