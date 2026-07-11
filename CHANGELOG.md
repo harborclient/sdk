@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(footer-panel): update import path for FooterPanel component. (`3a4bdbe`)
 - chore(.gitignore): remove .vscode directory from ignore list. (`c85f9c1`)
 - feat(footer-button): make `active` and `controlsId` props optional. (`83bbd48`)
 
