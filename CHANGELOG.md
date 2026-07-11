@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.69 - 2026-07-11
+
 - feat(row-actions-menu): enhance menu item functionality and styling. (`6a7a702`)
 
 ## 1.0.68 - 2026-07-11
