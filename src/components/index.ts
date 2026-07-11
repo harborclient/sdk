@@ -37,6 +37,13 @@ export { FieldError } from './FieldError/index.js';
 export { FormDataEditor } from './FormDataEditor/index.js';
 export type { Props as FormDataEditorProps } from './FormDataEditor/index.js';
 export { FooterButton } from './FooterButton/index.js';
+export {
+  FOOTER_BAR_HEIGHT,
+  FOOTER_ICON_BUTTON_SIZE,
+  FOOTER_STATUS_BAR_SLOT_HEIGHT,
+  footerBarPaddingClass,
+  footerIconButtonSizeClass
+} from './footerBarUtils.js';
 export { FooterIcon } from './FooterIcon/index.js';
 export { FooterPanel } from './FooterPanel/index.js';
 export { FormGroup } from './FormGroup/index.js';
@@ -88,6 +95,24 @@ export type { TabItem } from './SegmentedTabs/index.js';
 export { Spinner } from './Spinner/index.js';
 export { StatusMessage } from './StatusMessage/index.js';
 export { TabCloseButton } from './TabCloseButton/index.js';
+export {
+  TabBar,
+  TabBarShell,
+  TabNewButton,
+  TabContextMenu,
+  ClosingTabShell,
+  useSortableTabItem,
+  useExitingTabItems,
+  detectRemovedTabItems,
+  resolveInsertBeforeId,
+  buildTabCloseMenuGroups,
+  tabIdsToCloseOthers,
+  tabIdsToCloseToTheRight,
+  type TabBarItem,
+  type TabBarNewTab,
+  type TabBarSortableCursor,
+  type ExitingTabItem
+} from './TabBar/index.js';
 export { Toolbar } from './Toolbar/index.js';
 export type { ToolbarAction } from './Toolbar/index.js';
 export {
@@ -115,5 +140,5 @@ export type { VisibilityMenuItem } from './VisibilityMenu/index.js';
 export { cleanVariables, resolveTabListKeyAction } from './utils.js';
 export type { TabListKeyOptions } from './utils.js';
 export { useDialogFocus, getFocusableElements } from './useDialogFocus.js';
-export { segment, segmentGroup } from './classes.js';
+export { segment, segmentGroup, tabItem } from './classes.js';
 export type { FormDataPart, FormDataPartType, HttpMethod, KeyValue, Variable } from '../types.js';

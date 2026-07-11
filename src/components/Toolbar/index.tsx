@@ -81,16 +81,32 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'aria
 }
 
 /**
+ * Whether a toolbar action is in an active visual state.
+ *
+ * Toggle actions use `ariaPressed`; popup actions such as chat history use
+ * `ariaExpanded` when their menu is open.
+ *
+ * @param action - Declarative toolbar action to evaluate.
+ * @returns True when the action should render with the active background.
+ */
+function isToolbarActionActive(action: ToolbarAction): boolean {
+  return action.ariaPressed === true || action.ariaExpanded === true;
+}
+
+/**
  * Tailwind classes for toolbar icon action buttons.
  *
- * @param pressed - Whether the action is in a pressed/toggled-on state.
+ * Active buttons use `bg-sidebar-section` so they match collection sidebar
+ * section headers; inactive buttons keep `bg-selection` for hover/focus feedback.
+ *
+ * @param active - Whether the action is pressed or has an open popup.
  * @returns Class string for the action button.
  */
-function toolbarActionButtonClasses(pressed: boolean): string {
+function toolbarActionButtonClasses(active: boolean): string {
   return cn(
     'hc-toolbar-action app-no-drag inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md border-none text-text',
-    pressed
-      ? 'bg-selection'
+    active
+      ? 'bg-sidebar-section'
       : 'bg-transparent hover:bg-selection focus-visible:bg-selection focus-visible:text-text',
     'disabled:cursor-not-allowed disabled:opacity-50'
   );
@@ -104,13 +120,14 @@ function toolbarActionButtonClasses(pressed: boolean): string {
  */
 function renderAction(action: ToolbarAction): JSX.Element {
   const title = action.title ?? action.label;
+  const active = isToolbarActionActive(action);
 
   return (
     <div key={action.id} className="hc-toolbar-action-wrap relative">
       <button
         type="button"
         ref={action.buttonRef}
-        className={toolbarActionButtonClasses(action.ariaPressed === true)}
+        className={toolbarActionButtonClasses(active)}
         title={title}
         aria-label={action.label}
         aria-expanded={action.ariaExpanded}
@@ -121,10 +138,7 @@ function renderAction(action: ToolbarAction): JSX.Element {
       >
         <FaIcon
           icon={action.icon}
-          className={cn(
-            'hc-toolbar-action-icon h-5! w-5!',
-            action.ariaPressed === true ? 'opacity-100' : 'opacity-50'
-          )}
+          className={cn('hc-toolbar-action-icon h-5! w-5!', active ? 'opacity-100' : 'opacity-50')}
         />
       </button>
       {action.popover}

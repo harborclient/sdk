@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { ComponentPropsWithoutRef, JSX } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { footerIconButtonSizeClass } from '../footerBarUtils.js';
 import { cn } from '../utils.js';
 
 /**
@@ -32,13 +33,13 @@ interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'aria-label' | 
 
   /**
    * Active-state background treatment. Use `"selection"` to match sidebar
-   * toolbar icon toggles; defaults to `"surface"` for the action menu icon.
+   * toolbar icon toggles (`bg-sidebar-section`); defaults to `"surface"` for
+   * the action menu icon.
    */
   activeStyle?: ActiveStyle;
 }
 
-const footerIconBase =
-  'inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-none app-no-drag';
+const footerIconBase = `inline-flex ${footerIconButtonSizeClass} shrink-0 cursor-pointer items-center justify-center rounded-md border-none app-no-drag`;
 
 /**
  * Square icon toggle styles for footer sidebar buttons.
@@ -50,7 +51,7 @@ const footerIconBase =
 function footerIconButton(active: boolean, activeStyle: ActiveStyle): string {
   if (activeStyle === 'selection') {
     return active
-      ? `${footerIconBase} bg-selection text-text`
+      ? `${footerIconBase} bg-sidebar-section text-text`
       : `${footerIconBase} bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text`;
   }
 

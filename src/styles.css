@@ -78,3 +78,15 @@
   overflow: auto !important;
   scrollbar-gutter: stable;
 }
+
+/**
+ * Compact circular new-tab control in horizontal scroll mode. Lives in SDK styles
+ * so the rule overrides Tailwind rounded utilities on the same element.
+ */
+.hc-tab-new-button {
+  align-self: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  aspect-ratio: auto;
+  border-radius: 9999px;
+}

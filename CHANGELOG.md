@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(tab-bar): implement drag-and-drop functionality for tab reordering. (`6ac2b6e`)
+
 ## 1.0.67 - 2026-07-11
 
 - fix(footer-panel): update import path for FooterPanel component. (`3a4bdbe`)

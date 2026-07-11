@@ -791,6 +791,7 @@ export interface StatusBarItemContribution {
  * - `muted` — de-emphasized text
  * - `accent` — links, focus rings, primary actions
  * - `selection` — selected row / highlight fill
+ * - `tab-unsaved` — request/markdown tab title when the tab has unsaved changes
  * - `danger`, `danger-light`, `warning`, `success`, `info` — status colors
  * - `method-get`, `method-post`, `method-put`, `method-patch`, `method-delete`, `method-head`, `method-options` — HTTP method badge colors
  * - `scrollbar-track`, `scrollbar-thumb`, `scrollbar-thumb-hover`, `scrollbar-thumb-active` — scrollbar track and thumb colors
@@ -808,6 +809,7 @@ export type ThemeColorToken =
   | 'muted'
   | 'accent'
   | 'selection'
+  | 'tab-unsaved'
   | 'danger'
   | 'danger-light'
   | 'warning'
