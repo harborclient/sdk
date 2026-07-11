@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.66 - 2026-07-11
+
 - docs: enhance documentation for import handlers and update related references. (`c1cc35b`)
 
 ## 1.0.64 - 2026-07-10
