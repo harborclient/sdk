@@ -328,6 +328,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-ui#hcuiregistermenuitemitem"
       },
       {
+        "text": "hc.actions.register(namespace, handlers)",
+        "link": "/renderer-ui#hcactionsregisternamespace-handlers"
+      },
+      {
         "text": "hc.ui.registerRequestToolbarAction(action)",
         "link": "/renderer-ui#hcuiregisterrequesttoolbaractionaction"
       },
@@ -504,6 +508,25 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "collapsed": false
       },
       {
+        "text": "hc.imports",
+        "link": "/renderer-data#hcimports",
+        "items": [
+          {
+            "text": "Common patterns",
+            "link": "/renderer-data#common-patterns"
+          },
+          {
+            "text": "registerImportHandler(hc, extensions, handler)",
+            "link": "/renderer-data#registerimporthandlerhc-extensions-handler"
+          },
+          {
+            "text": "hc.imports.registerHandler(extensions, handler)",
+            "link": "/renderer-data#hcimportsregisterhandlerextensions-handler"
+          }
+        ],
+        "collapsed": false
+      },
+      {
         "text": "hc.subscriptions",
         "link": "/renderer-data#hcsubscriptions"
       },
@@ -596,6 +619,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "Solarized theme",
         "link": "/examples/solarized-theme"
+      },
+      {
+        "text": "Import handler",
+        "link": "/examples/import-handler"
       }
     ]
   },

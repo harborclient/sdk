@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- docs: enhance documentation for import handlers and update related references. (`c1cc35b`)
+
 ## 1.0.64 - 2026-07-10
 
 - fix(tests): ensure consistent formatting in import handler test. (`e38c9a3`)

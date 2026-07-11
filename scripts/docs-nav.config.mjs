@@ -54,6 +54,11 @@ export const docsNav = [
         name: 'solarized-theme',
         source: 'docs/examples/solarized-theme.md',
         title: 'Solarized theme'
+      },
+      {
+        name: 'import-handler',
+        source: 'docs/examples/import-handler.md',
+        title: 'Import handler'
       }
     ]
   },

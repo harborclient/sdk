@@ -408,6 +408,14 @@ Built-in HarborClient formats (Postman, Bruno, HAR, and native exports) are dete
 
 Handlers run in registration order. The first handler whose `canImport` returns true receives the file. Throw an `Error` from `import` to surface a blocking failure in the host.
 
+### Common patterns
+
+**Direct import** — parse `file.contents` inside `import` and create HarborClient data immediately (for example with `hc.host.createCollection`). Use when the user does not need a preview step.
+
+**Preview UI** — stash the selected `ImportFile` in plugin state, then open a registered main view with `hc.commands.execute('harborclient:openMainView', hc.pluginId, viewId)`. The preview component reads the stashed file, lets the user confirm selections, and calls host APIs when ready.
+
+See the [Import handler example](/examples/import-handler) for a complete walkthrough. For a production OpenAPI importer, see [harborclient/plugin-openapi](https://github.com/harborclient/plugin-openapi).
+
 ### registerImportHandler(hc, extensions, handler)
 
 **Signature:** `(hc: PluginContext, extensions: string | string[], handler: ImportHandler) => Disposable`
@@ -417,10 +425,21 @@ Convenience wrapper around `hc.imports.registerHandler` that also pushes the ret
 ```typescript
 import { registerImportHandler } from '@harborclient/sdk';
 
-registerImportHandler(hc, ['.json', '.yaml', '.yml'], {
-  canImport: (file) => file.contents.includes('openapi:'),
+registerImportHandler(hc, '.json', {
+  canImport: (file) => {
+    try {
+      const parsed = JSON.parse(file.contents) as { bundleFormat?: unknown; version?: unknown };
+      return parsed.bundleFormat === 'request-bundle' && parsed.version === 1;
+    } catch {
+      return false;
+    }
+  },
   import: async (file) => {
-    // Open a preview UI or create a collection from file.contents
+    // Direct import: create a collection immediately, or open a preview main view.
+    await hc.host.createCollection({
+      name: 'Imported bundle',
+      requests: [{ name: 'Example', method: 'GET', url: 'https://example.com' }]
+    });
   }
 });
 ```
@@ -435,6 +454,8 @@ registerImportHandler(hc, ['.json', '.yaml', '.yml'], {
 | `import`    | `(file: ImportFile) => void \| Promise<void>`       | Performs the import workflow                        |
 
 `ImportFile` includes `name`, `path`, `extension` (dot-prefixed, lowercase), and UTF-8 `contents`.
+
+Extensions may be passed with or without a leading dot (`json` and `.json` are equivalent). Register multiple extensions in one call: `['.json', '.yaml', '.yml']`.
 
 ## hc.subscriptions
 

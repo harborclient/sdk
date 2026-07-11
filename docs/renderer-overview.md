@@ -428,5 +428,5 @@ await hc.host.sendRequest();
 ## Related reference
 
 - [UI contributions](/renderer-ui) — `hc.ui.register*` methods and `hc.actions.register`
-- [Themes and storage](/renderer-data) — themes, commands, storage, and filesystem
+- [Themes and storage](/renderer-data) — themes, commands, storage, filesystem, and [File → Import handlers](/renderer-data#hcimports)
 - [Main API](/main-api) — HTTP hooks and IPC in the main entry

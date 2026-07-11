@@ -1,6 +1,6 @@
 # Plugin development
 
-HarborClient plugins extend the app with installable packages: custom settings panels, sidebar views, request tabs, appearance themes, HTTP hooks, and persistent storage. Each plugin ships as a **HarborClient plugin** file (`.hcp`) containing a `manifest.json` and bundled JavaScript. A `.hcp` file is a normal ZIP archive — the extension is a naming convention only, not a separate container format. Plugins use the same `hc` namespace as [request scripts](https://harborclient.com/request-scripts), but with a broader API suited to long-lived extensions.
+HarborClient plugins extend the app with installable packages: custom settings panels, sidebar views, request tabs, appearance themes, **File → Import** handlers, HTTP hooks, and persistent storage. Each plugin ships as a **HarborClient plugin** file (`.hcp`) containing a `manifest.json` and bundled JavaScript. A `.hcp` file is a normal ZIP archive — the extension is a naming convention only, not a separate container format. Plugins use the same `hc` namespace as [request scripts](https://harborclient.com/request-scripts), but with a broader API suited to long-lived extensions.
 
 **Themes** are plugins too: declare `contributes.themes`, register with `hc.themes.register`, and include `"categories": ["themes"]` when the package should appear under **File → Themes** rather than **File → Plugins**.
 
@@ -22,7 +22,7 @@ To install or manage plugins in the app, see [Plugins](https://harborclient.com/
 - [Main API](/main-api) — HTTP hooks and IPC in the SES utilityProcess
 - [Snippets](/snippets) — types and import syntax for request script snippet files
 - [Components](/storybook/index.html) — interactive component explorer (Storybook)
-- [Examples](/examples/) — request logger, audit tab, and Solarized theme
+- [Examples](/examples/) — request logger, audit tab, Solarized theme, and import handler
 - [Marketplace](/marketplace) — publish to the HarborClient plugin catalog
 - [Performance](/performance) — IPC and rendering best practices
 - [Plugins vs scripts](/vs-request-scripts) — how plugins differ from request scripts

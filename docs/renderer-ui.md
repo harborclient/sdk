@@ -296,6 +296,8 @@ function PluginLogPanel() {
 
 Adds an item to the application menu. Register the command handler with `hc.commands.register` separately.
 
+For **File → Import** workflows, prefer [`hc.imports.registerHandler`](/renderer-data#hcimports) instead of adding a separate File menu import item. Built-in HarborClient formats are detected first; plugin handlers receive only unrecognized files whose extensions they registered.
+
 ```typescript
 hc.commands.register('myPlugin.run', () => {
   hc.ui.showToast('Command ran');
