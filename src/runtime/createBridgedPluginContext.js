@@ -13,8 +13,115 @@ import { setHostReact } from './reactHost.js';
 /** @type {Map<string, Set<(...args: unknown[]) => void | Promise<void>>>} */
 const commandHandlers = new Map();
 
+/** @type {Map<string, import('../types').ImportHandler>} */
+const importHandlersByRegistrationId = new Map();
+
+/** Monotonic id generator for import handler registrations within one webview. */
+let importRegistrationCounter = 0;
+
 /** Plugin id prefix for built-in HarborClient host commands executed in the renderer. */
 const HOST_COMMAND_OWNER = 'harborclient';
+
+/** Guards repeated import invoke listener installation per webview load. */
+let importInvokeListenerInstalled = false;
+
+/**
+ * Normalizes a file extension to lowercase with a leading dot.
+ *
+ * @param {string} extension - Extension with or without a leading dot.
+ * @returns {string} Normalized extension such as `.json`, or an empty string when absent.
+ */
+function normalizeImportExtension(extension) {
+  const trimmed = extension.trim().toLowerCase();
+  if (!trimmed) {
+    return '';
+  }
+  return trimmed.startsWith('.') ? trimmed : `.${trimmed}`;
+}
+
+/**
+ * Normalizes one extension or an array of extensions for handler registration.
+ *
+ * @param {string | string[]} extensions - Single extension or list of extensions.
+ * @returns {string[]} Deduplicated normalized extensions.
+ */
+function normalizeImportExtensions(extensions) {
+  const values = Array.isArray(extensions) ? extensions : [extensions];
+  const normalized = values
+    .map((extension) => normalizeImportExtension(extension))
+    .filter((extension) => extension.length > 0);
+  return [...new Set(normalized)];
+}
+
+/**
+ * Subscribes to host-initiated import handler invocations for the agent webview.
+ *
+ * Must run once before plugin activation so File → Import can reach registered handlers.
+ */
+export function installImportInvokeListener() {
+  if (importInvokeListenerInstalled) {
+    return;
+  }
+  importInvokeListenerInstalled = true;
+
+  bridgeOn('imports.invoke', async (payload) => {
+    const { requestId, registrationId, phase, file } = payload ?? {};
+    if (requestId == null || registrationId == null || phase == null) {
+      return;
+    }
+
+    console.debug('[import]', 'invoke', {
+      registrationId,
+      phase,
+      fileName: file?.name,
+      extension: file?.extension
+    });
+
+    const handler = importHandlersByRegistrationId.get(String(registrationId));
+    if (!handler) {
+      await bridgeInvoke('imports.invokeComplete', {
+        requestId,
+        ok: false,
+        error: `Unknown import handler registration: ${registrationId}`
+      });
+      return;
+    }
+
+    try {
+      if (phase === 'canImport') {
+        const result = Boolean(await handler.canImport(file));
+        await bridgeInvoke('imports.invokeComplete', { requestId, ok: true, result });
+        return;
+      }
+      if (phase === 'import') {
+        await handler.import(file);
+        await bridgeInvoke('imports.invokeComplete', { requestId, ok: true, result: undefined });
+        return;
+      }
+      await bridgeInvoke('imports.invokeComplete', {
+        requestId,
+        ok: false,
+        error: `Unsupported import handler phase: ${String(phase)}`
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      await bridgeInvoke('imports.invokeComplete', {
+        requestId,
+        ok: false,
+        error: message
+      });
+    }
+  });
+}
+
+/**
+ * Clears import handler state — test helper only.
+ */
+export function resetImportHandlersForTests() {
+  importHandlersByRegistrationId.clear();
+  importRegistrationCounter = 0;
+  importInvokeListenerInstalled = false;
+}
 
 /**
  * Parses a view-host role string into agent vs view contribution id.
@@ -266,6 +373,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           return;
         }
         if (ownerId === HOST_COMMAND_OWNER) {
+          console.debug('[import]', 'commands.execute', { commandId, args });
           await bridgeInvoke('commands.execute', { pluginId: ownerId, commandId, args });
           return;
         }
@@ -677,6 +785,36 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
       clearResponse: async () => {
         assertUi();
         await bridgeInvoke('host.clearResponse');
+      }
+    },
+    imports: {
+      registerHandler: (extensions, handler) => {
+        assertUi();
+        if (!isAgent) {
+          return noopDisposable();
+        }
+        const normalizedExtensions = normalizeImportExtensions(extensions);
+        if (normalizedExtensions.length === 0) {
+          throw new Error(
+            'At least one file extension is required for import handler registration.'
+          );
+        }
+        const registrationId = String(++importRegistrationCounter);
+        importHandlersByRegistrationId.set(registrationId, handler);
+        console.debug('[import]', 'registerHandler', {
+          registrationId,
+          extensions: normalizedExtensions
+        });
+        void bridgeInvoke('imports.registerHandler', {
+          registrationId,
+          extensions: normalizedExtensions
+        });
+        return {
+          dispose: () => {
+            importHandlersByRegistrationId.delete(registrationId);
+            void bridgeInvoke('imports.unregisterHandler', { registrationId });
+          }
+        };
       }
     }
   };

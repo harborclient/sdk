@@ -2,6 +2,7 @@ import { clearContributionRegistry } from './contributionRegistry.js';
 import {
   createBridgedPluginContext,
   executeLocalPluginCommand,
+  installImportInvokeListener,
   mountContributionView,
   parseViewHostRole,
   resolveContributionKindFromUrl
@@ -68,6 +69,10 @@ export async function bootstrapViewHost(options = {}) {
     react: React,
     manifest
   });
+
+  if (parsedRole.mode === 'agent') {
+    installImportInvokeListener();
+  }
 
   await module.activate(hc);
 
