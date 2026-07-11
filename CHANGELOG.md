@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.68 - 2026-07-11
+
 - feat(tab-bar): implement drag-and-drop functionality for tab reordering. (`6ac2b6e`)
 
 ## 1.0.67 - 2026-07-11
