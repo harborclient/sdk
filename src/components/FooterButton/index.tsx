@@ -8,12 +8,12 @@ interface Props extends Omit<
   /**
    * Whether the associated slide-up panel is currently open.
    */
-  active: boolean;
+  active?: boolean;
 
   /**
    * Panel element id referenced by `aria-controls`.
    */
-  controlsId: string;
+  controlsId?: string;
 
   /**
    * Button label and optional count badge content.
@@ -35,7 +35,7 @@ function footerSegment(active: boolean): string {
  * slide-up panels such as Console and Variables.
  */
 export function FooterButton({
-  active,
+  active = false,
   onClick,
   controlsId,
   children,

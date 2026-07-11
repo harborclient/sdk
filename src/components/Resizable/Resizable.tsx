@@ -55,6 +55,11 @@ interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'id' 
   unmountWhenClosed?: boolean;
 
   /**
+   * Whether or not to show the close button.
+   */
+  showCloseButton?: boolean;
+
+  /**
    * Panel body content.
    */
   children: ReactNode;
@@ -75,6 +80,7 @@ export function Resizable({
   title,
   headerless = false,
   unmountWhenClosed = false,
+  showCloseButton = true,
   children,
   className,
   ...props
@@ -139,24 +145,26 @@ export function Resizable({
 
       {headerless ? (
         <div className="hc-resizable-headerless relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <button
-            type="button"
-            className={cn(
-              'hc-resizable-headerless-close absolute top-2 right-2 z-10',
-              footerPanelCloseButtonClassName
-            )}
-            onClick={onClose}
-            aria-label={`Close ${closeLabel}`}
-          >
-            <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-          </button>
+          {showCloseButton && (
+            <button
+              type="button"
+              className={cn(
+                'hc-resizable-headerless-close absolute top-2 right-2 z-10',
+                footerPanelCloseButtonClassName
+              )}
+              onClick={onClose}
+              aria-label={`Close ${closeLabel}`}
+            >
+              <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
+            </button>
+          )}
           <div className="hc-resizable-body flex min-h-0 flex-1 flex-col">{body}</div>
         </div>
       ) : (
         <>
           <div className="hc-resizable-header flex shrink-0 items-center justify-between border-b border-separator px-3 py-2">
             <div className="hc-resizable-header-title min-w-0 flex-1">{title}</div>
-            {closeButton}
+            {showCloseButton && closeButton}
           </div>
           {body}
         </>

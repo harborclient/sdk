@@ -38,6 +38,7 @@ export { FormDataEditor } from './FormDataEditor/index.js';
 export type { Props as FormDataEditorProps } from './FormDataEditor/index.js';
 export { FooterButton } from './FooterButton/index.js';
 export { FooterIcon } from './FooterIcon/index.js';
+export { FooterPanel } from './FooterPanel';
 export { FormGroup } from './FormGroup/index.js';
 export {
   Input,
