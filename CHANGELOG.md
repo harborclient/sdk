@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(footer-panel, resizable): replace button with RoundButton component. (`e0714a4`)
+
 ## 1.0.72 - 2026-07-12
 
 - feat(types): add 'terminal' theme color token to ThemeColorToken type. (`00be7d1`)

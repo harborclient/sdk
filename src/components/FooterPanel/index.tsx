@@ -1,8 +1,7 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import React, { type JSX } from 'react';
-import { FaIcon } from '../FaIcon/index.js';
-import { Resizable } from '../index';
-import { cn } from '../utils.js';
+import { Resizable } from '../Resizable/index.js';
+import { RoundButton } from '../RoundButton/index.js';
 
 interface Props {
   id: string;
@@ -75,15 +74,13 @@ export function FooterPanel({
   unmountWhenClosed = false
 }: Props): JSX.Element {
   const closeButton = (
-    <button
-      type="button"
+    <RoundButton
+      icon={faXmark}
       title="Close"
-      className={cn('hc-footer-panel-close cursor-pointer')}
+      ariaLabel={`Close ${closeLabel}`}
       onClick={onClose}
-      aria-label={`Close ${closeLabel}`}
-    >
-      <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-    </button>
+      className="hc-footer-panel-close"
+    />
   );
 
   return (

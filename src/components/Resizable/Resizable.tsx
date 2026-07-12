@@ -1,14 +1,13 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useRef } from '@harborclient/sdk/react';
 import type { ComponentPropsWithoutRef, JSX, ReactNode } from 'react';
-import { FaIcon } from '../FaIcon/index.js';
+import { RoundButton } from '../RoundButton/index.js';
 import { cn } from '../utils.js';
 import { ResizeHandle } from './ResizeHandle.js';
 import {
   DEFAULT_HEIGHT,
   MIN_HEIGHT,
   footerPanelClassName,
-  footerPanelCloseButtonClassName,
   getFooterPanelMaxSize
 } from './footerPanelUtils';
 import { useResizable } from './useResizable.js';
@@ -109,14 +108,12 @@ export function Resizable({
   });
 
   const closeButton = (
-    <button
-      type="button"
-      className={cn('hc-resizable-close', footerPanelCloseButtonClassName)}
+    <RoundButton
+      icon={faXmark}
+      ariaLabel={`Close ${closeLabel}`}
       onClick={onClose}
-      aria-label={`Close ${closeLabel}`}
-    >
-      <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-    </button>
+      className="hc-resizable-close"
+    />
   );
 
   const body = unmountWhenClosed && !open ? null : children;
@@ -146,17 +143,12 @@ export function Resizable({
       {headerless ? (
         <div className="hc-resizable-headerless relative flex min-h-0 flex-1 flex-col overflow-hidden">
           {showCloseButton && (
-            <button
-              type="button"
-              className={cn(
-                'hc-resizable-headerless-close absolute top-2 right-2 z-10',
-                footerPanelCloseButtonClassName
-              )}
+            <RoundButton
+              icon={faXmark}
+              ariaLabel={`Close ${closeLabel}`}
               onClick={onClose}
-              aria-label={`Close ${closeLabel}`}
-            >
-              <FaIcon icon={faXmark} className="h-3.5 w-3.5" />
-            </button>
+              className="hc-resizable-headerless-close absolute top-2 right-2 z-10"
+            />
           )}
           <div className="hc-resizable-body flex min-h-0 flex-1 flex-col">{body}</div>
         </div>

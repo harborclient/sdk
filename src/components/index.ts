@@ -87,6 +87,7 @@ export {
   ResourceListPrimary,
   ResourceListEmptyItem
 } from './ResourceList/index.js';
+export { RoundButton } from './RoundButton/index.js';
 export { RowActionsMenu } from './RowActionsMenu/index.js';
 export type { MenuItem } from './RowActionsMenu/index.js';
 export { buildReorderMenuGroup } from './rowActionsMenuHelpers.js';
