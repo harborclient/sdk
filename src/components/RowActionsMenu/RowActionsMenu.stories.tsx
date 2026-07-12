@@ -133,7 +133,7 @@ export const FooterEnvironmentPicker: Story = {
     triggerTitle: 'Production API environment',
     triggerAriaLabel: 'Select environment',
     triggerClassName:
-      'hc-footer-button w-[12rem] min-w-[12rem] justify-start gap-1 overflow-hidden rounded-md border-none bg-transparent px-2 py-0.5 text-left text-[16px] text-muted hover:bg-transparent hover:text-text',
+      'hc-footer-button w-[12rem] min-w-[12rem] justify-start gap-1 overflow-hidden rounded-md border-none bg-transparent px-2 py-0.5 text-left text-muted hover:bg-transparent hover:text-text',
     groups: [
       [
         { label: 'Development', checked: false, onSelect: fn() },

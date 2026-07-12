@@ -125,7 +125,7 @@ export function FormGroup({
   if (layout === 'associated') {
     const associatedClasses = labelClassName
       ? `hc-form-group ${labelClassName}`
-      : 'hc-form-group text-[16px] text-text';
+      : 'hc-form-group text-text';
     return (
       <label htmlFor={htmlFor} className={associatedClasses}>
         {label}
@@ -139,7 +139,7 @@ export function FormGroup({
       : 'hc-form-group flex items-start gap-2';
     const adjacentLabelClasses = labelClassName
       ? `hc-form-group-label ${labelClassName}`
-      : 'hc-form-group-label min-w-0 flex-1 text-[16px] text-text';
+      : 'hc-form-group-label min-w-0 flex-1 text-text';
     const linkedChildren = enhanceControl(children, { id: controlId });
     return (
       <div {...props} className={wrapperClasses}>
@@ -153,8 +153,8 @@ export function FormGroup({
 
   if (layout === 'radio') {
     const wrapperClasses = extra
-      ? `hc-form-group inline-flex cursor-pointer items-center gap-1.5 text-[16px] text-text app-no-drag ${extra}`
-      : 'hc-form-group inline-flex cursor-pointer items-center gap-1.5 text-[16px] text-text app-no-drag';
+      ? `hc-form-group inline-flex cursor-pointer items-center gap-1.5 text-text app-no-drag ${extra}`
+      : 'hc-form-group inline-flex cursor-pointer items-center gap-1.5 text-text app-no-drag';
     const linkedChildren = enhanceControl(children, { id: controlId });
     return (
       <label htmlFor={controlId} className={wrapperClasses}>
@@ -241,8 +241,8 @@ export function FormGroup({
     id: htmlFor
   });
   const wrapperClasses = extra
-    ? `hc-form-group flex flex-col gap-1 p-4 text-[16px] border border-separator rounded-md ${extra}`
-    : 'hc-form-group flex flex-col gap-1 p-4 text-[16px] border border-separator rounded-md';
+    ? `hc-form-group flex flex-col gap-1 p-4 border border-separator rounded-md ${extra}`
+    : 'hc-form-group flex flex-col gap-1 p-4 border border-separator rounded-md';
 
   return (
     <div {...props} className={wrapperClasses}>

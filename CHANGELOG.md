@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(styles): standardize body text size and line height across components. (`772dd57`)
+
 ## 1.0.74 - 2026-07-12
 
 - refactor(KeyValueEditor, VariableTable): remove padding from table cells. (`895cd98`)

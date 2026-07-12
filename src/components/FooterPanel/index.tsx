@@ -96,15 +96,11 @@ export function FooterPanel({
     >
       <div className="hc-footer-panel flex shrink-0 items-center justify-between border-b border-separator px-3 py-2">
         <div>
-          <div className="flex items-center gap-2 text-[16px] font-medium text-text">
+          <div className="flex items-center gap-2 font-medium text-text">
             {title}
-            {badge && (
-              <span className="hc-footer-panel-badge text-[16px] font-normal text-muted">
-                {badge}
-              </span>
-            )}
+            {badge && <span className="hc-footer-panel-badge font-normal text-muted">{badge}</span>}
           </div>
-          {description && <span className="truncate text-[16px] text-muted">{description}</span>}
+          {description && <span className="truncate text-muted">{description}</span>}
         </div>
 
         <div className="flex gap-2">

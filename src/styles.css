@@ -90,3 +90,13 @@
   aspect-ratio: auto;
   border-radius: 9999px;
 }
+
+/**
+ * Default body text size for SDK and host renderers. Unlayered so it wins over
+ * host `@layer base` body rules. Hosts keep `:root { font-size: 14px }` as the
+ * rem base for layout; only inherited text size comes from here.
+ */
+body {
+  font-size: 16px;
+  line-height: 1.5;
+}

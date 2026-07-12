@@ -342,7 +342,7 @@ export function VariableInput({
       <div
         ref={backdropRef}
         aria-hidden
-        className="hc-variable-input-backdrop pointer-events-none absolute inset-0 overflow-hidden px-2.5 py-1.5 text-[16px] whitespace-nowrap text-inherit"
+        className="hc-variable-input-backdrop pointer-events-none absolute inset-0 overflow-hidden px-2.5 py-1.5 whitespace-nowrap text-inherit"
       >
         {safeValue ? (
           tokens.map((token, index) =>
@@ -385,7 +385,7 @@ export function VariableInput({
         aria-labelledby={ariaLabelledBy}
         aria-describedby={tooltip ? tooltipId : undefined}
         className={cn(
-          'hc-variable-input-field relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-[16px] text-transparent caret-text focus-visible:shadow-none',
+          'hc-variable-input-field relative w-full min-w-0 border-none bg-transparent px-2.5 py-1.5 text-transparent caret-text focus-visible:shadow-none',
           className
         )}
         type="text"
@@ -426,7 +426,7 @@ export function VariableInput({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-[16px] text-text shadow-md after:pointer-events-auto after:absolute after:right-0 after:-bottom-2 after:left-0 after:h-2 after:content-['']"
+          className="hc-variable-input-tooltip pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-2 rounded-lg border border-separator bg-surface px-4 py-3 text-text shadow-md after:pointer-events-auto after:absolute after:right-0 after:-bottom-2 after:left-0 after:h-2 after:content-['']"
           style={{ top: tooltip.top - 4, left: tooltip.left }}
           onMouseEnter={cancelHide}
           onMouseLeave={scheduleHide}

@@ -1833,7 +1833,7 @@ export function CodeEditor({
         <div
           id={tooltipId}
           role="tooltip"
-          className="hc-code-editor-tooltip app-no-drag pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-[16px] text-text shadow-md"
+          className="hc-code-editor-tooltip app-no-drag pointer-events-auto fixed z-50 flex max-w-sm -translate-x-1/2 -translate-y-full flex-col gap-1.5 rounded-lg border border-separator bg-surface px-3 py-2 text-text shadow-md"
           style={{ top: selectionTooltip.top - 4, left: selectionTooltip.left }}
         >
           <VariableTooltipValue

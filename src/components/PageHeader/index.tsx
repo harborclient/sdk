@@ -57,9 +57,7 @@ export function PageHeader({
           {title}
         </h2>
         {description ? (
-          <p className="hc-page-header-description m-0 mt-1 text-[16px] leading-6 text-muted">
-            {description}
-          </p>
+          <p className="hc-page-header-description m-0 mt-1 leading-6 text-muted">{description}</p>
         ) : null}
       </div>
       {children ? (
