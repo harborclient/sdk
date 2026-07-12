@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(types): add 'terminal' theme color token to ThemeColorToken type. (`00be7d1`)
+
 ## 1.0.71 - 2026-07-11
 
 - feat(row-actions-menu): add placement option for menu positioning. (`c44408e`)
