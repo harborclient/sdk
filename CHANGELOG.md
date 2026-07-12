@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.0.75 - 2026-07-12
+
 - fix(styles): standardize body text size and line height across components. (`772dd57`)
 
 ## 1.0.74 - 2026-07-12
