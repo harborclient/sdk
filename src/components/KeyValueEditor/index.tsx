@@ -115,7 +115,7 @@ export function KeyValueEditor({
           const normalizedRow = normalizeRow(row);
           return (
             <tr key={index}>
-              <TableCell className="hc-key-value-editor-cell w-6 p-1 text-center">
+              <TableCell className="hc-key-value-editor-cell w-6 text-center">
                 <Checkbox
                   className="app-no-drag"
                   checked={normalizedRow.enabled}

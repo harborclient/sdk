@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- refactor(KeyValueEditor, VariableTable): remove padding from table cells. (`895cd98`)
+
 ## 1.0.73 - 2026-07-12
 
 - feat(footer-panel, resizable): replace button with RoundButton component. (`e0714a4`)

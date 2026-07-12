@@ -173,7 +173,7 @@ export function VariableTable({
                     title="Include value in export"
                   />
                 </TableCell>
-                <TableCell className="w-7 p-0 text-center">
+                <TableCell className="w-7 text-center">
                   <Button
                     type="button"
                     variant="iconDanger"
