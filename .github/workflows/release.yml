@@ -1,12 +1,23 @@
 name: Release
 
-# Release workflow for @harborclient/sdk. Runs when changes land on `main`.
-# Releases when either:
-#   - `## Unreleased` in CHANGELOG.md has content (bumps patch, renames section,
-#     commits, tags, publishes), or
-#   - package.json version has no matching git tag (publishes current version
-#     as-is; recovery path for manual version bumps).
-# Skips only when the version is already tagged and Unreleased is empty.
+# Release workflow for @harborclient/sdk.
+#
+# Automatic (push to `main`):
+#   Releases when either:
+#     - `## Unreleased` in CHANGELOG.md has content (bumps patch, renames section,
+#       commits, tags, publishes), or
+#     - package.json version has no matching git tag (publishes current version
+#       as-is; recovery path for manual version bumps).
+#   Skips only when the version is already tagged and Unreleased is empty.
+#
+# Manual (workflow_dispatch):
+#   Always releases from the chosen branch with the selected bump type
+#   (major, minor, or patch), regardless of Unreleased content.
+#
+#   gh workflow run release.yml \
+#     -f branch=main \
+#     -f bump=minor
+#
 # Release commits use `[skip ci]` and do not re-trigger.
 #
 # Required setup BEFORE the first run:
@@ -15,19 +26,40 @@ name: Release
 #      token configured to bypass 2FA prompts) with publish rights to
 #      @harborclient/sdk.
 #
-#   2. Branch protection on `main` must allow github-actions[bot] to push.
+#   2. Branch protection on release branches must allow github-actions[bot] to push.
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release from and push the release commit to'
+        required: true
+        default: main
+        type: string
+      bump:
+        description: 'Version bump type'
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: write
 
+env:
+  RELEASE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || 'main' }}
+
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || 'main' }}
 
   changelog:
     needs: ci
@@ -37,15 +69,23 @@ jobs:
       mode: ${{ steps.check.outputs.mode }}
       reason: ${{ steps.check.outputs.reason }}
     steps:
-      - name: Checkout main
+      - name: Checkout release ref
         uses: actions/checkout@v4
         with:
+          ref: ${{ env.RELEASE_REF }}
           fetch-depth: 0
 
       - name: Check release readiness
         id: check
         run: |
           set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "mode=manual" >> "$GITHUB_OUTPUT"
+            echo "Manual release requested; forcing release with ${{ github.event.inputs.bump }} bump."
+            exit 0
+          fi
 
           CURRENT=$(node -p "require('./package.json').version")
 
@@ -106,9 +146,10 @@ jobs:
     if: needs.changelog.outputs.ready == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
+      - name: Checkout release ref
         uses: actions/checkout@v4
         with:
+          ref: ${{ env.RELEASE_REF }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -136,6 +177,14 @@ jobs:
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Bumped to $VERSION"
 
+      - name: Resolve release version (manual)
+        if: needs.changelog.outputs.mode == 'manual'
+        run: |
+          set -euo pipefail
+          VERSION=$(pnpm version ${{ github.event.inputs.bump }} --no-git-tag-version | tail -n1 | sed 's/^v//')
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Bumped to $VERSION (${{ github.event.inputs.bump }})"
+
       - name: Resolve release version (untagged)
         if: needs.changelog.outputs.mode == 'untagged'
         run: |
@@ -154,7 +203,7 @@ jobs:
           fi
 
       - name: Update CHANGELOG.md for release
-        if: needs.changelog.outputs.mode == 'unreleased' && env.VERSION != ''
+        if: (needs.changelog.outputs.mode == 'unreleased' || needs.changelog.outputs.mode == 'manual') && env.VERSION != ''
         run: |
           set -euo pipefail
           python3 - "$VERSION" "$(date -u +%Y-%m-%d)" <<'PY'
@@ -186,8 +235,8 @@ jobs:
           path.write_text(new_text)
           PY
 
-      - name: Commit, tag, and push (unreleased)
-        if: needs.changelog.outputs.mode == 'unreleased' && env.VERSION != ''
+      - name: Commit, tag, and push (unreleased or manual)
+        if: (needs.changelog.outputs.mode == 'unreleased' || needs.changelog.outputs.mode == 'manual') && env.VERSION != ''
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -195,7 +244,7 @@ jobs:
           git add package.json CHANGELOG.md
           git commit -m "chore(changelog): release v${VERSION} [skip ci]"
           git tag -a "v${VERSION}" -m "Release v${VERSION}"
-          git push origin HEAD:main --follow-tags
+          git push origin HEAD:${{ env.RELEASE_REF }} --follow-tags
 
       - name: Tag and push (untagged)
         if: needs.changelog.outputs.mode == 'untagged' && env.VERSION != ''

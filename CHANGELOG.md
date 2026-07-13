@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(ci, release): enhance workflows with manual inputs for branch and version bump. (`bdffa6c`)
+
 ## 1.0.77 - 2026-07-13
 
 - feat(ColorPicker): set default value and onChange handler in ColorPicker story. (`19fda35`)
