@@ -101,21 +101,24 @@ hc.subscriptions.push(
 
 Override any of these keys in `colors`. Each maps to `--mac-<token>` on the document root.
 
-| Token                                                  | Used for                            |
-| ------------------------------------------------------ | ----------------------------------- |
-| `surface`                                              | Main content background             |
-| `sidebar`                                              | Left sidebar background             |
-| `sidebar-section`                                      | Sidebar section headers             |
-| `control`                                              | Panels, inputs, footer bar          |
-| `field`                                                | Input field fill                    |
-| `separator`                                            | Borders and dividers                |
-| `text`                                                 | Primary text                        |
-| `text-secondary`                                       | Secondary labels                    |
-| `muted`                                                | De-emphasized text                  |
-| `accent`                                               | Links, focus rings, primary actions |
-| `selection`                                            | Selected row / highlight fill       |
-| `danger`, `danger-light`, `warning`, `success`, `info` | Status colors                       |
-| `method-get`, `method-post`, …                         | HTTP method badge colors            |
+| Token                                                  | Used for                                                 |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| `surface`                                              | Main content background                                  |
+| `sidebar`                                              | Left sidebar background                                  |
+| `sidebar-section`                                      | Sidebar section headers                                  |
+| `git-staged`                                           | Git-backed request names staged for commit               |
+| `git-uncommitted`                                      | Git-backed request names with tracked unstaged changes   |
+| `git-unstaged`                                         | Git-backed request names not yet added to the repository |
+| `control`                                              | Panels, inputs, footer bar                               |
+| `field`                                                | Input field fill                                         |
+| `separator`                                            | Borders and dividers                                     |
+| `text`                                                 | Primary text                                             |
+| `text-secondary`                                       | Secondary labels                                         |
+| `muted`                                                | De-emphasized text                                       |
+| `accent`                                               | Links, focus rings, primary actions                      |
+| `selection`                                            | Selected row / highlight fill                            |
+| `danger`, `danger-light`, `warning`, `success`, `info` | Status colors                                            |
+| `method-get`, `method-post`, …                         | HTTP method badge colors                                 |
 
 See the [Solarized theme example](/examples/solarized-theme) for a complete theme plugin.
 

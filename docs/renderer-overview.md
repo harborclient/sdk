@@ -121,6 +121,7 @@ export type ThemeColorToken =
   | 'surface'
   | 'sidebar'
   | 'sidebar-section'
+  | 'git-uncommitted'
   | 'control'
   | 'field'
   | 'separator'

@@ -783,6 +783,9 @@ export interface StatusBarItemContribution {
  * - `surface` — main content background
  * - `sidebar` — left sidebar background
  * - `sidebar-section` — sidebar section headers
+ * - `git-staged` — git-backed request names staged for commit
+ * - `git-uncommitted` — git-backed request names with tracked unstaged changes
+ * - `git-unstaged` — git-backed request names not yet added to the repository
  * - `control` — panels, inputs, footer bar
  * - `field` — input field fill
  * - `separator` — borders and dividers
@@ -802,6 +805,9 @@ export type ThemeColorToken =
   | 'surface'
   | 'sidebar'
   | 'sidebar-section'
+  | 'git-staged'
+  | 'git-uncommitted'
+  | 'git-unstaged'
   | 'control'
   | 'field'
   | 'separator'
