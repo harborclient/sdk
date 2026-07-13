@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- style(EmptySectionLabel): reorder class names for improved readability. (`41ee1b0`)
 - fix(EmptySectionLabel): change div to span and update styling. (`9b8013d`)
 
 ## 1.1.2 - 2026-07-13

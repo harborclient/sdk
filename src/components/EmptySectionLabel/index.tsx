@@ -18,7 +18,7 @@ export function EmptySectionLabel({ label, className, ...props }: Props): JSX.El
     <span
       {...props}
       className={cn(
-        'hc-empty-section-label my-2 py-1 mx-auto w-[90%] text-center text-[14px] text-muted uppercase border border-separator rounded-full',
+        'hc-empty-section-label mx-auto my-2 w-[90%] rounded-full border border-separator py-1 text-center text-[14px] text-muted uppercase',
         className
       )}
     >
