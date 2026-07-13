@@ -457,6 +457,40 @@ registerImportHandler(hc, '.json', {
 
 Extensions may be passed with or without a leading dot (`json` and `.json` are equivalent). Register multiple extensions in one call: `['.json', '.yaml', '.yml']`.
 
+## hc.mcp
+
+Register remote MCP client servers so Harbor's chat agent can discover and call tools from external MCP endpoints over Streamable HTTP or legacy SSE.
+
+Requires the `mcp` permission. Registrations are **activation-scoped**: Harbor connects while the plugin is enabled and removes them when you dispose the returned handle or the plugin unloads. Plugin-owned servers appear as **read-only** rows in **Settings → AI & MCP** with plugin attribution; they are not copied into user MCP settings.
+
+### hc.mcp.registerServer(config)
+
+**Signature:** `(config: PluginMcpServerConfig) => Disposable`
+
+| Field       | Type                 | Description                                                                 |
+| ----------- | -------------------- | --------------------------------------------------------------------------- |
+| `name`      | `string`             | Display name in Settings → AI & MCP                                         |
+| `serverURL` | `string`             | Absolute HTTP or HTTPS MCP endpoint URL                                     |
+| `enabled`   | `boolean` (optional) | When false, Harbor skips connecting. Defaults to `true`                     |
+| `headers`   | `PluginMcpHeader[]`  | Optional HTTP headers sent with MCP client requests                         |
+| `icon`      | `string` (optional)  | Optional square icon as a `data:image/...;base64,...` URI for settings rows |
+
+Push the returned disposable onto `hc.subscriptions`:
+
+```typescript
+hc.subscriptions.push(
+  hc.mcp.registerServer({
+    name: 'WordPress',
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
+    enabled: true,
+    headers: [{ key: 'Authorization', value: 'Bearer token' }]
+  })
+);
+```
+
+Discovered tools are prefixed with `mcp__` in the chat agent tool list, using the same naming scheme as user-configured MCP client servers.
+
 ## hc.subscriptions
 
 **Type:** `Disposable[]`

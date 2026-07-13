@@ -19,6 +19,9 @@ const importHandlersByRegistrationId = new Map();
 /** Monotonic id generator for import handler registrations within one webview. */
 let importRegistrationCounter = 0;
 
+/** Monotonic id generator for MCP server registrations within one webview. */
+let mcpRegistrationCounter = 0;
+
 /** Plugin id prefix for built-in HarborClient host commands executed in the renderer. */
 const HOST_COMMAND_OWNER = 'harborclient';
 
@@ -115,12 +118,102 @@ export function installImportInvokeListener() {
 }
 
 /**
+ * Clears MCP server registration state — test helper only.
+ */
+export function resetMcpServersForTests() {
+  mcpRegistrationCounter = 0;
+}
+
+/**
  * Clears import handler state — test helper only.
  */
 export function resetImportHandlersForTests() {
   importHandlersByRegistrationId.clear();
   importRegistrationCounter = 0;
   importInvokeListenerInstalled = false;
+  resetMcpServersForTests();
+}
+
+/**
+ * Normalizes one MCP header row from plugin registration input.
+ *
+ * @param {Record<string, unknown>} header - Raw header row.
+ * @returns {{ key: string; value: string }}
+ */
+function normalizeMcpHeaderRow(header) {
+  return {
+    key: String(header?.key ?? '').trim(),
+    value: String(header?.value ?? '')
+  };
+}
+
+/**
+ * Normalizes MCP client headers from plugin registration input.
+ *
+ * @param {unknown} headers - Raw headers array.
+ * @returns {Array<{ key: string; value: string }>}
+ */
+function normalizeMcpHeaders(headers) {
+  if (!Array.isArray(headers)) {
+    return [];
+  }
+  return headers.map(normalizeMcpHeaderRow).filter((row) => row.key.length > 0);
+}
+
+/**
+ * Validates an optional MCP server icon data URI.
+ *
+ * @param {unknown} icon - Optional icon from plugin registration input.
+ * @returns {string | undefined} Normalized icon when valid.
+ */
+function normalizeMcpServerIcon(icon) {
+  if (icon == null || icon === '') {
+    return undefined;
+  }
+  const value = String(icon).trim();
+  if (!/^data:image\/(?:png|jpeg|jpg|webp|svg\+xml);base64,[a-z0-9+/=]+$/i.test(value)) {
+    throw new Error(
+      'MCP server icon must be a base64 data URI (data:image/png;base64,... or data:image/svg+xml;base64,...).'
+    );
+  }
+  return value;
+}
+
+/**
+ * Normalizes plugin MCP server registration input for the host bridge.
+ *
+ * @param {Record<string, unknown>} config - Raw registration config.
+ * @returns {{ name: string; serverURL: string; enabled: boolean; headers: Array<{ key: string; value: string }>; icon?: string }}
+ */
+function normalizeMcpServerConfig(config) {
+  const name = String(config?.name ?? '').trim();
+  const serverURL = String(config?.serverURL ?? '')
+    .trim()
+    .replace(/\/+$/, '');
+  if (!name) {
+    throw new Error('MCP server name is required.');
+  }
+  if (!serverURL) {
+    throw new Error('MCP server URL is required.');
+  }
+
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(serverURL);
+  } catch {
+    throw new Error('MCP server URL must be an absolute HTTP or HTTPS URL.');
+  }
+  if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+    throw new Error('MCP server URL must use http or https.');
+  }
+
+  return {
+    name,
+    serverURL,
+    enabled: config?.enabled !== false,
+    headers: normalizeMcpHeaders(config?.headers),
+    icon: normalizeMcpServerIcon(config?.icon)
+  };
 }
 
 /**
@@ -218,6 +311,11 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
    * Returns whether UI registration should run in this webview role.
    */
   const canRegisterUi = () => isAgent || mode === 'view';
+
+  /**
+   * Asserts MCP permission for remote MCP client registration.
+   */
+  const assertMcp = () => assertPermission('mcp');
 
   /**
    * Asserts that a contribution id is declared in manifest.contributes.
@@ -813,6 +911,25 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           dispose: () => {
             importHandlersByRegistrationId.delete(registrationId);
             void bridgeInvoke('imports.unregisterHandler', { registrationId });
+          }
+        };
+      }
+    },
+    mcp: {
+      registerServer: (config) => {
+        assertMcp();
+        if (!isAgent) {
+          return noopDisposable();
+        }
+        const normalized = normalizeMcpServerConfig(config ?? {});
+        const registrationId = String(++mcpRegistrationCounter);
+        void bridgeInvoke('mcp.registerServer', {
+          registrationId,
+          ...normalized
+        });
+        return {
+          dispose: () => {
+            void bridgeInvoke('mcp.unregisterServer', { registrationId });
           }
         };
       }

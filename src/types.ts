@@ -1139,6 +1139,71 @@ export interface ImportHandler {
 }
 
 /**
+ * HTTP header row sent with MCP client requests registered by a plugin.
+ */
+export interface PluginMcpHeader {
+  /**
+   * Header name.
+   */
+  key: string;
+
+  /**
+   * Header value.
+   */
+  value: string;
+}
+
+/**
+ * Serializable MCP client server configuration registered by a plugin.
+ */
+export interface PluginMcpServerConfig {
+  /**
+   * Display name shown in Settings → AI & MCP.
+   */
+  name: string;
+
+  /**
+   * Remote MCP server URL (Streamable HTTP or legacy SSE endpoint).
+   */
+  serverURL: string;
+
+  /**
+   * When false, Harbor skips connecting to this server. Defaults to true.
+   */
+  enabled?: boolean;
+
+  /**
+   * Optional HTTP headers sent with MCP client requests.
+   */
+  headers?: PluginMcpHeader[];
+
+  /**
+   * Optional square icon as a `data:image/...;base64,...` data URI for settings display.
+   */
+  icon?: string;
+}
+
+/**
+ * MCP client server registration available on {@link PluginContext.mcp}.
+ *
+ * Requires the `mcp` permission. Registrations are activation-scoped: Harbor connects
+ * while the plugin is enabled and removes them on dispose or plugin unload. Plugin-owned
+ * servers appear as read-only rows in Settings → AI & MCP.
+ */
+export interface PluginMcp {
+  /**
+   * Registers a remote MCP client server for Harbor's chat agent.
+   *
+   * Re-registering with the same registration id from one plugin replaces the prior
+   * entry. Push the returned {@link Disposable} onto {@link PluginContext.subscriptions}.
+   *
+   * @param config - Remote MCP server metadata and connection options.
+   * @returns A {@link Disposable} that unregisters the server when disposed.
+   */
+  registerServer(config: PluginMcpServerConfig): Disposable;
+}
+
+/**
  * **File → Import** handler registration available on {@link PluginContext.imports}.
  *
  * Requires the `ui` permission. Push returned disposables onto
@@ -1796,6 +1861,12 @@ export interface PluginContext {
    * **File → Import** handler registration. Requires the `ui` permission.
    */
   imports: PluginImports;
+
+  /**
+   * Remote MCP client server registration for Harbor's chat agent. Requires the `mcp`
+   * permission.
+   */
+  mcp: PluginMcp;
 
   /**
    * Disposables to clean up on deactivation.

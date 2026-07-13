@@ -93,6 +93,14 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "collapsed": false
       },
       {
+        "text": "Permissions",
+        "link": "/manifest#permissions-1"
+      },
+      {
+        "text": "Permissions",
+        "link": "/manifest#permissions-2"
+      },
+      {
         "text": "Theme plugins",
         "link": "/manifest#theme-plugins"
       },
@@ -527,6 +535,17 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "collapsed": false
       },
       {
+        "text": "hc.mcp",
+        "link": "/renderer-data#hcmcp",
+        "items": [
+          {
+            "text": "hc.mcp.registerServer(config)",
+            "link": "/renderer-data#hcmcpregisterserverconfig"
+          }
+        ],
+        "collapsed": false
+      },
+      {
         "text": "hc.subscriptions",
         "link": "/renderer-data#hcsubscriptions"
       },
@@ -623,6 +642,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
       {
         "text": "Import handler",
         "link": "/examples/import-handler"
+      },
+      {
+        "text": "MCP client server",
+        "link": "/examples/mcp-client-server"
       }
     ]
   },

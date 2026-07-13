@@ -33,10 +33,10 @@ const { createBridgedPluginContext, installImportInvokeListener, resetImportHand
  *
  * @returns {Record<string, unknown>} Plugin manifest.
  */
-function createManifest() {
+function createManifest(permissions = ['ui']) {
   return {
     id: 'com.example.test',
-    permissions: ['ui']
+    permissions
   };
 }
 
@@ -151,5 +151,71 @@ describe('installImportInvokeListener', () => {
       ok: true,
       result: undefined
     });
+  });
+});
+
+describe('createBridgedPluginContext mcp', () => {
+  it('forwards MCP server registration to the broker in agent mode', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'agent',
+      react: {},
+      manifest: createManifest(['mcp'])
+    });
+
+    const disposable = hc.mcp.registerServer({
+      name: 'WordPress',
+      serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1/',
+      enabled: true,
+      headers: [{ key: 'Authorization', value: 'token' }]
+    });
+
+    expect(bridgeInvoke).toHaveBeenCalledWith('mcp.registerServer', {
+      registrationId: '1',
+      name: 'WordPress',
+      serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
+      enabled: true,
+      headers: [{ key: 'Authorization', value: 'token' }],
+      icon: undefined
+    });
+
+    disposable.dispose();
+    expect(bridgeInvoke).toHaveBeenCalledWith('mcp.unregisterServer', {
+      registrationId: '1'
+    });
+  });
+
+  it('returns a no-op disposable for MCP registration in view mode', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'view',
+      contributionId: 'panel',
+      react: {},
+      manifest: createManifest(['mcp'])
+    });
+
+    const disposable = hc.mcp.registerServer({
+      name: 'WordPress',
+      serverURL: 'https://example.com/mcp'
+    });
+
+    expect(bridgeInvoke).not.toHaveBeenCalled();
+    expect(() => disposable.dispose()).not.toThrow();
+  });
+
+  it('throws when the plugin lacks the mcp permission', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'agent',
+      react: {},
+      manifest: createManifest(['ui'])
+    });
+
+    expect(() =>
+      hc.mcp.registerServer({
+        name: 'WordPress',
+        serverURL: 'https://example.com/mcp'
+      })
+    ).toThrow('lacks permission: mcp');
   });
 });

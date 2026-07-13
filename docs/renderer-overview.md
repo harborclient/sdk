@@ -211,7 +211,30 @@ export interface PluginContext {
   http: PluginRendererHttp;
   ipc: PluginIpcInvoker;
   host: PluginHost;
+  imports: PluginImports;
+  mcp: PluginMcp;
   subscriptions: Disposable[];
+}
+
+export interface PluginMcpHeader {
+  key: string;
+  value: string;
+}
+
+export interface PluginMcpServerConfig {
+  name: string;
+  serverURL: string;
+  enabled?: boolean;
+  headers?: PluginMcpHeader[];
+  icon?: string;
+}
+
+export interface PluginMcp {
+  registerServer(config: PluginMcpServerConfig): Disposable;
+}
+
+export interface PluginImports {
+  registerHandler(extensions: string | string[], handler: ImportHandler): Disposable;
 }
 
 export interface PluginRendererHttp {
@@ -428,5 +451,5 @@ await hc.host.sendRequest();
 ## Related reference
 
 - [UI contributions](/renderer-ui) — `hc.ui.register*` methods and `hc.actions.register`
-- [Themes and storage](/renderer-data) — themes, commands, storage, filesystem, and [File → Import handlers](/renderer-data#hcimports)
+- [Themes and storage](/renderer-data) — themes, commands, storage, filesystem, [File → Import handlers](/renderer-data#hcimports), and [MCP client servers](/renderer-data#hcmcp)
 - [Main API](/main-api) — HTTP hooks and IPC in the main entry

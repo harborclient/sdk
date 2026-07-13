@@ -107,6 +107,7 @@ Logs every outbound HTTP request to the terminal and adds a **Solarized Dark** t
 
 - `http` — before/after send hooks for request logging
 - `ui` — theme registration
+- `mcp` — register a remote MCP client server for Harbor's chat agent
 ```
 
 ### icon
@@ -138,6 +139,31 @@ Supported formats: PNG, JPEG, WebP. Recommended width **1280 px** or wider; Harb
 | `bugs.url` | `"https://github.com/example/my-plugin/issues"` | **Report issue** link         |
 
 All URL fields must use `https://` (or `http://` for local development documentation only). HarborClient opens links in the system default browser.
+
+## Permissions
+
+Declare required capabilities in the `permissions` array. HarborClient summarizes them in the install confirmation dialog. See [Permissions](/permissions) for the full table.
+
+Common renderer permissions:
+
+| Permission | Use when your plugin needs to…                                                          |
+| ---------- | --------------------------------------------------------------------------------------- |
+| `ui`       | Register settings, themes, commands, import handlers, or other UI contributions         |
+| `mcp`      | Register remote MCP client servers with `hc.mcp.registerServer` for Harbor's chat agent |
+| `storage`  | Persist plugin-scoped key-value data with `hc.storage`                                  |
+| `network`  | Send outbound HTTP from the renderer via `hc.host.sendHttpRequest`                      |
+
+Example permission rationale in a plugin `description` Markdown file:
+
+```markdown
+# My Plugin
+
+Connects Harbor's chat agent to a remote WordPress MCP endpoint.
+
+## Permissions
+
+- `mcp` — register the WordPress MCP client server at activation
+```
 
 ## Theme plugins
 

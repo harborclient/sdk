@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(mcp): add support for remote MCP client server registration. (`e81054e`)
+
 ## 1.1.0 - 2026-07-13
 
 - feat(ci, release): enhance workflows with manual inputs for branch and version bump. (`bdffa6c`)

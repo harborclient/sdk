@@ -59,6 +59,11 @@ export const docsNav = [
         name: 'import-handler',
         source: 'docs/examples/import-handler.md',
         title: 'Import handler'
+      },
+      {
+        name: 'mcp-client-server',
+        source: 'docs/examples/mcp-client-server.md',
+        title: 'MCP client server'
       }
     ]
   },
