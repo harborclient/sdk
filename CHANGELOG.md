@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(EmptySectionLabel): change div to span and update styling. (`9b8013d`)
+
 ## 1.1.2 - 2026-07-13
 
 - feat(EmptySectionLabel): add EmptySectionLabel component and its props to exports. (`5d1c1d0`)

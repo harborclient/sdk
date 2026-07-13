@@ -15,14 +15,14 @@ export interface Props extends Omit<ComponentPropsWithoutRef<'div'>, 'children'>
  */
 export function EmptySectionLabel({ label, className, ...props }: Props): JSX.Element {
   return (
-    <div
+    <span
       {...props}
       className={cn(
-        'hc-empty-section-label my-2 text-center text-[14px] text-muted uppercase',
+        'hc-empty-section-label my-2 py-1 mx-auto w-[90%] text-center text-[14px] text-muted uppercase border border-separator rounded-full',
         className
       )}
     >
-      &lt;{label}&gt;
-    </div>
+      {label}
+    </span>
   );
 }
