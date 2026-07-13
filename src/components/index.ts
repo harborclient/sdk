@@ -7,6 +7,21 @@ export {
   type AutocompleteSource
 } from './Autocomplete/index.js';
 export { Card } from './Card/index.js';
+export { ColorPicker } from './ColorPicker/index.js';
+export type { Props as ColorPickerProps } from './ColorPicker/index.js';
+export {
+  colorsMatch,
+  CUSTOM_SWATCH_SLOT_COUNT,
+  DEFAULT_COLOR_PICKER_PRESETS,
+  normalizeCssColor,
+  toHexColorInputValue
+} from './ColorPicker/colorUtils.js';
+export {
+  DEFAULT_CUSTOM_SWATCHES_STORAGE_KEY,
+  loadCustomSwatches,
+  padCustomSwatchSlots,
+  persistCustomSwatches
+} from './ColorPicker/customSwatches.js';
 export { BusyIndicator } from './BusyIndicator/index.js';
 export type { Props as BusyIndicatorProps } from './BusyIndicator/index.js';
 export { BackButton } from './BackButton/index.js';
@@ -65,6 +80,16 @@ export { MethodSelect } from './MethodSelect/index.js';
 export { Modal, ModalFooter, ModalFormLayout } from './Modal/index.js';
 export { ModalHeader } from './Modal/ModalHeader.js';
 export { portalToBody } from './portalToBody.js';
+export {
+  clampMenuPosition,
+  getSubmenuAnchoredPosition,
+  getTriggerAnchoredMenuPosition,
+  MENU_MIN_WIDTH_PX,
+  MENU_TRIGGER_OFFSET_PX,
+  MENU_VIEWPORT_MARGIN_PX,
+  type MenuPosition,
+  type MenuSize
+} from './menuPosition.js';
 export { OverlayCloseButton } from './OverlayCloseButton/index.js';
 export { Page } from './Page/index.js';
 export { PageHeader } from './PageHeader/index.js';
