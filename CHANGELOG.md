@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.1 - 2026-07-13
+
 - feat(mcp): add support for remote MCP client server registration. (`e81054e`)
 
 ## 1.1.0 - 2026-07-13
