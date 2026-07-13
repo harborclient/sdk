@@ -29,6 +29,10 @@ function InteractivePicker(): JSX.Element {
 }
 
 export const Default: Story = {
+  args: {
+    value: '#dc2626',
+    onChange: () => undefined
+  },
   render: () => <InteractivePicker />
 };
 

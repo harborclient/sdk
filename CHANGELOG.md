@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(ColorPicker): set default value and onChange handler in ColorPicker story. (`19fda35`)
+
 ## 1.0.75 - 2026-07-12
 
 - fix(styles): standardize body text size and line height across components. (`772dd57`)
