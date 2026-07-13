@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.0 - 2026-07-13
+
 - feat(ci, release): enhance workflows with manual inputs for branch and version bump. (`bdffa6c`)
 
 ## 1.0.77 - 2026-07-13
