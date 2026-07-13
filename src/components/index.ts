@@ -47,6 +47,8 @@ export type {
   CodeEditorViewState
 } from './CodeEditor/index.js';
 export { EmptyState } from './EmptyState/index.js';
+export { EmptySectionLabel } from './EmptySectionLabel/index.js';
+export type { Props as EmptySectionLabelProps } from './EmptySectionLabel/index.js';
 export { FaIcon } from './FaIcon/index.js';
 export { FieldError } from './FieldError/index.js';
 export { FormDataEditor } from './FormDataEditor/index.js';

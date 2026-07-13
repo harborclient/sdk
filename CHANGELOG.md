@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(EmptySectionLabel): add EmptySectionLabel component and its props to exports. (`5d1c1d0`)
+
 ## 1.1.1 - 2026-07-13
 
 - feat(mcp): add support for remote MCP client server registration. (`e81054e`)
