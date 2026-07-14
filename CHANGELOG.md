@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.6 - 2026-07-14
+
 - feat(Sidebar): implement resizable sidebar with scrollbars. (`682d918`)
 
 ## 1.1.5 - 2026-07-14
