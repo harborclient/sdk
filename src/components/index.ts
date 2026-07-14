@@ -101,6 +101,13 @@ export { SidebarLayout } from './SidebarLayout/index.js';
 export { PanelCloseButton } from './PanelCloseButton/index.js';
 export { Resizable, ResizeHandle, useResizable } from './Resizable/index.js';
 export type { UseResizableOptions, UseResizableResult } from './Resizable/useResizable.js';
+export { Scrollbars, type ScrollbarsAxis } from './Scrollbars/index.js';
+export {
+  SidebarSection,
+  SidebarSections,
+  type SidebarSectionConfig
+} from './SidebarSection/index.js';
+export { Sidebar, type SidebarSide } from './Sidebar/index.js';
 export {
   DEFAULT_HEIGHT,
   MIN_HEIGHT,
@@ -169,4 +176,26 @@ export { cleanVariables, resolveTabListKeyAction } from './utils.js';
 export type { TabListKeyOptions } from './utils.js';
 export { useDialogFocus, getFocusableElements } from './useDialogFocus.js';
 export { segment, segmentGroup, tabItem } from './classes.js';
+export {
+  SidebarItem,
+  SortableSidebarItem,
+  stopSortableDragPointerDown,
+  SidebarColorDot,
+  sourceRow,
+  METHOD_CLASSES,
+  statusDotClass,
+  SIDEBAR_ITEM_BUTTON_CLASS,
+  SidebarMethodBadge,
+  SidebarStatusDot,
+  SidebarStatusMarker,
+  SidebarRequestItem,
+  SidebarDocumentItem,
+  SidebarFolderItem,
+  SidebarRunItem,
+  SidebarHistoryItem,
+  SidebarEnvironmentItem,
+  SidebarTabGroupItem,
+  SidebarCommitItem,
+  type SidebarItemSortableConfig
+} from './SidebarItem/index.js';
 export type { FormDataPart, FormDataPartType, HttpMethod, KeyValue, Variable } from '../types.js';
