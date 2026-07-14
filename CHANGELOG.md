@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(types): update git-related color tokens for accuracy. (`f6385df`)
+
 ## 1.1.4 - 2026-07-14
 
 - style(EmptySectionLabel): update border style for improved visual distinction. (`b6538c9`)
