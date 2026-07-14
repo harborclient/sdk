@@ -1,4 +1,13 @@
-export { SidebarItem, type SidebarItemSortableConfig } from './SidebarItem.js';
+export {
+  SidebarItem,
+  type SidebarItemListboxOption,
+  type SidebarItemSortableConfig,
+  type SidebarItemTreeItem
+} from './SidebarItem.js';
+export { SidebarListbox } from './SidebarListbox.js';
+export { SidebarList } from './SidebarList.js';
+export { SidebarTree, SidebarTreeGroup } from './SidebarTree.js';
+export { handleSidebarOptionKeyDown } from './sidebarListOption.js';
 export { SortableSidebarItem } from './SortableSidebarItem.js';
 export { stopSortableDragPointerDown } from './stopSortableDragPointerDown.js';
 export { SidebarColorDot } from './SidebarColorDot.js';

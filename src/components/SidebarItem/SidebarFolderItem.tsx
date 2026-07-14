@@ -17,6 +17,31 @@ interface Props {
   expanded: boolean;
 
   /**
+   * Id of the child region controlled by this folder (`SidebarTreeGroup` id).
+   */
+  childrenId?: string;
+
+  /**
+   * 1-based depth in the tree.
+   */
+  level?: number;
+
+  /**
+   * Total siblings at this level.
+   */
+  setSize?: number;
+
+  /**
+   * 1-based position among siblings at this level.
+   */
+  posInSet?: number;
+
+  /**
+   * Accessible label for the treeitem row.
+   */
+  ariaLabel?: string;
+
+  /**
    * Optional color dot beside the folder name.
    */
   colorDot?: {
@@ -51,17 +76,17 @@ interface Props {
   onToggleExpand: () => void;
 
   /**
-   * Called when the folder name button is clicked.
+   * Called when the folder name area is activated.
    */
   onNameClick: () => void;
 
   /**
-   * Called when the folder name button is double-clicked.
+   * Called when the folder name area is double-clicked.
    */
   onNameDoubleClick?: () => void;
 
   /**
-   * Called when Enter is pressed on the folder name button.
+   * Called when Enter is pressed on the folder name area.
    */
   onNameEnter?: () => void;
 
@@ -75,15 +100,27 @@ interface Props {
    */
   expandIcon: IconDefinition;
   collapseIcon: IconDefinition;
+
+  /**
+   * HTML element for the row container. Use `li` inside {@link SidebarTree}.
+   */
+  as?: 'div' | 'li';
 }
 
 /**
  * Renders a collection folder row with expand/collapse control, optional color dot,
  * and optional drag-drop highlight affordance.
+ *
+ * Wrap folder trees in {@link SidebarTree} and pass `as="li"` for valid tree semantics.
  */
 export function SidebarFolderItem({
   name,
   expanded,
+  childrenId,
+  level,
+  setSize,
+  posInSet,
+  ariaLabel,
   colorDot,
   dropHighlighted = false,
   selected = false,
@@ -95,16 +132,25 @@ export function SidebarFolderItem({
   onNameEnter,
   actions,
   expandIcon,
-  collapseIcon
+  collapseIcon,
+  as = 'li'
 }: Props): JSX.Element {
+  const useTreeItem = as === 'li';
+
   /**
-   * Opens folder settings when Enter is pressed on the name button.
+   * Opens folder settings when Enter is pressed on the name area.
    */
-  const handleNameKeyDown = (event: KeyboardEvent<HTMLButtonElement>): void => {
-    if (event.key !== 'Enter') return;
+  const handleNameKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
+    if (event.key !== 'Enter' || onNameEnter == null) {
+      return;
+    }
+
     event.preventDefault();
-    onNameEnter?.();
+    event.stopPropagation();
+    onNameEnter();
   };
+
+  const chevronLabel = expanded ? `Collapse folder "${name}"` : `Expand folder "${name}"`;
 
   return (
     <SidebarItem
@@ -112,24 +158,39 @@ export function SidebarFolderItem({
       sortable={sortable}
       onContextMenu={onContextMenu}
       actions={actions}
+      as={as}
+      treeItem={
+        useTreeItem
+          ? {
+              ariaLabel,
+              expanded,
+              controlsId: childrenId,
+              level,
+              setSize,
+              posInSet,
+              onClick: () => onNameClick(),
+              onDoubleClick: onNameDoubleClick != null ? () => onNameDoubleClick() : undefined,
+              onKeyDown: onNameEnter != null ? handleNameKeyDown : undefined
+            }
+          : undefined
+      }
     >
       <button
         type="button"
         className="app-no-drag inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent p-0 text-muted hover:text-text"
-        onClick={onToggleExpand}
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggleExpand();
+        }}
         onPointerDown={stopSortableDragPointerDown}
-        aria-expanded={expanded}
-        aria-label={expanded ? 'Collapse folder' : 'Expand folder'}
+        tabIndex={-1}
+        aria-label={chevronLabel}
       >
         <FaIcon icon={expanded ? collapseIcon : expandIcon} className="h-2 w-2" />
       </button>
-      <button
-        type="button"
+      <span
         className="app-no-drag ml-0.5 min-w-0 flex-1 cursor-pointer truncate border-none bg-transparent py-0 text-left leading-none font-medium text-inherit"
         aria-current={selected ? 'true' : undefined}
-        onClick={onNameClick}
-        onDoubleClick={onNameDoubleClick}
-        onKeyDown={handleNameKeyDown}
       >
         <span className="inline-flex min-w-0 items-center gap-1.5">
           {name}
@@ -142,7 +203,7 @@ export function SidebarFolderItem({
           ) : null}
         </span>
         {dropHighlighted ? <span className="ml-1.5 font-normal text-info">Drop here</span> : null}
-      </button>
+      </span>
     </SidebarItem>
   );
 }

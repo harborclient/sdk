@@ -48,3 +48,9 @@ export function statusDotClass(status: number): string {
  */
 export const SIDEBAR_ITEM_BUTTON_CLASS =
   'flex min-w-0 flex-1 cursor-pointer items-center gap-1.5 border-none bg-transparent py-0 text-left text-inherit app-no-drag';
+
+/**
+ * Tailwind classes for the sortable row drag handle. Hidden until row hover or handle focus.
+ */
+export const SIDEBAR_DRAG_HANDLE_CLASS =
+  'app-no-drag inline-flex h-4 w-4 shrink-0 cursor-grab items-center justify-center rounded border-none bg-transparent p-0 text-muted opacity-0 hover:text-text focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:cursor-grabbing group-hover:opacity-100';

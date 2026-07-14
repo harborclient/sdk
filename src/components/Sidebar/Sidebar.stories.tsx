@@ -16,6 +16,8 @@ import {
   FaIcon,
   Sidebar,
   SidebarCommitItem,
+  SidebarList,
+  SidebarListbox,
   SidebarRequestItem,
   type SidebarSectionConfig,
   SidebarSections,
@@ -58,23 +60,20 @@ function collectionsSections(): SidebarSectionConfig[] {
       onAdd: fn(),
       addLabel: 'Add Collection',
       children: (
-        <ul className="m-0 list-none p-0">
+        <SidebarListbox aria-label="Collections">
           <SidebarRequestItem
             method="GET"
             name="List users"
             selected
-            ariaLabel="List users"
-            ariaCurrent
             colorDot={{ color: '#32D2E2', visible: true, label: 'Color for List users' }}
             sortable={{ id: 'request-1', dragHandleLabel: 'Reorder request "List users"' }}
           />
           <SidebarRequestItem
             method="POST"
             name="Create user"
-            ariaLabel="Create user"
             sortable={{ id: 'request-2', dragHandleLabel: 'Reorder request "Create user"' }}
           />
-        </ul>
+        </SidebarListbox>
       )
     },
     {
@@ -110,15 +109,13 @@ function gitSections(): SidebarSectionConfig[] {
       ariaLabel: 'Changes',
       flushBody: true,
       children: (
-        <ul className="m-0 list-none p-0">
+        <SidebarListbox aria-label="Changes">
           <SidebarRequestItem
             method="POST"
             name="Create user"
-            ariaLabel="Create user, modified"
             statusMarker={{ marker: 'M', className: 'text-git-uncommitted', label: 'Modified' }}
-            as="li"
           />
-        </ul>
+        </SidebarListbox>
       )
     },
     {
@@ -126,14 +123,14 @@ function gitSections(): SidebarSectionConfig[] {
       title: 'Commits',
       ariaLabel: 'Commits',
       children: (
-        <ul className="m-0 list-none p-0">
+        <SidebarList aria-label="Commits">
           <SidebarCommitItem
             message="Add user endpoint"
             author="Alex"
             timestampLabel="2 hours ago"
             icon={faCodeBranch}
           />
-        </ul>
+        </SidebarList>
       )
     }
   ];

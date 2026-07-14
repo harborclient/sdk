@@ -58,24 +58,9 @@ interface Props {
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary label button is clicked.
+   * Called when the primary label area is activated.
    */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-
-  /**
-   * Accessible label for the primary button.
-   */
-  ariaLabel?: string;
-
-  /**
-   * When true, sets aria-current="true" on the primary button.
-   */
-  ariaCurrent?: boolean;
-
-  /**
-   * When true, sets aria-selected="true" on the primary button.
-   */
-  ariaSelected?: boolean;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
    * Trailing actions slot, typically a row actions menu.
@@ -83,7 +68,7 @@ interface Props {
   actions?: ReactNode;
 
   /**
-   * HTML element for the row container when not sortable.
+   * HTML element for the row container. Use `li` inside {@link SidebarListbox}.
    */
   as?: 'div' | 'li';
 }
@@ -91,6 +76,10 @@ interface Props {
 /**
  * Renders a saved-request sidebar row with method badge, optional color dot or git
  * status marker, and shared row chrome. Used in both Collections and Git sidebars.
+ *
+ * The accessible name is derived from visible row content (method, name, markers).
+ *
+ * Wrap lists in {@link SidebarListbox} and pass `as="li"` for valid listbox semantics.
  */
 export function SidebarRequestItem({
   method,
@@ -102,12 +91,11 @@ export function SidebarRequestItem({
   sortable,
   onContextMenu,
   onClick,
-  ariaLabel,
-  ariaCurrent = false,
-  ariaSelected = false,
   actions,
-  as = 'div'
+  as = 'li'
 }: Props): JSX.Element {
+  const useListboxOption = as === 'li';
+
   return (
     <SidebarItem
       selected={selected}
@@ -115,15 +103,15 @@ export function SidebarRequestItem({
       onContextMenu={onContextMenu}
       actions={actions}
       as={as}
+      listboxOption={
+        useListboxOption
+          ? {
+              onClick
+            }
+          : undefined
+      }
     >
-      <button
-        type="button"
-        className={SIDEBAR_ITEM_BUTTON_CLASS}
-        aria-current={ariaCurrent ? 'true' : undefined}
-        aria-selected={ariaSelected ? 'true' : undefined}
-        aria-label={ariaLabel}
-        onClick={onClick}
-      >
+      <span className={SIDEBAR_ITEM_BUTTON_CLASS}>
         <SidebarMethodBadge method={method} />
         {colorDot != null ? (
           <span className="inline-flex min-w-0 items-center gap-1.5">
@@ -144,7 +132,7 @@ export function SidebarRequestItem({
             label={statusMarker.label}
           />
         ) : null}
-      </button>
+      </span>
     </SidebarItem>
   );
 }
@@ -194,24 +182,14 @@ interface DocumentProps {
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary label button is clicked.
+   * Called when the primary label area is activated.
    */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary label button is double-clicked.
+   * Called when the primary label area is double-clicked.
    */
-  onDoubleClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-
-  /**
-   * Accessible label for the primary button.
-   */
-  ariaLabel?: string;
-
-  /**
-   * When true, sets aria-current="true" on the primary button.
-   */
-  ariaCurrent?: boolean;
+  onDoubleClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
    * Trailing actions slot, typically a row actions menu.
@@ -219,7 +197,7 @@ interface DocumentProps {
   actions?: ReactNode;
 
   /**
-   * HTML element for the row container.
+   * HTML element for the row container. Use `li` inside {@link SidebarListbox}.
    */
   as?: 'div' | 'li';
 }
@@ -227,6 +205,8 @@ interface DocumentProps {
 /**
  * Renders a markdown document sidebar row with file icon, optional color dot or git
  * status marker, and shared row chrome. Used in both Collections and Git sidebars.
+ *
+ * The accessible name is derived from visible row content (name, markers).
  */
 export function SidebarDocumentItem({
   icon = faFileLines,
@@ -238,21 +218,27 @@ export function SidebarDocumentItem({
   onContextMenu,
   onClick,
   onDoubleClick,
-  ariaLabel,
-  ariaCurrent = false,
   actions,
-  as = 'div'
+  as = 'li'
 }: DocumentProps): JSX.Element {
+  const useListboxOption = as === 'li';
+
   return (
-    <SidebarItem selected={selected} onContextMenu={onContextMenu} actions={actions} as={as}>
-      <button
-        type="button"
-        className={SIDEBAR_ITEM_BUTTON_CLASS}
-        aria-current={ariaCurrent ? 'true' : undefined}
-        aria-label={ariaLabel}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-      >
+    <SidebarItem
+      selected={selected}
+      onContextMenu={onContextMenu}
+      actions={actions}
+      as={as}
+      listboxOption={
+        useListboxOption
+          ? {
+              onClick,
+              onDoubleClick
+            }
+          : undefined
+      }
+    >
+      <span className={SIDEBAR_ITEM_BUTTON_CLASS}>
         <FaIcon icon={icon} className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden />
         {colorDot != null ? (
           <span className="inline-flex min-w-0 items-center gap-1.5">
@@ -273,7 +259,7 @@ export function SidebarDocumentItem({
             label={statusMarker.label}
           />
         ) : null}
-      </button>
+      </span>
     </SidebarItem>
   );
 }

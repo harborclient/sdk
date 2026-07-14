@@ -8,7 +8,7 @@ import { cn } from '../utils.js';
 
 interface Props extends Omit<
   ComponentPropsWithoutRef<'div'>,
-  'children' | 'aria-label' | 'aria-valuenow' | 'aria-valuemin' | 'aria-valuemax'
+  'children' | 'aria-label' | 'aria-valuenow' | 'aria-valuemin' | 'aria-valuemax' | 'aria-valuetext'
 > {
   /**
    * Handle orientation: horizontal resizes height, vertical resizes width.
@@ -44,6 +44,12 @@ interface Props extends Omit<
    * Accessible label for the separator.
    */
   ariaLabel: string;
+
+  /**
+   * Formats the spoken value for assistive tech. Defaults to
+   * e.g. "Width 487 pixels" based on orientation.
+   */
+  formatValueText?: (value: number, orientation: 'horizontal' | 'vertical') => string;
 }
 
 /**
@@ -57,10 +63,15 @@ export function ResizeHandle({
   onResizeStart,
   onKeyboardResize,
   ariaLabel,
+  formatValueText,
   className,
   ...props
 }: Props): JSX.Element {
   const isHorizontal = orientation === 'horizontal';
+  const dimension = isHorizontal ? 'Height' : 'Width';
+  const valueText = formatValueText
+    ? formatValueText(value, orientation)
+    : `${dimension} ${Math.round(value)} pixels`;
 
   return (
     <div
@@ -81,6 +92,7 @@ export function ResizeHandle({
       aria-valuenow={Math.round(value)}
       aria-valuemin={min}
       aria-valuemax={Math.round(max)}
+      aria-valuetext={valueText}
     >
       <div
         className={

@@ -23,7 +23,7 @@ interface Props {
  */
 export function SidebarStatusMarker({ marker, className, label }: Props): JSX.Element {
   return (
-    <span className={cn('shrink-0', className)} title={label} aria-label={label}>
+    <span className={cn('shrink-0', className)} role="img" title={label} aria-label={label}>
       [{marker}]
     </span>
   );

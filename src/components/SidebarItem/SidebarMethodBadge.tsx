@@ -22,10 +22,7 @@ export function SidebarMethodBadge({ method, uppercase = false }: Props): JSX.El
   const colorClass = METHOD_CLASSES[methodKey] ?? 'text-info';
 
   return (
-    <span
-      className={cn('shrink-0 px-1 py-px', uppercase && 'font-medium uppercase', colorClass)}
-      aria-hidden={uppercase ? true : undefined}
-    >
+    <span className={cn('shrink-0 px-1 py-px', uppercase && 'font-medium uppercase', colorClass)}>
       {method}
     </span>
   );

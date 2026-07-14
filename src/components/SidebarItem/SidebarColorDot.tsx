@@ -30,8 +30,7 @@ export function SidebarColorDot({ color, visible = true, label }: Props): JSX.El
     <span
       className="inline-block h-4 w-4 shrink-0 rounded-full"
       style={{ backgroundColor: color }}
-      aria-hidden={label == null ? true : undefined}
-      aria-label={label}
+      {...(label != null ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
     />
   );
 }

@@ -29,16 +29,6 @@ interface Props {
   selected?: boolean;
 
   /**
-   * When true, sets aria-current="true" on the primary button.
-   */
-  ariaCurrent?: boolean;
-
-  /**
-   * When true, sets aria-selected="true" on the primary button.
-   */
-  ariaSelected?: boolean;
-
-  /**
    * dnd-kit sortable configuration for environment reordering.
    */
   sortable?: SidebarItemSortableConfig;
@@ -49,24 +39,19 @@ interface Props {
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary label button is clicked.
+   * Called when the primary label area is activated.
    */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary label button is double-clicked.
+   * Called when the primary label area is double-clicked.
    */
-  onDoubleClick?: () => void;
+  onDoubleClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when Enter is pressed on the primary label button.
+   * Called when Enter is pressed on the primary label area.
    */
   onEnter?: () => void;
-
-  /**
-   * Accessible label for the primary button.
-   */
-  ariaLabel?: string;
 
   /**
    * Trailing actions slot, typically a row actions menu.
@@ -77,34 +62,45 @@ interface Props {
    * Optional data attribute value for keyboard navigation focus targets.
    */
   dataSidebarEnvironmentId?: string | number;
+
+  /**
+   * HTML element for the row container. Use `li` inside {@link SidebarListbox}.
+   */
+  as?: 'div' | 'li';
 }
 
 /**
  * Renders an environment row in the Collections sidebar Environments section.
+ *
+ * The accessible name is derived from visible row content (name, variable summary).
  */
 export function SidebarEnvironmentItem({
   name,
   variableSummary,
   colorDot,
   selected = false,
-  ariaCurrent = false,
-  ariaSelected = false,
   sortable,
   onContextMenu,
   onClick,
   onDoubleClick,
   onEnter,
-  ariaLabel,
   actions,
-  dataSidebarEnvironmentId
+  dataSidebarEnvironmentId,
+  as = 'li'
 }: Props): JSX.Element {
+  const useListboxOption = as === 'li';
+
   /**
-   * Opens environment settings when Enter is pressed on the name button.
+   * Opens environment settings when Enter is pressed on the name area.
    */
-  const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>): void => {
-    if (event.key !== 'Enter') return;
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
+    if (event.key !== 'Enter' || onEnter == null) {
+      return;
+    }
+
     event.preventDefault();
-    onEnter?.();
+    event.stopPropagation();
+    onEnter();
   };
 
   return (
@@ -113,19 +109,22 @@ export function SidebarEnvironmentItem({
       sortable={sortable}
       onContextMenu={onContextMenu}
       actions={actions}
+      as={as}
+      listboxOption={
+        useListboxOption
+          ? {
+              onClick,
+              onDoubleClick,
+              onKeyDown: onEnter != null ? handleKeyDown : undefined
+            }
+          : undefined
+      }
     >
-      <button
-        type="button"
+      <span
         className={SIDEBAR_ITEM_BUTTON_CLASS}
         {...(dataSidebarEnvironmentId != null
           ? { 'data-sidebar-environment-id': String(dataSidebarEnvironmentId) }
           : {})}
-        aria-current={ariaCurrent ? 'true' : undefined}
-        aria-selected={ariaSelected ? 'true' : undefined}
-        aria-label={ariaLabel}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        onKeyDown={handleKeyDown}
       >
         <span className="inline-flex min-w-0 flex-1 items-center gap-1.5">
           <span className="min-w-0 truncate">{name}</span>
@@ -138,7 +137,7 @@ export function SidebarEnvironmentItem({
           ) : null}
         </span>
         <span className="shrink-0 text-muted">{variableSummary}</span>
-      </button>
+      </span>
     </SidebarItem>
   );
 }

@@ -178,6 +178,13 @@ export { useDialogFocus, getFocusableElements } from './useDialogFocus.js';
 export { segment, segmentGroup, tabItem } from './classes.js';
 export {
   SidebarItem,
+  SidebarListbox,
+  SidebarList,
+  SidebarTree,
+  SidebarTreeGroup,
+  handleSidebarOptionKeyDown,
+  type SidebarItemListboxOption,
+  type SidebarItemTreeItem,
   SortableSidebarItem,
   stopSortableDragPointerDown,
   SidebarColorDot,

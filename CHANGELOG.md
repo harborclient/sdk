@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Sidebar): enhance sidebar functionality with new components and accessibility improvements. (`1c84c6d`)
+
 ## 1.1.8 - 2026-07-14
 
 - feat(Sidebar): enhance sidebar with scrollable content and add empty state. (`e07d0c5`)

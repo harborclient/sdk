@@ -1,9 +1,9 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX, MouseEvent, ReactNode } from 'react';
-import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { SidebarColorDot } from './SidebarColorDot.js';
 import { SidebarItem, type SidebarItemSortableConfig } from './SidebarItem.js';
+import { SIDEBAR_ITEM_BUTTON_CLASS } from './sidebarItemClasses.js';
 
 interface Props {
   /**
@@ -46,14 +46,19 @@ interface Props {
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary row button is clicked.
+   * Called when the primary row area is activated.
    */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
    * Trailing actions slot, typically a row actions menu.
    */
   actions?: ReactNode;
+
+  /**
+   * HTML element for the row container. Use `li` inside {@link SidebarListbox}.
+   */
+  as?: 'div' | 'li';
 }
 
 /**
@@ -68,21 +73,27 @@ export function SidebarTabGroupItem({
   sortable,
   onContextMenu,
   onClick,
-  actions
+  actions,
+  as = 'li'
 }: Props): JSX.Element {
+  const useListboxOption = as === 'li';
+
   return (
     <SidebarItem
       selected={selected}
       sortable={sortable}
       onContextMenu={onContextMenu}
       actions={actions}
+      as={as}
+      listboxOption={
+        useListboxOption
+          ? {
+              onClick
+            }
+          : undefined
+      }
     >
-      <Button
-        variant="toolbar"
-        className="min-w-0 flex-1 justify-start gap-2 rounded-md px-2 py-1 text-left text-text hover:bg-transparent"
-        aria-selected={selected ? 'true' : undefined}
-        onClick={onClick}
-      >
+      <span className={`${SIDEBAR_ITEM_BUTTON_CLASS} gap-2 rounded-md px-2 py-1`}>
         <FaIcon icon={icon} className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden />
         <span className="inline-flex min-w-0 flex-1 items-center gap-1.5">
           <span className="min-w-0 truncate">{name}</span>
@@ -95,7 +106,7 @@ export function SidebarTabGroupItem({
           ) : null}
         </span>
         <span className="shrink-0 text-muted">{summary}</span>
-      </Button>
+      </span>
     </SidebarItem>
   );
 }

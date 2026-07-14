@@ -1,10 +1,10 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX, MouseEvent, ReactNode } from 'react';
-import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { SidebarItem } from './SidebarItem.js';
 import { SidebarMethodBadge } from './SidebarMethodBadge.js';
-import { statusDotClass } from './sidebarItemClasses.js';
+import { SidebarStatusDot } from './SidebarStatusDot.js';
+import { SIDEBAR_ITEM_BUTTON_CLASS, statusDotClass } from './sidebarItemClasses.js';
 
 interface Props {
   /**
@@ -43,12 +43,12 @@ interface Props {
   selected?: boolean;
 
   /**
-   * Tooltip title for the primary button.
+   * Tooltip title for the primary label area.
    */
   title?: string;
 
   /**
-   * Accessible label for the primary button.
+   * Accessible label for the listbox option.
    */
   ariaLabel: string;
 
@@ -58,14 +58,19 @@ interface Props {
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
-   * Called when the primary row button is clicked.
+   * Called when the primary row area is activated.
    */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
    * Trailing actions slot, typically a row actions menu.
    */
   actions?: ReactNode;
+
+  /**
+   * HTML element for the row container. Use `li` inside {@link SidebarListbox}.
+   */
+  as?: 'div' | 'li';
 }
 
 /**
@@ -83,18 +88,31 @@ export function SidebarHistoryItem({
   ariaLabel,
   onContextMenu,
   onClick,
-  actions
+  actions,
+  as = 'li'
 }: Props): JSX.Element {
+  const useListboxOption = as === 'li';
+  const optionAriaLabel =
+    !isRun && status != null && statusText != null
+      ? `${ariaLabel}, responded ${status} ${statusText}`
+      : ariaLabel;
+
   return (
-    <SidebarItem selected={selected} onContextMenu={onContextMenu} actions={actions}>
-      <Button
-        variant="toolbar"
-        className="flex min-w-0 flex-1 items-center gap-2 py-0.5 text-left text-text hover:bg-transparent"
-        title={title}
-        aria-label={ariaLabel}
-        aria-selected={selected ? 'true' : undefined}
-        onClick={onClick}
-      >
+    <SidebarItem
+      selected={selected}
+      onContextMenu={onContextMenu}
+      actions={actions}
+      as={as}
+      listboxOption={
+        useListboxOption
+          ? {
+              ariaLabel: optionAriaLabel,
+              onClick
+            }
+          : undefined
+      }
+    >
+      <span className={`${SIDEBAR_ITEM_BUTTON_CLASS} py-0.5`} title={title}>
         <SidebarMethodBadge method={method} uppercase />
         <span className="flex min-w-0 flex-1 items-center gap-1.5">
           <span className="min-w-0 truncate text-text">{name}</span>
@@ -104,14 +122,11 @@ export function SidebarHistoryItem({
         </span>
         {!isRun && status != null && statusText != null ? (
           <span className="flex shrink-0 items-center gap-1.5 text-muted tabular-nums">
-            <span
-              className={`inline-block h-2 w-2 shrink-0 rounded-full ${statusDotClass(status)}`}
-              aria-hidden="true"
-            />
+            <SidebarStatusDot className={statusDotClass(status)} />
             {status} {statusText}
           </span>
         ) : null}
-      </Button>
+      </span>
     </SidebarItem>
   );
 }
