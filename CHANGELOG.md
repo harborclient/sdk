@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.10 - 2026-07-14
+
 - feat(Sidebar): enhance accessibility for sidebar items. (`96d3be2`)
 
 ## 1.1.9 - 2026-07-14
