@@ -1,4 +1,5 @@
 import type { JSX, MouseEvent, ReactNode } from 'react';
+import { SidebarBadge } from './SidebarBadge.js';
 import { SidebarItem } from './SidebarItem.js';
 import { SidebarMethodBadge } from './SidebarMethodBadge.js';
 import { SidebarStatusDot } from './SidebarStatusDot.js';
@@ -136,12 +137,9 @@ export function SidebarRunItem({
         <span className="flex min-w-0 flex-1 items-center gap-1.5">
           <span className="min-w-0 truncate text-text">{label}</span>
           {connectionBadge != null ? (
-            <span
-              className="shrink-0 rounded bg-info/15 px-1.5 py-0.5 text-[14px] font-medium text-info"
-              title={`Stored in ${connectionBadge}`}
-            >
+            <SidebarBadge variant="info" title={`Stored in ${connectionBadge}`}>
               {connectionBadge}
-            </span>
+            </SidebarBadge>
           ) : null}
         </span>
         <SidebarStatusDot className={statusDotClassName} srOnlyLabel={statusSummary} />

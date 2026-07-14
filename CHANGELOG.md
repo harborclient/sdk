@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Sidebar): add SidebarBadge component and integrate into SidebarRunItem. (`806fcca`)
+
 ## 1.1.12 - 2026-07-14
 
 - feat(VariableInput): enhance tooltip functionality and accessibility. (`ec05179`)

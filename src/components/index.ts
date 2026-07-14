@@ -190,6 +190,7 @@ export {
   SortableSidebarItem,
   stopSortableDragPointerDown,
   SidebarColorDot,
+  SidebarBadge,
   sourceRow,
   METHOD_CLASSES,
   statusDotClass,
@@ -205,6 +206,7 @@ export {
   SidebarEnvironmentItem,
   SidebarTabGroupItem,
   SidebarCommitItem,
-  type SidebarItemSortableConfig
+  type SidebarItemSortableConfig,
+  type SidebarBadgeVariant
 } from './SidebarItem/index.js';
 export type { FormDataPart, FormDataPartType, HttpMethod, KeyValue, Variable } from '../types.js';
