@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.5 - 2026-07-14
+
 - fix(types): update git-related color tokens for accuracy. (`f6385df`)
 
 ## 1.1.4 - 2026-07-14
