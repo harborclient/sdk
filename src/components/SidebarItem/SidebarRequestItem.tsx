@@ -53,6 +53,23 @@ interface Props {
   sortable?: SidebarItemSortableConfig;
 
   /**
+   * Accessible label for the listbox option. When omitted, the name is derived
+   * from visible row content (method, name, markers).
+   */
+  ariaLabel?: string;
+
+  /**
+   * Overrides the `aria-selected` state. When omitted, falls back to `selected`.
+   * Use to decouple selection semantics from highlight styling.
+   */
+  ariaSelected?: boolean;
+
+  /**
+   * When true, marks the row as the current item with `aria-current="true"`.
+   */
+  ariaCurrent?: boolean;
+
+  /**
    * Called when the user right-clicks the row container.
    */
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
@@ -77,7 +94,8 @@ interface Props {
  * Renders a saved-request sidebar row with method badge, optional color dot or git
  * status marker, and shared row chrome. Used in both Collections and Git sidebars.
  *
- * The accessible name is derived from visible row content (method, name, markers).
+ * The accessible name defaults to visible row content (method, name, markers) but
+ * can be overridden with `ariaLabel` (e.g. to include git status context).
  *
  * Wrap lists in {@link SidebarListbox} and pass `as="li"` for valid listbox semantics.
  */
@@ -89,6 +107,9 @@ export function SidebarRequestItem({
   statusMarker,
   selected = false,
   sortable,
+  ariaLabel,
+  ariaSelected,
+  ariaCurrent,
   onContextMenu,
   onClick,
   actions,
@@ -106,6 +127,9 @@ export function SidebarRequestItem({
       listboxOption={
         useListboxOption
           ? {
+              ariaLabel,
+              ariaSelected,
+              ariaCurrent,
               onClick
             }
           : undefined
@@ -177,6 +201,22 @@ interface DocumentProps {
   selected?: boolean;
 
   /**
+   * Accessible label for the listbox option. When omitted, the name is derived
+   * from visible row content (name, markers).
+   */
+  ariaLabel?: string;
+
+  /**
+   * Overrides the `aria-selected` state. When omitted, falls back to `selected`.
+   */
+  ariaSelected?: boolean;
+
+  /**
+   * When true, marks the row as the current item with `aria-current="true"`.
+   */
+  ariaCurrent?: boolean;
+
+  /**
    * Called when the user right-clicks the row container.
    */
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
@@ -206,7 +246,8 @@ interface DocumentProps {
  * Renders a markdown document sidebar row with file icon, optional color dot or git
  * status marker, and shared row chrome. Used in both Collections and Git sidebars.
  *
- * The accessible name is derived from visible row content (name, markers).
+ * The accessible name defaults to visible row content (name, markers) but can be
+ * overridden with `ariaLabel` (e.g. to include git status context).
  */
 export function SidebarDocumentItem({
   icon = faFileLines,
@@ -215,6 +256,9 @@ export function SidebarDocumentItem({
   colorDot,
   statusMarker,
   selected = false,
+  ariaLabel,
+  ariaSelected,
+  ariaCurrent,
   onContextMenu,
   onClick,
   onDoubleClick,
@@ -232,6 +276,9 @@ export function SidebarDocumentItem({
       listboxOption={
         useListboxOption
           ? {
+              ariaLabel,
+              ariaSelected,
+              ariaCurrent,
               onClick,
               onDoubleClick
             }

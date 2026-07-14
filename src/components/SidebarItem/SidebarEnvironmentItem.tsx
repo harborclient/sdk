@@ -34,6 +34,23 @@ interface Props {
   sortable?: SidebarItemSortableConfig;
 
   /**
+   * Accessible label for the listbox option. When omitted, the name is derived
+   * from visible row content (name, variable summary).
+   */
+  ariaLabel?: string;
+
+  /**
+   * Overrides the `aria-selected` state. When omitted, falls back to `selected`.
+   * Use to decouple selection semantics from highlight styling.
+   */
+  ariaSelected?: boolean;
+
+  /**
+   * When true, marks the row as the current item with `aria-current="true"`.
+   */
+  ariaCurrent?: boolean;
+
+  /**
    * Called when the user right-clicks the row container.
    */
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
@@ -80,6 +97,9 @@ export function SidebarEnvironmentItem({
   colorDot,
   selected = false,
   sortable,
+  ariaLabel,
+  ariaSelected,
+  ariaCurrent,
   onContextMenu,
   onClick,
   onDoubleClick,
@@ -113,6 +133,9 @@ export function SidebarEnvironmentItem({
       listboxOption={
         useListboxOption
           ? {
+              ariaLabel,
+              ariaSelected,
+              ariaCurrent,
               onClick,
               onDoubleClick,
               onKeyDown: onEnter != null ? handleKeyDown : undefined

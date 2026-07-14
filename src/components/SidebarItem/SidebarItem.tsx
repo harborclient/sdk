@@ -90,6 +90,19 @@ export interface SidebarItemListboxOption {
   ariaLabel?: string;
 
   /**
+   * Overrides the `aria-selected` state. When omitted, falls back to the row's
+   * `selected` prop. Use this to decouple selection semantics from highlight
+   * styling (e.g. an active row that is not part of a multi-selection).
+   */
+  ariaSelected?: boolean;
+
+  /**
+   * When true, marks the option as the current item with `aria-current="true"`.
+   * Use for the single active/current row when it is distinct from selection.
+   */
+  ariaCurrent?: boolean;
+
+  /**
    * Explicit tab index override. Defaults to `0` when selected, otherwise `-1`.
    */
   tabIndex?: number;
@@ -206,7 +219,9 @@ export function SidebarItem({
     listboxOption != null
       ? {
           role: 'option' as const,
-          'aria-selected': selected ? ('true' as const) : ('false' as const),
+          'aria-selected':
+            (listboxOption.ariaSelected ?? selected) ? ('true' as const) : ('false' as const),
+          ...(listboxOption.ariaCurrent === true ? { 'aria-current': 'true' as const } : {}),
           ...(listboxOption.ariaLabel != null ? { 'aria-label': listboxOption.ariaLabel } : {}),
           tabIndex: listboxOption.tabIndex ?? (selected ? 0 : -1),
           ...(listboxOption.onClick != null ? { onClick: listboxOption.onClick } : {}),

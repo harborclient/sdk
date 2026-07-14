@@ -41,6 +41,23 @@ interface Props {
   title?: string;
 
   /**
+   * Accessible label for the listbox option. When omitted, the name is derived
+   * from visible row content (method, label, connection badge, status summary).
+   */
+  ariaLabel?: string;
+
+  /**
+   * Overrides the `aria-selected` state. When omitted, falls back to `selected`.
+   * Use to decouple selection semantics from highlight styling.
+   */
+  ariaSelected?: boolean;
+
+  /**
+   * When true, marks the row as the current item with `aria-current="true"`.
+   */
+  ariaCurrent?: boolean;
+
+  /**
    * Called when the user right-clicks the row container.
    */
   onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
@@ -80,6 +97,9 @@ export function SidebarRunItem({
   statusSummary,
   selected = false,
   title,
+  ariaLabel,
+  ariaSelected,
+  ariaCurrent,
   onContextMenu,
   onClick,
   actions,
@@ -97,6 +117,9 @@ export function SidebarRunItem({
       listboxOption={
         useListboxOption
           ? {
+              ariaLabel,
+              ariaSelected,
+              ariaCurrent,
               onClick
             }
           : undefined
