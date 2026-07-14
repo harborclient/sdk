@@ -140,13 +140,19 @@ export function Sidebar({
     />
   );
 
+  /**
+   * Stretch wrapper so short body content (e.g. centered empty states) fills the
+   * scroll viewport height while still allowing overflow scroll when content grows.
+   */
+  const scrollBody = <div className="flex min-h-full min-w-0 flex-col">{children}</div>;
+
   const body = scroll ? (
     <Scrollbars
       axis={scrollAxis}
       autoHide={scrollbarAutoHide}
       className={cn('min-h-0 flex-1', bodyClassName)}
     >
-      {children}
+      {scrollBody}
     </Scrollbars>
   ) : (
     <div className={cn('flex min-h-0 flex-1 flex-col', bodyClassName)}>{children}</div>

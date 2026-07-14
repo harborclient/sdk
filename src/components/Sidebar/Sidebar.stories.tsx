@@ -13,6 +13,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type JSX, type ReactNode, useState } from 'react';
 import { fn } from 'storybook/test';
 import {
+  FaIcon,
   Sidebar,
   SidebarCommitItem,
   SidebarRequestItem,
@@ -299,6 +300,75 @@ export const GitRight: Story = {
           }
         >
           <SidebarSections sections={gitSections()} />
+        </Sidebar>
+      </FixedHeight>
+    );
+  }
+};
+
+export const GitEmptyState: Story = {
+  render: () => {
+    const toolbarActions: ToolbarAction[] = [
+      {
+        id: 'git-section-commit',
+        icon: faPenToSquare,
+        label: 'Commit message section',
+        title: 'Commit message section',
+        ariaPressed: true,
+        onClick: fn()
+      },
+      {
+        id: 'git-section-changes',
+        icon: faLayerGroup,
+        label: 'Changes section',
+        title: 'Changes section',
+        ariaPressed: true,
+        onClick: fn()
+      },
+      {
+        id: 'git-section-commits',
+        icon: faClockRotateLeft,
+        label: 'Commits section',
+        title: 'Commits section',
+        ariaPressed: true,
+        onClick: fn()
+      }
+    ];
+
+    return (
+      <FixedHeight>
+        <div className="min-w-0 flex-1 bg-field p-4 text-muted">Main content area</div>
+        <Sidebar
+          side="right"
+          ariaLabel="Git source control"
+          storageKey="storybook.gitSidebarEmptyWidth"
+          defaultSize={360}
+          minSize={280}
+          getMaxSize={() => 480}
+          resizeAriaLabel="Resize Git sidebar"
+          header={
+            <>
+              <div className="flex h-[56px] items-center gap-2 border-b border-separator px-2 py-1">
+                <span className="inline-flex min-w-0 items-center gap-1.5 font-medium">
+                  <FaIcon icon={faCodeBranch} className="h-4 w-4 shrink-0" aria-hidden />
+                  <span className="truncate">Git</span>
+                </span>
+              </div>
+              <Toolbar ariaLabel="Git sidebar sections" actions={toolbarActions} />
+            </>
+          }
+        >
+          <div
+            role="status"
+            aria-label="Selected collection is not git-backed"
+            className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center text-muted"
+          >
+            <FaIcon icon={faCodeBranch} className="h-12 w-12" aria-hidden />
+            <p className="m-0">
+              &quot;Picsum&quot; is not stored in a git repository. Select a git-backed collection
+              to use source control.
+            </p>
+          </div>
         </Sidebar>
       </FixedHeight>
     );
