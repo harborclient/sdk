@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.11 - 2026-07-14
+
 - feat(Breadcrumb): add Breadcrumb component and type exports. (`ceda104`)
 
 ## 1.1.10 - 2026-07-14
