@@ -27,6 +27,8 @@ export type { Props as BusyIndicatorProps } from './BusyIndicator/index.js';
 export { BackButton } from './BackButton/index.js';
 export { Badge } from './Badge/index.js';
 export type { BadgeVariant } from './Badge/index.js';
+export { Breadcrumb } from './Breadcrumb/index.js';
+export type { BreadcrumbSegment } from './Breadcrumb/index.js';
 export { Button } from './Button/index.js';
 export { CodeEditor, CODE_EDITOR_THEME_OPTIONS } from './CodeEditor/index.js';
 export {
