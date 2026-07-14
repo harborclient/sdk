@@ -62,6 +62,31 @@ function unlockOverlaySiblings(siblings: Element[]): void {
 }
 
 /**
+ * Returns whether a focusable element is visible enough to receive keyboard focus.
+ *
+ * @param element - Candidate focusable element.
+ */
+function isFocusableVisible(element: HTMLElement): boolean {
+  if (element.closest('[aria-hidden="true"]')) {
+    return false;
+  }
+
+  if (element.offsetParent !== null || getComputedStyle(element).position === 'fixed') {
+    return true;
+  }
+
+  let parent = element.parentElement;
+  while (parent) {
+    if (getComputedStyle(parent).position === 'fixed') {
+      return true;
+    }
+    parent = parent.parentElement;
+  }
+
+  return false;
+}
+
+/**
  * Returns visible, enabled focusable descendants of a container, excluding
  * elements inside `aria-hidden` subtrees.
  *
@@ -71,13 +96,7 @@ function unlockOverlaySiblings(siblings: Element[]): void {
 export function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const candidates = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
 
-  return candidates.filter((element) => {
-    if (element.closest('[aria-hidden="true"]')) return false;
-    if (element.offsetParent === null && getComputedStyle(element).position !== 'fixed') {
-      return false;
-    }
-    return true;
-  });
+  return candidates.filter(isFocusableVisible);
 }
 
 /**

@@ -1,4 +1,4 @@
-import { faCircleCheck, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faCopy, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useState } from '@harborclient/sdk/react';
 import type { JSX } from 'react';
 import { Button } from '../Button/index.js';
@@ -21,12 +21,17 @@ interface Props {
    * When true, styles the value as muted placeholder text.
    */
   muted?: boolean;
+
+  /**
+   * When provided, renders a close control to the right of the copy button.
+   */
+  onClose?: () => void;
 }
 
 /**
- * Readonly resolved-value field with a copy control for variable tooltips.
+ * Readonly resolved-value field with copy and optional close controls for variable tooltips.
  */
-export function VariableTooltipValue({ value, variableKey, muted }: Props): JSX.Element {
+export function VariableTooltipValue({ value, variableKey, muted, onClose }: Props): JSX.Element {
   const [copied, setCopied] = useState(false);
 
   /**
@@ -58,6 +63,20 @@ export function VariableTooltipValue({ value, variableKey, muted }: Props): JSX.
       >
         <FaIcon icon={copied ? faCircleCheck : faCopy} className="h-4 w-4" />
       </Button>
+      {onClose && (
+        <Button
+          type="button"
+          variant="icon"
+          className="hc-variable-tooltip-close"
+          aria-label={`Close tooltip for ${variableKey}`}
+          onMouseDown={(event) => {
+            event.preventDefault();
+          }}
+          onClick={onClose}
+        >
+          <FaIcon icon={faXmark} className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }

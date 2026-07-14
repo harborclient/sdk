@@ -48,6 +48,18 @@ export const WithTokens: Story = {
   }
 };
 
+export const WithMultipleTokens: Story = {
+  args: {
+    value: '{{baseUrl}}/{{host}}/v1',
+    onEditVariable: fn(),
+    'aria-label': 'URL with multiple variables'
+  },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <VariableInput {...args} value={value} onChange={setValue} />;
+  }
+};
+
 export const UndefinedVariable: Story = {
   args: {
     value: '{{missingKey}}',
