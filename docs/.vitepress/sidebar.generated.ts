@@ -371,6 +371,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-data#hcthemes",
         "items": [
           {
+            "text": "JSON theme import",
+            "link": "/renderer-data#json-theme-import"
+          },
+          {
             "text": "registerTheme(hc, theme)",
             "link": "/renderer-data#registerthemehc-theme"
           },

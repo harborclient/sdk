@@ -97,7 +97,7 @@ export function SidebarCommitItem({
           ) : null}
         </div>
         <div className="flex min-w-0 flex-col gap-0.5">
-          <span className="block min-w-0 truncate font-medium text-text">{message}</span>
+          <span className="-mt-1 block min-w-0 truncate font-medium text-text">{message}</span>
           <span className="block min-w-0 truncate text-[14px] text-muted">
             {author} · {timestampLabel}
           </span>

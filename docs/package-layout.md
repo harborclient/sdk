@@ -22,4 +22,20 @@ my-plugin/
 
 At runtime HarborClient reads `manifest.json`, the Markdown description, icon, screenshots, and the files referenced under `dist/`.
 
+### Theme-only package (JSON import)
+
+An appearance theme that uses `contributes.themes[].import` can omit `renderer` / `main` and `dist/` entirely:
+
+```
+my-theme/
+├── manifest.json           # contributes.themes[].import → exported.json
+├── exported.json           # harborclientExport: "theme" envelope
+├── styles.css              # optional; inlined into exported.json on first read
+├── README.md
+└── assets/
+    └── icon.png
+```
+
+See [JSON theme import](/renderer-data#json-theme-import) and [Solarized theme](/examples/solarized-theme#json-import-no-javascript).
+
 See [Manifest](/manifest) for field reference and [Building](/building) for packaging steps.

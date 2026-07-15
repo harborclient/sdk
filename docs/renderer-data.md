@@ -10,7 +10,59 @@ Custom appearance themes extend the built-in **Light**, **Dark**, **System**, an
 
 HarborClient styles the app with `--mac-*` CSS custom properties defined in `src/renderer/src/styles.css`. When a plugin theme is active, the host sets `data-theme="plugin-<pluginId>-<themeId>"` on `<html>` and applies your token overrides or injected stylesheet. Built-in light/dark/system behavior is unchanged when a builtin theme is selected.
 
-Requires the `ui` permission. Push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerTheme(hc, theme)` from `@harborclient/sdk` which registers the theme and pushes the disposable for you.
+Themes can be registered two ways:
+
+1. **JavaScript** — call `registerTheme(hc, theme)` or `hc.themes.register(theme)` from `activate()` (documented below).
+2. **JSON import** — point the manifest contribution at a Theme Designer export file (see [JSON theme import](#json-theme-import)). No `activate()` call is required for those entries.
+
+Requires the `ui` permission. For JavaScript registration, push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerTheme(hc, theme)` from `@harborclient/sdk` which registers the theme and pushes the disposable for you.
+
+### JSON theme import
+
+Declare an `import` path on the contribution to ship a palette without JavaScript:
+
+```json
+{
+  "contributes": {
+    "themes": [
+      {
+        "id": "solarized",
+        "title": "Solarized Dark",
+        "type": "dark",
+        "import": "exported.json"
+      }
+    ]
+  }
+}
+```
+
+The file must be a `harborclientExport: "theme"` envelope — the same shape as **File → Themes → Designer** export:
+
+```json
+{
+  "harborclientVersion": 1,
+  "harborclientExport": "theme",
+  "title": "Solarized Dark",
+  "type": "dark",
+  "theme": {
+    "surface": "#002b36",
+    "accent": "#268bd2"
+  },
+  "stylesheet": "styles.css"
+}
+```
+
+| Field                 | Description                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `harborclientVersion` | Always `1`                                                                   |
+| `harborclientExport`  | Always `"theme"`                                                             |
+| `theme`               | Token overrides without the `--mac-` prefix                                  |
+| `title` / `type`      | Present in the export; manifest `id` / `title` / `type` remain authoritative |
+| `stylesheet`          | Optional plugin-relative CSS filename, or inlined CSS after first read       |
+
+On first read, if `stylesheet` points at an existing CSS file inside the plugin directory, HarborClient inlines the CSS text into the JSON on disk. Later reads treat the value as already-inlined CSS (idempotent). Theme-only packages can omit `renderer` and `main` entirely.
+
+See the [Solarized theme](/examples/solarized-theme#json-import-no-javascript) example and [Theme plugins](/manifest#theme-plugins).
 
 ### registerTheme(hc, theme)
 
