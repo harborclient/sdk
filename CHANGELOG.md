@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.14 - 2026-07-15
+
 - feat(Catalog): add CatalogCard and CatalogReadmeMarkdown components. (`6b815bb`)
 
 ## 1.1.13 - 2026-07-14
