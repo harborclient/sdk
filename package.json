@@ -174,7 +174,9 @@
     "@szhsin/react-accordion": "^1.4.2",
     "overlayscrollbars": "^2.16.0",
     "overlayscrollbars-react": "^0.5.6",
-    "react": ">=18"
+    "react": ">=18",
+    "react-markdown": ">=10",
+    "remark-gfm": ">=4"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
@@ -255,6 +257,8 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "storybook": "^10.4.6",
     "tailwindcss": "^4.3.1",
     "ts-jest": "^29.4.11",

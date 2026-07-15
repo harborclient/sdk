@@ -15,6 +15,7 @@ export { SidebarBadge, type SidebarBadgeVariant } from './SidebarBadge.js';
 export {
   sourceRow,
   METHOD_CLASSES,
+  statusDotVariant,
   statusDotClass,
   SIDEBAR_ITEM_BUTTON_CLASS
 } from './sidebarItemClasses.js';

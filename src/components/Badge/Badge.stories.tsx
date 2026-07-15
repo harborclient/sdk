@@ -8,7 +8,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['success', 'danger', 'muted', 'accent', 'warning']
+      options: ['success', 'danger', 'muted', 'accent', 'warning', 'category']
     }
   }
 } satisfies Meta<typeof Badge>;
@@ -48,5 +48,12 @@ export const Warning: Story = {
   args: {
     children: 'Permissions',
     variant: 'warning'
+  }
+};
+
+export const Category: Story = {
+  args: {
+    children: 'Productivity',
+    variant: 'category'
   }
 };

@@ -7,6 +7,9 @@ export {
   type AutocompleteSource
 } from './Autocomplete/index.js';
 export { Card } from './Card/index.js';
+export { CatalogReadmeMarkdown } from './CatalogReadmeMarkdown/index.js';
+export { CatalogCard } from './CatalogCard/index.js';
+export type { Props as CatalogCardProps, CatalogCardCategory } from './CatalogCard/index.js';
 export { ColorPicker } from './ColorPicker/index.js';
 export type { Props as ColorPickerProps } from './ColorPicker/index.js';
 export {
@@ -27,6 +30,8 @@ export type { Props as BusyIndicatorProps } from './BusyIndicator/index.js';
 export { BackButton } from './BackButton/index.js';
 export { Badge } from './Badge/index.js';
 export type { BadgeVariant } from './Badge/index.js';
+export { StatusDot, statusDotVariantClass } from './StatusDot/index.js';
+export type { StatusDotVariant, StatusDotSize } from './StatusDot/index.js';
 export { Breadcrumb } from './Breadcrumb/index.js';
 export type { BreadcrumbSegment } from './Breadcrumb/index.js';
 export { Button } from './Button/index.js';
@@ -66,6 +71,8 @@ export {
 export { FooterIcon } from './FooterIcon/index.js';
 export { FooterPanel } from './FooterPanel/index.js';
 export { FormGroup } from './FormGroup/index.js';
+export { FormSection } from './FormSection/index.js';
+export type { Props as FormSectionProps } from './FormSection/index.js';
 export {
   Input,
   Checkbox,
@@ -83,6 +90,9 @@ export type { Props as KeyValueEditorProps } from './KeyValueEditor/index.js';
 export { MethodSelect } from './MethodSelect/index.js';
 export { Modal, ModalFooter, ModalFormLayout } from './Modal/index.js';
 export { ModalHeader } from './Modal/ModalHeader.js';
+export { PromptModal } from './PromptModal/index.js';
+export type { Props as PromptModalProps } from './PromptModal/index.js';
+export { defaultCanSubmitPromptValue } from './PromptModal/promptModal.logic.js';
 export { portalToBody } from './portalToBody.js';
 export {
   clampMenuPosition,
@@ -101,9 +111,20 @@ export { PageSidebar } from './PageSidebar/index.js';
 export type { PageSidebarItem } from './PageSidebar/index.js';
 export { SidebarLayout } from './SidebarLayout/index.js';
 export { PanelCloseButton } from './PanelCloseButton/index.js';
+export { ProgressBar } from './ProgressBar/index.js';
+export type { Props as ProgressBarProps } from './ProgressBar/index.js';
 export { Resizable, ResizeHandle, useResizable } from './Resizable/index.js';
 export type { UseResizableOptions, UseResizableResult } from './Resizable/useResizable.js';
 export { Scrollbars, type ScrollbarsAxis } from './Scrollbars/index.js';
+export { SelectionActionToolbar } from './SelectionActionToolbar/index.js';
+export type { Props as SelectionActionToolbarProps } from './SelectionActionToolbar/index.js';
+export { ScreenshotCarousel } from './ScreenshotCarousel/index.js';
+export { ScreenshotLightbox } from './ScreenshotCarousel/ScreenshotLightbox.js';
+export {
+  screenshotCarouselImageFrameClassName,
+  screenshotCarouselLightboxEnabled,
+  type ScreenshotCarouselVariant
+} from './ScreenshotCarousel/variants.js';
 export {
   SidebarSection,
   SidebarSections,
@@ -127,11 +148,20 @@ export { RoundButton } from './RoundButton/index.js';
 export { RowActionsMenu } from './RowActionsMenu/index.js';
 export type { MenuItem } from './RowActionsMenu/index.js';
 export { buildReorderMenuGroup } from './rowActionsMenuHelpers.js';
+export { SettingIdLabel } from './SettingIdLabel/index.js';
+export type { Props as SettingIdLabelProps } from './SettingIdLabel/index.js';
+export { SettingSectionHeading } from './SettingSectionHeading/index.js';
+export type { Props as SettingSectionHeadingProps } from './SettingSectionHeading/index.js';
 export { SegmentedTabs, SegmentedTabsGroup, SegmentedTabPanel } from './SegmentedTabs/index.js';
 export type { TabItem } from './SegmentedTabs/index.js';
 export { Spinner } from './Spinner/index.js';
 export { StatusMessage } from './StatusMessage/index.js';
 export { TabCloseButton } from './TabCloseButton/index.js';
+export { ThemeVariantPickerModal } from './ThemeVariantPickerModal/index.js';
+export type {
+  Props as ThemeVariantPickerModalProps,
+  ThemeVariantOption
+} from './ThemeVariantPickerModal/index.js';
 export {
   TabBar,
   TabBarShell,
@@ -193,6 +223,7 @@ export {
   SidebarBadge,
   sourceRow,
   METHOD_CLASSES,
+  statusDotVariant,
   statusDotClass,
   SIDEBAR_ITEM_BUTTON_CLASS,
   SidebarMethodBadge,

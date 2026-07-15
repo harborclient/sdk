@@ -1,3 +1,6 @@
+import type { StatusDotVariant } from '../StatusDot/index.js';
+import { statusDotVariantClass } from '../StatusDot/index.js';
+
 /**
  * Tailwind classes for sidebar source rows and HTTP method badges.
  */
@@ -30,17 +33,27 @@ export const METHOD_CLASSES: Record<string, string> = {
 };
 
 /**
+ * Status dot variant for an HTTP response code.
+ *
+ * @param status - HTTP status code, or 0 for network errors.
+ * @returns Color preset for {@link StatusDot}.
+ */
+export function statusDotVariant(status: number): StatusDotVariant {
+  if (status === 0) return 'danger';
+  if (status >= 200 && status < 300) return 'success';
+  if (status >= 300 && status < 400) return 'warning';
+  if (status >= 400) return 'danger';
+  return 'info';
+}
+
+/**
  * Status dot color class for an HTTP response code.
  *
  * @param status - HTTP status code, or 0 for network errors.
  * @returns Tailwind background color class for the status dot.
  */
 export function statusDotClass(status: number): string {
-  if (status === 0) return 'bg-danger';
-  if (status >= 200 && status < 300) return 'bg-success';
-  if (status >= 300 && status < 400) return 'bg-warning';
-  if (status >= 400) return 'bg-danger';
-  return 'bg-info';
+  return statusDotVariantClass(statusDotVariant(status));
 }
 
 /**

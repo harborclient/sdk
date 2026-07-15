@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Catalog): add CatalogCard and CatalogReadmeMarkdown components. (`6b815bb`)
+
 ## 1.1.13 - 2026-07-14
 
 - feat(Sidebar): add SidebarBadge component and integrate into SidebarRunItem. (`806fcca`)
