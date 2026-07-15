@@ -1,6 +1,12 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { JSX, MouseEvent } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { SidebarStatusDot } from './SidebarStatusDot.js';
+
+/**
+ * Push/sync state shown as a dot below the branch icon.
+ */
+export type SidebarCommitPushStatus = 'pushed' | 'unpushed' | 'unknown';
 
 interface Props {
   /**
@@ -24,6 +30,12 @@ interface Props {
   icon: IconDefinition;
 
   /**
+   * Push/sync state shown as a dot below the branch icon.
+   * When omitted, no indicator is rendered (non-git contexts).
+   */
+  pushStatus?: SidebarCommitPushStatus;
+
+  /**
    * Called when the commit row button is clicked.
    */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -32,6 +44,22 @@ interface Props {
    * HTML element for the row container. Use `li` inside {@link SidebarList}.
    */
   as?: 'div' | 'li';
+}
+
+/**
+ * Returns the screen-reader label for a commit push-status indicator.
+ *
+ * @param pushStatus - Push state to describe.
+ * @returns Accessible label text for the status dot.
+ */
+function pushStatusLabel(pushStatus: SidebarCommitPushStatus): string {
+  if (pushStatus === 'pushed') {
+    return 'Pushed to origin';
+  }
+  if (pushStatus === 'unpushed') {
+    return 'Not pushed to origin';
+  }
+  return 'Push status unknown';
 }
 
 /**
@@ -45,9 +73,12 @@ export function SidebarCommitItem({
   author,
   timestampLabel,
   icon,
+  pushStatus,
   onClick,
   as: Container = 'li'
 }: Props): JSX.Element {
+  const statusLabel = pushStatus != null ? pushStatusLabel(pushStatus) : null;
+
   return (
     <Container>
       <button
@@ -55,8 +86,17 @@ export function SidebarCommitItem({
         className="hc-sidebar-commit-item group app-no-drag flex w-full cursor-pointer rounded-md p-2 text-left hover:bg-selection/60"
         onClick={onClick}
       >
-        <FaIcon icon={icon} className="mr-2 h-4 w-4 shrink-0 text-muted" aria-hidden />
-        <div className="-mt-1.5 flex flex-col gap-0.5">
+        <div className="mr-2 flex shrink-0 flex-col items-center gap-0.5 self-start">
+          <FaIcon icon={icon} className="h-4 w-4 text-muted" aria-hidden />
+          {pushStatus != null && statusLabel != null ? (
+            <SidebarStatusDot
+              className={pushStatus === 'pushed' ? 'mt-3 mr-1 bg-success' : 'mt-3 mr-1 bg-muted'}
+              srOnlyLabel={statusLabel}
+              title={statusLabel}
+            />
+          ) : null}
+        </div>
+        <div className="flex min-w-0 flex-col gap-0.5">
           <span className="block min-w-0 truncate font-medium text-text">{message}</span>
           <span className="block min-w-0 truncate text-[14px] text-muted">
             {author} · {timestampLabel}

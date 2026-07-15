@@ -18,7 +18,8 @@ export {
   METHOD_CLASSES,
   statusDotVariant,
   statusDotClass,
-  SIDEBAR_ITEM_BUTTON_CLASS
+  SIDEBAR_ITEM_BUTTON_CLASS,
+  SIDEBAR_DOCUMENT_ICON_REQUEST_ALIGN_CLASS
 } from './sidebarItemClasses.js';
 export { SidebarMethodBadge } from './SidebarMethodBadge.js';
 export { SidebarStatusDot } from './SidebarStatusDot.js';
@@ -30,4 +31,4 @@ export { SidebarRunItem } from './SidebarRunItem.js';
 export { SidebarHistoryItem } from './SidebarHistoryItem.js';
 export { SidebarEnvironmentItem } from './SidebarEnvironmentItem.js';
 export { SidebarTabGroupItem } from './SidebarTabGroupItem.js';
-export { SidebarCommitItem } from './SidebarCommitItem.js';
+export { SidebarCommitItem, type SidebarCommitPushStatus } from './SidebarCommitItem.js';

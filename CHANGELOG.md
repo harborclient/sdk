@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Sidebar): enhance commit item display with push status indicator. (`63f4f90`)
+
 ## 1.1.15 - 2026-07-15
 
 - feat(Sidebar): refactor Sidebar components and improve exports. (`7715453`)

@@ -226,6 +226,7 @@ export {
   statusDotVariant,
   statusDotClass,
   SIDEBAR_ITEM_BUTTON_CLASS,
+  SIDEBAR_DOCUMENT_ICON_REQUEST_ALIGN_CLASS,
   SidebarMethodBadge,
   SidebarStatusDot,
   SidebarStatusMarker,
@@ -238,6 +239,7 @@ export {
   SidebarTabGroupItem,
   SidebarCommitItem,
   type SidebarItemSortableConfig,
-  type SidebarBadgeVariant
+  type SidebarBadgeVariant,
+  type SidebarCommitPushStatus
 } from './SidebarItem/index.js';
 export type { FormDataPart, FormDataPartType, HttpMethod, KeyValue, Variable } from '../types.js';

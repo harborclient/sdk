@@ -2,6 +2,7 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faFileLines } from '@fortawesome/free-solid-svg-icons';
 import type { JSX, MouseEvent, ReactNode } from 'react';
 import { FaIcon } from '../FaIcon/index.js';
+import { cn } from '../utils.js';
 import { SidebarColorDot } from './SidebarColorDot.js';
 import { SidebarItem } from './SidebarItem.js';
 import { SidebarStatusMarker } from './SidebarStatusMarker.js';
@@ -12,6 +13,12 @@ interface Props {
    * Icon shown before the document name. Defaults to a file-lines icon when omitted.
    */
   icon?: IconDefinition;
+
+  /**
+   * Optional Tailwind classes merged onto the leading icon (e.g. left margin to
+   * align with sortable request-row method text).
+   */
+  iconClassName?: string;
 
   /**
    * Primary label text for the row.
@@ -97,6 +104,7 @@ interface Props {
  */
 export function SidebarDocumentItem({
   icon = faFileLines,
+  iconClassName,
   name,
   nameClassName,
   colorDot,
@@ -132,7 +140,11 @@ export function SidebarDocumentItem({
       }
     >
       <span className={SIDEBAR_ITEM_BUTTON_CLASS}>
-        <FaIcon icon={icon} className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden />
+        <FaIcon
+          icon={icon}
+          className={cn('h-3.5 w-3.5 shrink-0 text-muted', iconClassName)}
+          aria-hidden
+        />
         {colorDot != null ? (
           <span className="inline-flex min-w-0 items-center gap-1.5">
             <span className={`min-w-0 truncate ${nameClassName ?? ''}`}>{name}</span>

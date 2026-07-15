@@ -271,6 +271,23 @@ export const CommitItem: Story = {
           author="Alex"
           timestampLabel="Jul 14, 2026, 10:00 AM"
           icon={faCodeBranch}
+          pushStatus="pushed"
+          onClick={fn()}
+        />
+        <SidebarCommitItem
+          message="Draft local experiment"
+          author="Alex"
+          timestampLabel="Jul 15, 2026, 9:00 AM"
+          icon={faCodeBranch}
+          pushStatus="unpushed"
+          onClick={fn()}
+        />
+        <SidebarCommitItem
+          message="Before first fetch"
+          author="Alex"
+          timestampLabel="Jul 13, 2026, 4:00 PM"
+          icon={faCodeBranch}
+          pushStatus="unknown"
           onClick={fn()}
         />
       </SidebarList>
