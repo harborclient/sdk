@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.19 - 2026-07-15
+
 - feat(Theme): add 'doc-markdown' color token for sidebar markdown document icon. (`5d46918`)
 
 ## 1.1.18 - 2026-07-15
