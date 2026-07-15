@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.15 - 2026-07-15
+
 - feat(Sidebar): refactor Sidebar components and improve exports. (`7715453`)
 
 ## 1.1.14 - 2026-07-15
