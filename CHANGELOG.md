@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.20 - 2026-07-15
+
 - docs(Themes): enhance theme plugin documentation with JSON import details. (`e650013`)
 
 ## 1.1.19 - 2026-07-15
