@@ -69,7 +69,9 @@ export const SIDEBAR_DRAG_HANDLE_CLASS =
   'app-no-drag inline-flex h-4 w-4 shrink-0 cursor-grab items-center justify-center rounded border-none bg-transparent p-0 text-muted opacity-0 hover:text-text focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:cursor-grabbing group-hover:opacity-100';
 
 /**
- * Left margin for document icons so they align with HTTP method text on sortable
- * request rows (drag handle `w-4` + row `gap-1` + method badge `px-1`).
+ * Extra left margin for document icons beside sortable request rows.
+ * Combines with `SidebarDocumentItem`'s default `pl-1` so the glyph lines up
+ * with method text (drag handle `w-4` + row `gap-1` + method badge `px-1` =
+ * 24px total; `ml-5` provides the remaining 20px).
  */
-export const SIDEBAR_DOCUMENT_ICON_REQUEST_ALIGN_CLASS = 'ml-6';
+export const SIDEBAR_DOCUMENT_ICON_REQUEST_ALIGN_CLASS = 'ml-5';

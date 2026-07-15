@@ -15,8 +15,10 @@ interface Props {
   icon?: IconDefinition;
 
   /**
-   * Optional Tailwind classes merged onto the leading icon (e.g. left margin to
-   * align with sortable request-row method text).
+   * Optional Tailwind classes merged onto the leading icon. The icon already
+   * includes `pl-1` so its left edge aligns with `SidebarMethodBadge` text on
+   * non-sortable rows; pass `SIDEBAR_DOCUMENT_ICON_REQUEST_ALIGN_CLASS` for
+   * additional margin beside sortable request rows.
    */
   iconClassName?: string;
 
@@ -142,7 +144,7 @@ export function SidebarDocumentItem({
       <span className={SIDEBAR_ITEM_BUTTON_CLASS}>
         <FaIcon
           icon={icon}
-          className={cn('h-3.5 w-3.5 shrink-0 text-muted', iconClassName)}
+          className={cn('h-3.5 w-3.5 shrink-0 pl-1 text-muted', iconClassName)}
           aria-hidden
         />
         {colorDot != null ? (

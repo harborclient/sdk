@@ -2,6 +2,7 @@ import {
   faChevronDown,
   faChevronRight,
   faCodeBranch,
+  faFolder,
   faLayerGroup,
   faPersonRunning
 } from '@fortawesome/free-solid-svg-icons';
@@ -73,6 +74,30 @@ export const RequestItemGitChange: Story = {
               groups={[[{ label: 'Revert changes', variant: 'danger', onSelect: fn() }]]}
             />
           }
+        />
+      </SidebarListbox>
+    </div>
+  )
+};
+
+/**
+ * Collection folder + request change rows as in the git sidebar / commit details
+ * modal. Confirms the solid folder icon's left edge lines up with method text.
+ */
+export const GitChangeCollectionAndRequest: Story = {
+  render: () => (
+    <div className="w-72 rounded-md border border-separator bg-sidebar p-2">
+      <SidebarListbox aria-label="Changes">
+        <SidebarDocumentItem
+          icon={faFolder}
+          iconClassName="text-doc-markdown"
+          name="My Collection"
+          statusMarker={{ marker: 'M', className: 'text-git-uncommitted', label: 'Modified' }}
+        />
+        <SidebarRequestItem
+          method="POST"
+          name="Echo POST"
+          statusMarker={{ marker: 'A', className: 'text-git-unstaged', label: 'Added' }}
         />
       </SidebarListbox>
     </div>

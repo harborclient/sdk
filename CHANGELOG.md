@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Sidebar): improve icon alignment and add GitChangeCollection story. (`f7398ec`)
+
 ## 1.1.20 - 2026-07-15
 
 - docs(Themes): enhance theme plugin documentation with JSON import details. (`e650013`)
