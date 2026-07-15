@@ -795,6 +795,7 @@ export interface StatusBarItemContribution {
  * - `muted` — de-emphasized text
  * - `accent` — links, focus rings, primary actions
  * - `selection` — selected row / highlight fill
+ * - `doc-markdown` — collection sidebar markdown document icon
  * - `tab-unsaved` — request/markdown tab title when the tab has unsaved changes
  * - `danger`, `danger-light`, `warning`, `success`, `info` — status colors
  * - `method-get`, `method-post`, `method-put`, `method-patch`, `method-delete`, `method-head`, `method-options` — HTTP method badge colors
@@ -818,6 +819,7 @@ export type ThemeColorToken =
   | 'muted'
   | 'accent'
   | 'selection'
+  | 'doc-markdown'
   | 'tab-unsaved'
   | 'danger'
   | 'danger-light'

@@ -130,6 +130,7 @@ export type ThemeColorToken =
   | 'muted'
   | 'accent'
   | 'selection'
+  | 'doc-markdown'
   | 'danger'
   | 'danger-light'
   | 'warning'

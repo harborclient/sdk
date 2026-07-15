@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(Theme): add 'doc-markdown' color token for sidebar markdown document icon. (`5d46918`)
+
 ## 1.1.18 - 2026-07-15
 
 - feat(Sidebar): enhance commit item display with push status indicator. (`63f4f90`)
