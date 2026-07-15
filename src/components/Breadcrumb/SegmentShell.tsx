@@ -65,7 +65,7 @@ export function SegmentShell({ shape, grow = false, className, children }: Props
   return (
     <div
       className={cn(
-        'hc-breadcrumb-segment relative flex min-h-[30px] min-w-0 items-center bg-sidebar py-2',
+        'hc-breadcrumb-segment relative flex min-h-[30px] min-w-0 items-center bg-breadcrumb-segment py-2',
         grow ? 'min-w-[6rem] flex-1' : 'max-w-[45%] shrink-0',
         hasChevron && shape !== 'last' && '-mr-[6px]',
         !needsLeadingInset && 'pl-3',

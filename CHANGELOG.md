@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.22 - 2026-07-15
+
+- feat(theme): add breadcrumb-background and breadcrumb-segment ThemeColorToken values and wire Breadcrumb to use them.
+
 ## 1.1.21 - 2026-07-15
 
 - feat(Sidebar): improve icon alignment and add GitChangeCollection story. (`f7398ec`)

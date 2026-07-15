@@ -158,6 +158,8 @@ Override any of these keys in `colors`. Each maps to `--mac-<token>` on the docu
 | `surface`                                              | Main content background                                  |
 | `sidebar`                                              | Left sidebar background                                  |
 | `sidebar-section`                                      | Sidebar section headers                                  |
+| `breadcrumb-background`                                | Request editor breadcrumb bar track                      |
+| `breadcrumb-segment`                                   | Breadcrumb chevron segment fill                          |
 | `git-staged`                                           | Git-backed request names staged for commit               |
 | `git-uncommitted`                                      | Git-backed request names with tracked unstaged changes   |
 | `git-unstaged`                                         | Git-backed request names not yet added to the repository |

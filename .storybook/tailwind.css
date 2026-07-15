@@ -8,6 +8,8 @@
   --color-surface: #2c2c2e;
   --color-sidebar: #252526;
   --color-sidebar-toolbar: color-mix(in srgb, #252526 94%, black);
+  --color-breadcrumb-background: #252526;
+  --color-breadcrumb-segment: #252526;
   --color-field: #1c1c1e;
   --color-selection: #48484a;
   --color-text: #f5f5f7;

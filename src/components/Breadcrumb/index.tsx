@@ -91,7 +91,7 @@ export function Breadcrumb({
       id={navId}
       aria-label="Breadcrumb"
       className={cn(
-        'hc-breadcrumb flex min-w-0 items-stretch',
+        'hc-breadcrumb flex min-w-0 items-stretch bg-breadcrumb-background',
         flush ? '-mx-3 -mt-3 w-[calc(100%+1.5rem)]' : 'w-full',
         className
       )}

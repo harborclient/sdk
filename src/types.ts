@@ -783,6 +783,8 @@ export interface StatusBarItemContribution {
  * - `surface` — main content background
  * - `sidebar` — left sidebar background
  * - `sidebar-section` — sidebar section headers
+ * - `breadcrumb-background` — request editor breadcrumb bar track
+ * - `breadcrumb-segment` — breadcrumb chevron segment fill
  * - `git-staged` — git-backed request names staged for commit
  * - `git-uncommitted` — git-backed request names with both staged and unstaged changes
  * - `git-unstaged` — git-backed request names with tracked unstaged changes
@@ -807,6 +809,8 @@ export type ThemeColorToken =
   | 'surface'
   | 'sidebar'
   | 'sidebar-section'
+  | 'breadcrumb-background'
+  | 'breadcrumb-segment'
   | 'git-staged'
   | 'git-uncommitted'
   | 'git-unstaged'
