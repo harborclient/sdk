@@ -1,15 +1,17 @@
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faFileLines } from '@fortawesome/free-solid-svg-icons';
 import type { JSX, MouseEvent, ReactNode } from 'react';
+import { FaIcon } from '../FaIcon/index.js';
 import { SidebarColorDot } from './SidebarColorDot.js';
-import { SidebarItem, type SidebarItemSortableConfig } from './SidebarItem.js';
-import { SidebarMethodBadge } from './SidebarMethodBadge.js';
+import { SidebarItem } from './SidebarItem.js';
 import { SidebarStatusMarker } from './SidebarStatusMarker.js';
 import { SIDEBAR_ITEM_BUTTON_CLASS } from './sidebarItemClasses.js';
 
 interface Props {
   /**
-   * HTTP method shown in the leading badge.
+   * Icon shown before the document name. Defaults to a file-lines icon when omitted.
    */
-  method: string;
+  icon?: IconDefinition;
 
   /**
    * Primary label text for the row.
@@ -45,19 +47,13 @@ interface Props {
   selected?: boolean;
 
   /**
-   * Optional dnd-kit sortable configuration.
-   */
-  sortable?: SidebarItemSortableConfig;
-
-  /**
    * Accessible label for the listbox option. When omitted, the name is derived
-   * from visible row content (method, name, markers).
+   * from visible row content (name, markers).
    */
   ariaLabel?: string;
 
   /**
    * Overrides the `aria-selected` state. When omitted, falls back to `selected`.
-   * Use to decouple selection semantics from highlight styling.
    */
   ariaSelected?: boolean;
 
@@ -77,6 +73,11 @@ interface Props {
   onClick?: (event: MouseEvent<HTMLElement>) => void;
 
   /**
+   * Called when the primary label area is double-clicked.
+   */
+  onDoubleClick?: (event: MouseEvent<HTMLElement>) => void;
+
+  /**
    * Trailing actions slot, typically a row actions menu.
    */
   actions?: ReactNode;
@@ -88,27 +89,25 @@ interface Props {
 }
 
 /**
- * Renders a saved-request sidebar row with method badge, optional color dot or git
+ * Renders a markdown document sidebar row with file icon, optional color dot or git
  * status marker, and shared row chrome. Used in both Collections and Git sidebars.
  *
- * The accessible name defaults to visible row content (method, name, markers) but
- * can be overridden with `ariaLabel` (e.g. to include git status context).
- *
- * Wrap lists in {@link SidebarListbox} and pass `as="li"` for valid listbox semantics.
+ * The accessible name defaults to visible row content (name, markers) but can be
+ * overridden with `ariaLabel` (e.g. to include git status context).
  */
-export function SidebarRequestItem({
-  method,
+export function SidebarDocumentItem({
+  icon = faFileLines,
   name,
   nameClassName,
   colorDot,
   statusMarker,
   selected = false,
-  sortable,
   ariaLabel,
   ariaSelected,
   ariaCurrent,
   onContextMenu,
   onClick,
+  onDoubleClick,
   actions,
   as = 'li'
 }: Props): JSX.Element {
@@ -117,7 +116,6 @@ export function SidebarRequestItem({
   return (
     <SidebarItem
       selected={selected}
-      sortable={sortable}
       onContextMenu={onContextMenu}
       actions={actions}
       as={as}
@@ -127,13 +125,14 @@ export function SidebarRequestItem({
               ariaLabel,
               ariaSelected,
               ariaCurrent,
-              onClick
+              onClick,
+              onDoubleClick
             }
           : undefined
       }
     >
       <span className={SIDEBAR_ITEM_BUTTON_CLASS}>
-        <SidebarMethodBadge method={method} />
+        <FaIcon icon={icon} className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden />
         {colorDot != null ? (
           <span className="inline-flex min-w-0 items-center gap-1.5">
             <span className={`min-w-0 truncate ${nameClassName ?? ''}`}>{name}</span>

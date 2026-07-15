@@ -9,7 +9,8 @@ import { SidebarCommitItem } from './SidebarCommitItem.js';
 import { SidebarFolderItem } from './SidebarFolderItem.js';
 import { SidebarList } from './SidebarList.js';
 import { SidebarRequestItem } from './SidebarRequestItem.js';
-import { SidebarTree, SidebarTreeGroup } from './SidebarTree.js';
+import { SidebarTree } from './SidebarTree.js';
+import { SidebarTreeGroup } from './SidebarTreeGroup.js';
 
 describe('SidebarTree', () => {
   let container: HTMLDivElement;

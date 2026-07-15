@@ -6,7 +6,8 @@ export {
 } from './SidebarItem.js';
 export { SidebarListbox } from './SidebarListbox.js';
 export { SidebarList } from './SidebarList.js';
-export { SidebarTree, SidebarTreeGroup } from './SidebarTree.js';
+export { SidebarTree } from './SidebarTree.js';
+export { SidebarTreeGroup } from './SidebarTreeGroup.js';
 export { handleSidebarOptionKeyDown } from './sidebarListOption.js';
 export { SortableSidebarItem } from './SortableSidebarItem.js';
 export { stopSortableDragPointerDown } from './stopSortableDragPointerDown.js';
@@ -22,7 +23,8 @@ export {
 export { SidebarMethodBadge } from './SidebarMethodBadge.js';
 export { SidebarStatusDot } from './SidebarStatusDot.js';
 export { SidebarStatusMarker } from './SidebarStatusMarker.js';
-export { SidebarRequestItem, SidebarDocumentItem } from './SidebarRequestItem.js';
+export { SidebarRequestItem } from './SidebarRequestItem.js';
+export { SidebarDocumentItem } from './SidebarDocumentItem.js';
 export { SidebarFolderItem } from './SidebarFolderItem.js';
 export { SidebarRunItem } from './SidebarRunItem.js';
 export { SidebarHistoryItem } from './SidebarHistoryItem.js';

@@ -1,9 +1,10 @@
-import { faCaretDown, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useEffect, useId, useRef, useState } from '@harborclient/sdk/react';
 import type { JSX, KeyboardEvent, ReactNode } from 'react';
 import { Button } from '../Button/index.js';
 import { FaIcon } from '../FaIcon/index.js';
 import { cn, resolveTabListKeyAction } from '../utils.js';
+import { MenuCheckboxItem } from './MenuCheckboxItem.js';
 
 /**
  * One entry in a {@link VisibilityMenu} that can be shown or hidden.
@@ -36,9 +37,6 @@ interface Props<T extends string> {
    */
   onToggle: (value: T) => void;
 }
-
-const menuItemClass =
-  'flex w-full cursor-pointer items-center gap-2 border-none bg-transparent px-3.5 py-1.5 text-left text-[14px] text-text hover:bg-selection app-no-drag';
 
 const triggerClassName =
   '!rounded-full hover:!bg-[rgba(0,122,255,0.18)] dark:hover:!bg-[rgba(10,132,255,0.22)]';
@@ -225,47 +223,5 @@ export function VisibilityMenu<T extends string>({
         </div>
       )}
     </div>
-  );
-}
-
-interface MenuCheckboxItemProps {
-  checked: boolean;
-  label: ReactNode;
-  tabIndex: number;
-  onSelect: () => void;
-  ref?: (element: HTMLButtonElement | null) => void;
-}
-
-/**
- * Single checkbox-style row in the visibility menu.
- */
-function MenuCheckboxItem({
-  checked,
-  label,
-  tabIndex,
-  onSelect,
-  ref
-}: MenuCheckboxItemProps): JSX.Element {
-  return (
-    <button
-      ref={ref}
-      type="button"
-      role="menuitemcheckbox"
-      aria-checked={checked}
-      tabIndex={tabIndex}
-      className={cn('hc-visibility-menu-item', menuItemClass)}
-      onClick={(e) => {
-        e.stopPropagation();
-        onSelect();
-      }}
-    >
-      <span
-        className="hc-visibility-menu-item-check inline-flex w-4 shrink-0 justify-center"
-        aria-hidden
-      >
-        {checked ? <FaIcon icon={faCheck} className="h-3 w-3" /> : null}
-      </span>
-      <span className="hc-visibility-menu-item-label min-w-0">{label}</span>
-    </button>
   );
 }
