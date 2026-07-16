@@ -157,7 +157,14 @@ Override any of these keys in `colors`. Each maps to `--mac-<token>` on the docu
 | ------------------------------------------------------ | -------------------------------------------------------- |
 | `surface`                                              | Main content background                                  |
 | `sidebar`                                              | Left sidebar background                                  |
+| `sidebar-toolbar`                                      | Sidebar/footer toolbar strip background                  |
 | `sidebar-section`                                      | Sidebar section headers                                  |
+| `sidebar-section-text`                                 | Sidebar section header labels and chevrons               |
+| `footer`                                               | Footer status bar background                             |
+| `footer-text`                                          | Footer primary text                                      |
+| `footer-muted`                                         | Footer de-emphasized text                                |
+| `footer-icon-active`                                   | Active footer icon toggle color                          |
+| `toolbar-action-active`                                | Pressed sidebar toolbar action icon color                |
 | `breadcrumb-background`                                | Request editor breadcrumb bar track                      |
 | `breadcrumb-segment`                                   | Breadcrumb chevron segment fill                          |
 | `git-staged`                                           | Git-backed request names staged for commit               |
@@ -171,6 +178,9 @@ Override any of these keys in `colors`. Each maps to `--mac-<token>` on the docu
 | `muted`                                                | De-emphasized text                                       |
 | `accent`                                               | Links, focus rings, primary actions                      |
 | `selection`                                            | Selected row / highlight fill                            |
+| `tab-underline`                                        | Active request tab underline                             |
+| `resize-handle`                                        | Borders, resize grips, high-contrast chrome accents      |
+| `variable-token`                                       | `{{variable}}` syntax highlight in editors               |
 | `danger`, `danger-light`, `warning`, `success`, `info` | Status colors                                            |
 | `method-get`, `method-post`, …                         | HTTP method badge colors                                 |
 

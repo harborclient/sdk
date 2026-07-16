@@ -782,7 +782,14 @@ export interface StatusBarItemContribution {
  * Token usage:
  * - `surface` — main content background
  * - `sidebar` — left sidebar background
+ * - `sidebar-toolbar` — sidebar/footer toolbar strip background
  * - `sidebar-section` — sidebar section headers
+ * - `sidebar-section-text` — sidebar section header labels and chevrons
+ * - `footer` — footer status bar background
+ * - `footer-text` — footer primary text (active segment buttons, selection-style icons)
+ * - `footer-muted` — footer de-emphasized text (inactive segment buttons)
+ * - `footer-icon-active` — active footer icon toggle color
+ * - `toolbar-action-active` — pressed sidebar toolbar action icon color
  * - `breadcrumb-background` — request editor breadcrumb bar track
  * - `breadcrumb-segment` — breadcrumb chevron segment fill
  * - `git-staged` — git-backed request names staged for commit
@@ -799,6 +806,9 @@ export interface StatusBarItemContribution {
  * - `selection` — selected row / highlight fill
  * - `doc-markdown` — collection sidebar markdown document icon
  * - `tab-unsaved` — request/markdown tab title when the tab has unsaved changes
+ * - `tab-underline` — active request tab underline
+ * - `resize-handle` — borders, resize grips, and high-contrast chrome accents
+ * - `variable-token` — `{{variable}}` syntax highlight in editors
  * - `danger`, `danger-light`, `warning`, `success`, `info` — status colors
  * - `method-get`, `method-post`, `method-put`, `method-patch`, `method-delete`, `method-head`, `method-options` — HTTP method badge colors
  * - `scrollbar-track`, `scrollbar-thumb`, `scrollbar-thumb-hover`, `scrollbar-thumb-active` — scrollbar track and thumb colors
@@ -808,7 +818,14 @@ export interface StatusBarItemContribution {
 export type ThemeColorToken =
   | 'surface'
   | 'sidebar'
+  | 'sidebar-toolbar'
   | 'sidebar-section'
+  | 'sidebar-section-text'
+  | 'footer'
+  | 'footer-text'
+  | 'footer-muted'
+  | 'footer-icon-active'
+  | 'toolbar-action-active'
   | 'breadcrumb-background'
   | 'breadcrumb-segment'
   | 'git-staged'
@@ -825,6 +842,9 @@ export type ThemeColorToken =
   | 'selection'
   | 'doc-markdown'
   | 'tab-unsaved'
+  | 'tab-underline'
+  | 'resize-handle'
+  | 'variable-token'
   | 'danger'
   | 'danger-light'
   | 'warning'

@@ -97,17 +97,18 @@ function isToolbarActionActive(action: ToolbarAction): boolean {
  * Tailwind classes for toolbar icon action buttons.
  *
  * Active buttons use `bg-sidebar-section` so they match collection sidebar
- * section headers; inactive buttons keep `bg-selection` for hover/focus feedback.
+ * section headers, and `text-toolbar-action-active` for the pressed icon color.
+ * Inactive buttons keep `bg-selection` for hover/focus feedback.
  *
  * @param active - Whether the action is pressed or has an open popup.
  * @returns Class string for the action button.
  */
 function toolbarActionButtonClasses(active: boolean): string {
   return cn(
-    'hc-toolbar-action app-no-drag inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md border-none text-text',
+    'hc-toolbar-action app-no-drag inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md border-none',
     active
-      ? 'bg-sidebar-section'
-      : 'bg-transparent hover:bg-selection focus-visible:bg-selection focus-visible:text-text',
+      ? 'bg-sidebar-section text-toolbar-action-active'
+      : 'bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text',
     'disabled:cursor-not-allowed disabled:opacity-50'
   );
 }

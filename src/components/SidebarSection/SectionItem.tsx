@@ -78,7 +78,7 @@ const SectionItem = memo(function SectionItem({
   return (
     <div ref={itemElementRef} className="-mr-2 mb-1">
       <div
-        className={`hc-sidebar-section-header bg-sidebar-section flex min-h-8 items-center justify-between gap-2 py-0.5 pr-2 ${flushBody ? 'mb-0' : 'mb-1'}`}
+        className={`hc-sidebar-section-header flex min-h-8 items-center justify-between gap-2 bg-sidebar-section py-0.5 pr-2 ${flushBody ? 'mb-0' : 'mb-1'}`}
       >
         <button
           {...buttonProps}
@@ -88,10 +88,10 @@ const SectionItem = memo(function SectionItem({
           <span className="ms-2 inline-flex h-4 w-4 shrink-0 items-center justify-center">
             <FaIcon
               icon={isEnter ? faChevronDown : faChevronRight}
-              className="h-2 w-2 text-muted"
+              className="h-2 w-2 text-sidebar-section-text"
             />
           </span>
-          <h2 className="m-0 text-[15px] leading-none font-medium tracking-wide text-muted uppercase">
+          <h2 className="m-0 text-[15px] leading-none font-medium tracking-wide text-sidebar-section-text uppercase">
             {title}
           </h2>
         </button>

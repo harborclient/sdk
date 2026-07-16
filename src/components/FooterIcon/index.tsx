@@ -34,7 +34,7 @@ interface Props extends Omit<ComponentPropsWithoutRef<'button'>, 'aria-label' | 
   /**
    * Active-state background treatment. Use `"selection"` to match sidebar
    * toolbar icon toggles (`bg-sidebar-section`); defaults to `"surface"` for
-   * the action menu icon.
+   * the action menu icon. Active icons use `text-footer-icon-active`.
    */
   activeStyle?: ActiveStyle;
 }
@@ -51,13 +51,13 @@ const footerIconBase = `inline-flex ${footerIconButtonSizeClass} shrink-0 cursor
 function footerIconButton(active: boolean, activeStyle: ActiveStyle): string {
   if (activeStyle === 'selection') {
     return active
-      ? `${footerIconBase} bg-sidebar-section text-text`
-      : `${footerIconBase} bg-transparent text-text hover:bg-selection focus-visible:bg-selection focus-visible:text-text`;
+      ? `${footerIconBase} bg-sidebar-section text-footer-icon-active`
+      : `${footerIconBase} bg-transparent text-footer-text hover:bg-selection focus-visible:bg-selection focus-visible:text-footer-text`;
   }
 
   return active
-    ? `${footerIconBase} bg-surface text-text shadow-sm`
-    : `${footerIconBase} bg-transparent text-muted hover:bg-selection hover:text-text`;
+    ? `${footerIconBase} bg-surface text-footer-icon-active shadow-sm`
+    : `${footerIconBase} bg-transparent text-footer-muted hover:bg-selection hover:text-footer-text`;
 }
 
 /**

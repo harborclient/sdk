@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.23 - 2026-07-15
+
+- feat(theme): add ThemeColorToken values for sidebar toolbar/section text, footer chrome, toolbar active state, tab underline, resize handle, and variable token; wire FooterIcon, FooterButton, Toolbar, and SidebarSection to use them.
+
 ## 1.1.22 - 2026-07-15
 
 - feat(theme): add breadcrumb-background and breadcrumb-segment ThemeColorToken values and wire Breadcrumb to use them.
