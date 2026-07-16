@@ -1,4 +1,5 @@
 import { type CompletionSource, autocompletion, closeCompletion } from '@codemirror/autocomplete';
+import { css } from '@codemirror/lang-css';
 import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { StreamLanguage } from '@codemirror/language';
@@ -43,7 +44,7 @@ import { getCodeEditorThemeExtension } from './themes.js';
 
 export { CODE_EDITOR_THEME_OPTIONS } from './themes.js';
 
-export type CodeEditorLanguage = 'json' | 'text' | 'javascript' | 'shell';
+export type CodeEditorLanguage = 'json' | 'text' | 'javascript' | 'shell' | 'css';
 
 /**
  * One slash command offered at the start of a line in the editor.
@@ -1023,6 +1024,9 @@ function buildCoreExtensions(options: {
   }
   if (options.language === 'shell') {
     next.push(StreamLanguage.define(shell));
+  }
+  if (options.language === 'css') {
+    next.push(css());
   }
   if (options.lint) {
     if (options.language === 'json') {
