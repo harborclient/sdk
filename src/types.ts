@@ -2155,6 +2155,42 @@ export interface EchoServerStatus {
 }
 
 /**
+ * Structured HTTP response returned from {@link PluginServer.onRequest}.
+ *
+ * Use {@link createHttpResponse} from `@harborclient/sdk/runtime-utils` (or set
+ * `kind: 'http-response'`) so the host can apply status, headers, body, and delay.
+ * Bare JSON values remain legacy body-only responses (always HTTP 200 +
+ * `application/json`).
+ */
+export interface PluginServerHttpResponse {
+  /**
+   * Discriminant required for structured responses.
+   */
+  kind: 'http-response';
+
+  /**
+   * HTTP status code. Defaults to `200` when omitted or invalid.
+   */
+  status?: number;
+
+  /**
+   * Response headers as a flat key/value map.
+   */
+  headers?: Record<string, string>;
+
+  /**
+   * Response body. Strings are sent as raw text (default `text/plain` unless a
+   * Content-Type header is set). Other JSON-serializable values use `res.json()`.
+   */
+  body?: unknown;
+
+  /**
+   * Milliseconds for the host to wait before writing the response.
+   */
+  delayMs?: number;
+}
+
+/**
  * Local HTTP echo server API available on {@link MainPluginContext.server}.
  *
  * Requires the `server` permission. The host runs an express listener in the Electron
@@ -2181,15 +2217,23 @@ export interface PluginServer {
    *
    * Multiple handlers may be registered; each call returns a {@link Disposable}
    * that removes only that handler. Handlers run sequentially in registration
-   * order. Return a JSON-serializable value to send as the response body. When a
-   * handler returns `undefined` or `null`, the host keeps the result from the
-   * previous handler (starting from the default httpbin-style echo payload).
+   * order.
    *
-   * @param handler - Processes incoming requests and returns the response body.
+   * Return either:
+   * - a JSON-serializable value for a legacy body-only response (HTTP 200), or
+   * - a {@link PluginServerHttpResponse} (`kind: 'http-response'`) for custom
+   *   status, headers, body, and delay.
+   *
+   * When a handler returns `undefined` or `null`, the host keeps the result from
+   * the previous handler (starting from the default httpbin-style echo payload).
+   *
+   * @param handler - Processes incoming requests and returns the response.
    * @returns A {@link Disposable} that unregisters the handler when disposed.
    */
   onRequest(
-    handler: (request: EchoServerIncomingRequest) => unknown | Promise<unknown>
+    handler: (
+      request: EchoServerIncomingRequest
+    ) => unknown | PluginServerHttpResponse | Promise<unknown | PluginServerHttpResponse>
   ): Disposable;
 }
 

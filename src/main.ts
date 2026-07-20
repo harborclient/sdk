@@ -21,6 +21,7 @@ export type {
   PluginScripts,
   PluginScriptTestResult,
   PluginServer,
+  PluginServerHttpResponse,
   PluginStorage,
   ScriptPhase,
   ScriptStage

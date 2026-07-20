@@ -103,12 +103,23 @@ Runs a local HTTP echo server in the Electron main process (express). Port `0` s
 
 ```typescript
 import type { MainPluginContext } from '@harborclient/sdk';
+import { createHttpResponse } from '@harborclient/sdk/runtime-utils';
 
 export function activate(hc: MainPluginContext): void {
   hc.subscriptions.push(
     hc.server.onRequest(async (request) => {
-      // Return custom JSON, or undefined to use the default httpbin-style echo payload.
-      return { ...request.echo, custom: true };
+      // Legacy: return custom JSON (always HTTP 200), or undefined for the default echo payload.
+      if (request.path === '/echo') {
+        return { ...request.echo, custom: true };
+      }
+
+      // Structured: custom status, headers, body, and delay.
+      return createHttpResponse({
+        status: 404,
+        headers: { 'X-Mock': '1' },
+        body: { error: 'not found', path: request.path },
+        delayMs: 0
+      });
     })
   );
 
@@ -132,9 +143,16 @@ Stops the echo server owned by this plugin.
 
 ### hc.server.onRequest(handler)
 
-**Signature:** `(handler: (request) => unknown | Promise<unknown>) => Disposable`
+**Signature:** `(handler: (request) => unknown | PluginServerHttpResponse | Promise<...>) => Disposable`
 
-Invoked for each incoming HTTP request. The `request` object includes a default `echo` payload (args, data, files, form, headers, json, origin, url). Return a JSON-serializable value for the response body.
+Invoked for each incoming HTTP request. The `request` object includes a default `echo` payload (args, data, files, form, headers, json, origin, url).
+
+Return either:
+
+- A JSON-serializable value for a **legacy** body-only response (always HTTP 200 + `application/json`), or
+- A **structured** `PluginServerHttpResponse` with `kind: 'http-response'` (use `createHttpResponse(...)` from `@harborclient/sdk/runtime-utils`) for custom status, headers, body, and `delayMs`.
+
+String `body` values are sent as raw text (default `text/plain` unless you set `Content-Type`). Other bodies use JSON.
 
 Multiple handlers may be registered; each call returns a `Disposable` that removes only that handler. Handlers run sequentially in registration order. When a handler returns `undefined` or `null`, the host keeps the result from the previous handler (starting from the default echo payload).
 

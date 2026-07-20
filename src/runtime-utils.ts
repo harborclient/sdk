@@ -171,6 +171,44 @@ const LOG_LEVEL_RANK: Record<LogLevel, number> = {
  * @param options.level - Minimum level to emit. Defaults to `info`.
  * @returns Logger with level-filtered `debug`, `info`, `warn`, and `error` methods.
  */
+/**
+ * Builds a structured plugin server HTTP response for `hc.server.onRequest`.
+ *
+ * @param partial - Status, headers, body, and/or delay (without `kind`).
+ * @returns A response the host can apply with custom status, headers, body, and delay.
+ */
+export function createHttpResponse(
+  partial: {
+    status?: number;
+    headers?: Record<string, string>;
+    body?: unknown;
+    delayMs?: number;
+  } = {}
+): {
+  kind: 'http-response';
+  status?: number;
+  headers?: Record<string, string>;
+  body?: unknown;
+  delayMs?: number;
+} {
+  return {
+    kind: 'http-response',
+    ...partial
+  };
+}
+
+/**
+ * Creates a plugin-scoped logger that prefixes every message with `[pluginId]`.
+ *
+ * Routes through `console` only so the logger works in both the renderer and
+ * the SES-hardened main runtime. When `console.warn` or `console.error` are
+ * unavailable, falls back to `console.log`.
+ *
+ * @param pluginId - Manifest id used as the log prefix.
+ * @param options - Optional initial configuration.
+ * @param options.level - Minimum level to emit. Defaults to `info`.
+ * @returns Logger with level-filtered `debug`, `info`, `warn`, and `error` methods.
+ */
 export function createLogger(pluginId: string, options?: { level?: LogLevel }): Logger {
   const prefix = `[${pluginId}]`;
   let level: LogLevel = options?.level ?? 'info';

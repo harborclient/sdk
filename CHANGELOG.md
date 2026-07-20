@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(API): enhance HTTP request handling and response structure. (`504e4c4`)
+
 ## 1.1.24 - 2026-07-16
 
 - feat(CodeEditor): add `css` language mode via `@codemirror/lang-css`.
