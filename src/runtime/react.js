@@ -111,9 +111,46 @@ export function useLayoutEffect(effect, deps) {
   return hook('useLayoutEffect')(effect, deps);
 }
 
+/** @type {typeof import('react').useReducer} */
+export function useReducer(reducer, initialArg, init) {
+  return hook('useReducer')(reducer, initialArg, init);
+}
+
 /** @type {typeof import('react').createElement} */
 export function createElement(type, props, ...children) {
   return hook('createElement')(type, props, ...children);
+}
+
+/**
+ * Defers host React lookup until render so module-level `React.memo(...)`
+ * calls work before activate().
+ *
+ * @type {typeof import('react').memo}
+ */
+export function memo(Component, propsAreEqual) {
+  /** @type {ReturnType<typeof import('react').memo> | null} */
+  let Memoized = null;
+
+  /**
+   * Lazily wraps the component with host React.memo on first render.
+   *
+   * @param {Record<string, unknown>} props - Component props.
+   * @returns {import('react').ReactElement}
+   */
+  function LazyMemo(props) {
+    const react = requireHostReact();
+    if (Memoized === null) {
+      Memoized = react.memo(Component, propsAreEqual);
+    }
+    return react.createElement(Memoized, props);
+  }
+
+  const displayName =
+    (typeof Component === 'function' ? Component.displayName ?? Component.name : null) ??
+    'Component';
+  LazyMemo.displayName = `Memo(${displayName})`;
+
+  return LazyMemo;
 }
 
 /**
@@ -134,7 +171,9 @@ const reactNamespace = {
   useContext,
   useId,
   useLayoutEffect,
-  createElement
+  useReducer,
+  createElement,
+  memo
 };
 
 /**
