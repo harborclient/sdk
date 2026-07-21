@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.29 - 2026-07-21
+
 - docs: update subscription management documentation and clarify disposal practices. (`b1d931a`)
 
 ## 1.1.28 - 2026-07-21
