@@ -53,7 +53,7 @@ When an unpacked plugin is enabled, the host watches:
 
 When a watched file changes, HarborClient debounces briefly (so multi-file writes finish), then:
 
-1. Calls `deactivate()` and disposes `hc.subscriptions`
+1. Calls `deactivate()` and disposes tracked registrations
 2. Clears the cached entry module
 3. Re-validates the manifest
 4. Calls `activate(hc)` again

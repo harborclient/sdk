@@ -41,16 +41,16 @@ flowchart TD
   enable --> lazy[Lazy activation]
   lazy --> activate["activate(hc)"]
   activate --> run[Plugin running]
-  run --> deactivate["deactivate() + dispose subscriptions"]
+  run --> deactivate["deactivate() + dispose tracked registrations"]
   deactivate --> uninstall[Uninstall removes directory]
 ```
 
 1. **Install** — HarborClient unpacks the `.hcp` file to `userData/plugins/<id>/`, validates `manifest.json`, and shows a permissions confirmation dialog.
 2. **Discovery** — On startup, HarborClient scans `plugins/*/manifest.json` for installed plugins and reloads any **unpacked** plugin paths saved from development sessions.
 3. **Activation** — Plugins activate lazily (for example when the user opens a contributed settings section). The host loads the entry module and calls `activate(hc)`.
-4. **Deactivation** — On disable or unload, the host disposes all entries in `hc.subscriptions`, then calls `deactivate()` if exported.
+4. **Deactivation** — On disable or unload, the host tears down tracked registrations automatically, then calls `deactivate()` if exported.
 5. **Uninstall** — Removes an installed plugin directory and clears stored enablement state. Unpacked plugins are removed from the dev registry only; your source folder on disk is not deleted.
 
-Registrations from `hc.ui.*` and similar APIs return **disposables** that the host tracks automatically on deactivation. Use `hc.subscriptions` for custom cleanups you create yourself.
+Registrations from `hc.ui.*` and similar APIs return **disposables** that the host tracks automatically on deactivation. Dispose custom resources (timers, focus sync, etc.) in `deactivate()` or React effect cleanup.
 
 See [Permissions](/permissions) for the capability model and [Dev workflow](/dev-workflow) for unpacked development loading.

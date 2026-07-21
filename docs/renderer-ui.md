@@ -6,7 +6,7 @@ All `hc.ui.register*` methods:
 - Return a `Disposable` that unregisters the contribution when called.
 - Require an `id` that matches an entry in the corresponding `manifest.contributes.*` array.
 
-Registration disposables are tracked automatically when you call `hc.ui.register*` methods. Use `hc.subscriptions` for custom cleanups you create yourself.
+Registration disposables are tracked automatically when you call `hc.ui.register*` methods. Custom disposables (timers, focus sync, etc.) should be disposed in `deactivate()` or React effect cleanup.
 
 See [Manifest](/manifest#contribution-types) for the manifest keys that correspond to each registrar.
 

@@ -218,8 +218,7 @@ export function setIntervalDisposable(callback: () => void, intervalMs: number):
  * Reloads one or more storage-backed stores when the window regains focus or
  * becomes visible, with optional polling for live cross-webview updates.
  *
- * Push the returned disposable onto `hc.subscriptions`, or dispose it from a
- * React effect cleanup.
+ * Dispose the returned disposable from `deactivate()` or a React effect cleanup.
  *
  * @param stores - One store or an array of stores to reload together.
  * @param options - Optional polling interval in milliseconds.

@@ -291,7 +291,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
 
   /**
    * Wraps a cleanup function in an idempotent {@link Disposable}, auto-registers it
-   * on {@link PluginContext.subscriptions}, and returns it.
+   * for host teardown on deactivation, and returns it.
    *
    * Idempotency keeps the legacy `subscriptions.push(register())` pattern and
    * manual `dispose()` safe — repeated dispose calls and host teardown never

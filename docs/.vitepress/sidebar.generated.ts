@@ -554,10 +554,6 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "collapsed": false
       },
       {
-        "text": "hc.subscriptions",
-        "link": "/renderer-data#hcsubscriptions"
-      },
-      {
         "text": "Not extensible",
         "link": "/renderer-data#not-extensible"
       }

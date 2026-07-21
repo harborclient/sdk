@@ -75,6 +75,6 @@ Discovered tools are prefixed with `mcp__` in the chat agent tool list, using th
 ## Lifecycle notes
 
 - **Register during `activate(hc)`** — call `hc.mcp.registerServer` once the plugin is ready to expose the endpoint.
-- **Dispose on deactivation** — registration disposables are tracked automatically; use `hc.subscriptions` only for custom cleanups.
+- **Dispose on deactivation** — registration disposables are tracked automatically; dispose custom resources in `deactivate()` if needed.
 - **Do not persist in user MCP settings** — if you need durable configuration, store tokens or URLs in `hc.storage` and pass them into `headers` or `serverURL` at registration time.
 - **Icon constraint** — optional `icon` must be a `data:image/png;base64,...` or `data:image/svg+xml;base64,...` URI for safe display in settings.

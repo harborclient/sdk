@@ -44,7 +44,7 @@ export function createPluginComponent(factory) {
 
 /**
  * Registers a custom appearance theme. The returned disposable is tracked
- * automatically on {@link PluginContext.subscriptions}.
+ * automatically by the host.
  *
  * @param {import('../types').PluginContext} hc - Renderer plugin context.
  * @param {import('../types').ThemeContribution} theme - Theme definition; `theme.id` must match `contributes.themes`.
@@ -56,7 +56,7 @@ export function registerTheme(hc, theme) {
 
 /**
  * Registers a File -> Import handler. The returned disposable is tracked
- * automatically on {@link PluginContext.subscriptions}.
+ * automatically by the host.
  *
  * @param {import('../types').PluginContext} hc - Renderer plugin context.
  * @param {string | string[]} extensions - File extensions such as `.json` or `yaml`.

@@ -150,10 +150,9 @@ export interface CodeEditorSetup {
  *
  * Registration APIs (`hc.ui.register*`, `hc.themes.register`, `hc.commands.register`, etc.)
  * return a `Disposable` that unregisters the contribution when {@link Disposable.dispose}
- * is called. Registration disposables are tracked automatically on
- * {@link PluginContext.subscriptions}; keep the return value only if you need to dispose
- * early. Push your own custom disposables (timers, listeners, etc.) onto
- * {@link PluginContext.subscriptions} yourself.
+ * is called. Registration disposables are tracked automatically by the host; keep the
+ * return value only if you need to dispose early. Dispose custom resources (timers,
+ * listeners, focus sync, etc.) from `deactivate()` or a React effect cleanup.
  */
 export interface Disposable {
   /**
@@ -984,8 +983,7 @@ export type ActiveTheme =
 /**
  * Custom appearance theme registration and change notifications.
  *
- * Requires the `ui` permission. Returned disposables are tracked automatically on
- * {@link PluginContext.subscriptions}.
+ * Requires the `ui` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginThemes {
   /**
@@ -1110,7 +1108,7 @@ export interface PluginDatabase extends PluginDatabaseTx {
  * Command handlers that tie together menus, toolbar actions, and context menu items.
  *
  * Requires the `ui` permission for {@link PluginCommands.register}. Returned
- * disposables are tracked automatically on {@link PluginContext.subscriptions}.
+ * disposables are tracked automatically by the host.
  */
 export interface PluginCommands {
   /**
@@ -1144,8 +1142,7 @@ export type ActionHandlerMap = Record<string, (...args: unknown[]) => void | Pro
 /**
  * Registers namespaced quick-open actions surfaced when users type `#` in the Action menu.
  *
- * Requires the `ui` permission. Returned disposables are tracked automatically on
- * {@link PluginContext.subscriptions}.
+ * Requires the `ui` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginActions {
   /**
@@ -1263,8 +1260,7 @@ export interface PluginMcp {
    * Registers a remote MCP client server for Harbor's chat agent.
    *
    * Re-registering with the same registration id from one plugin replaces the prior
-   * entry. The returned {@link Disposable} is tracked automatically on
-   * {@link PluginContext.subscriptions}.
+   * entry. The returned {@link Disposable} is tracked automatically by the host.
    *
    * @param config - Remote MCP server metadata and connection options.
    * @returns A {@link Disposable} that unregisters the server when disposed.
@@ -1275,8 +1271,7 @@ export interface PluginMcp {
 /**
  * **File → Import** handler registration available on {@link PluginContext.imports}.
  *
- * Requires the `ui` permission. Returned disposables are tracked automatically on
- * {@link PluginContext.subscriptions}.
+ * Requires the `ui` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginImports {
   /**
@@ -1401,7 +1396,7 @@ export interface PluginFs {
  *
  * All `register*` methods require the `ui` permission, return a {@link Disposable},
  * and require contribution ids that match `manifest.contributes.*` entries.
- * Returned disposables are tracked automatically on {@link PluginContext.subscriptions}.
+ * Returned disposables are tracked automatically by the host.
  */
 export interface PluginUi {
   /**
@@ -1725,8 +1720,7 @@ export interface CreateCollectionResult {
 /**
  * Renderer-side HTTP lifecycle events for reacting to completed sends in the UI.
  *
- * Requires the `http` permission. Returned disposables are tracked automatically on
- * {@link PluginContext.subscriptions}.
+ * Requires the `http` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginRendererHttp {
   /**
@@ -1952,11 +1946,11 @@ export interface PluginContext {
   mcp: PluginMcp;
 
   /**
-   * Disposables to clean up on deactivation.
+   * Host-managed disposable list used for registration cleanup on deactivation.
    *
-   * Registration APIs track their own disposables here automatically. Push your own
-   * custom disposables (timers, listeners, etc.) here as well. The host disposes all
-   * entries when the plugin deactivates.
+   * Registration APIs append here automatically. Prefer disposing custom resources
+   * (timers, listeners, etc.) from `deactivate()` or a React effect cleanup rather
+   * than pushing onto this array.
    */
   subscriptions: Disposable[];
 }
@@ -2041,8 +2035,7 @@ export interface PluginHttpResponse {
 /**
  * HTTP hook registration API available on {@link MainPluginContext.http}.
  *
- * Requires the `http` permission. Returned disposables are tracked automatically on
- * {@link MainPluginContext.subscriptions}.
+ * Requires the `http` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginHttp {
   /**
@@ -2070,8 +2063,7 @@ export interface PluginHttp {
  * Custom IPC registration API available on {@link MainPluginContext.ipc}.
  *
  * Exposes RPC channels callable from the renderer half of the same plugin.
- * Requires the `ipc` permission. Returned disposables are tracked automatically on
- * {@link MainPluginContext.subscriptions}.
+ * Requires the `ipc` permission. Returned disposables are tracked automatically by the host.
  */
 export interface PluginIpc {
   /**
@@ -2595,11 +2587,11 @@ export interface PluginScripts {
  */
 export interface MainPluginContext {
   /**
-   * Disposables to clean up on deactivation.
+   * Host-managed disposable list used for registration cleanup on deactivation.
    *
-   * Registration APIs track their own disposables here automatically. Push your own
-   * custom disposables (timers, listeners, etc.) here as well. The host disposes all
-   * entries when the plugin deactivates.
+   * Registration APIs append here automatically. Prefer disposing custom resources
+   * (timers, listeners, etc.) from `deactivate()` or a React effect cleanup rather
+   * than pushing onto this array.
    */
   subscriptions: Disposable[];
 

@@ -250,18 +250,27 @@ read/diff/notify logic in every plugin.
   value before a synchronous read.
 - **`syncOnWindowFocus(stores, { intervalMs? })`** — wires `focus`,
   `visibilitychange`, and optional polling to `reloadFromStorage` on one or more
-  stores. Returns a `Disposable` for `hc.subscriptions` or React effect cleanup.
+  stores. Returns a `Disposable`; dispose from `deactivate()` or a React effect cleanup.
 
 ```typescript
+import type { Disposable, PluginContext } from '@harborclient/sdk';
 import { createStorageStore, syncOnWindowFocus } from '@harborclient/sdk/store';
 
-const schemasStore = createStorageStore({
-  storage: hc.storage,
-  key: 'schemas',
-  parse: (raw) => (Array.isArray(raw) ? raw : [])
-});
+let schemasStore: ReturnType<typeof createStorageStore<unknown[]>>;
+let focusSync: Disposable | undefined;
 
-hc.subscriptions.push(syncOnWindowFocus(schemasStore));
+export function activate(hc: PluginContext) {
+  schemasStore = createStorageStore({
+    storage: hc.storage,
+    key: 'schemas',
+    parse: (raw) => (Array.isArray(raw) ? raw : [])
+  });
+  focusSync = syncOnWindowFocus(schemasStore);
+}
+
+export function deactivate() {
+  focusSync?.dispose();
+}
 
 // In a component:
 const schemas = schemasStore.useValue();
@@ -549,16 +558,6 @@ hc.mcp.registerServer({
 ```
 
 Discovered tools are prefixed with `mcp__` in the chat agent tool list, using the same naming scheme as user-configured MCP client servers.
-
-## hc.subscriptions
-
-**Type:** `Disposable[]`
-
-Use this array for custom disposables you create yourself (for example `syncOnWindowFocus` from `@harborclient/sdk/store`). Registration disposables are tracked automatically. The host disposes every entry when the plugin deactivates:
-
-```typescript
-hc.subscriptions.push(syncOnWindowFocus(schemasStore));
-```
 
 ## Not extensible
 

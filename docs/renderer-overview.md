@@ -241,7 +241,6 @@ export interface PluginContext {
   host: PluginHost;
   imports: PluginImports;
   mcp: PluginMcp;
-  subscriptions: Disposable[];
 }
 
 export interface PluginMcpHeader {
