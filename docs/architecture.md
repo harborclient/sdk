@@ -51,6 +51,6 @@ flowchart TD
 4. **Deactivation** — On disable or unload, the host disposes all entries in `hc.subscriptions`, then calls `deactivate()` if exported.
 5. **Uninstall** — Removes an installed plugin directory and clears stored enablement state. Unpacked plugins are removed from the dev registry only; your source folder on disk is not deleted.
 
-Registrations from `hc.ui.*` and similar APIs return **disposables**. Push them onto `hc.subscriptions` so the host can clean up automatically on deactivation.
+Registrations from `hc.ui.*` and similar APIs return **disposables** that the host tracks automatically on deactivation. Use `hc.subscriptions` for custom cleanups you create yourself.
 
 See [Permissions](/permissions) for the capability model and [Dev workflow](/dev-workflow) for unpacked development loading.

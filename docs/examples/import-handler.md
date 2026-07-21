@@ -111,23 +111,19 @@ export function activate(hc: PluginContext): void {
     return <ImportPreview hc={hc} />;
   }
 
-  hc.subscriptions.push(
-    hc.ui.registerMainView({
-      id: MAIN_VIEW_ID,
-      title: 'Import Request Bundle',
-      Component: ImportPreviewHost
-    })
-  );
+  hc.ui.registerMainView({
+    id: MAIN_VIEW_ID,
+    title: 'Import Request Bundle',
+    Component: ImportPreviewHost
+  });
 
-  hc.subscriptions.push(
-    registerImportHandler(hc, '.json', {
-      canImport: (file) => canImportRequestBundle(file.contents),
-      import: async (file) => {
-        setPendingImport(file);
-        await hc.commands.execute('harborclient:openMainView', hc.pluginId, MAIN_VIEW_ID);
-      }
-    })
-  );
+  registerImportHandler(hc, '.json', {
+    canImport: (file) => canImportRequestBundle(file.contents),
+    import: async (file) => {
+      setPendingImport(file);
+      await hc.commands.execute('harborclient:openMainView', hc.pluginId, MAIN_VIEW_ID);
+    }
+  });
 }
 ```
 

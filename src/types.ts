@@ -150,8 +150,10 @@ export interface CodeEditorSetup {
  *
  * Registration APIs (`hc.ui.register*`, `hc.themes.register`, `hc.commands.register`, etc.)
  * return a `Disposable` that unregisters the contribution when {@link Disposable.dispose}
- * is called. Push every returned disposable onto {@link PluginContext.subscriptions}
- * so the host cleans up automatically on plugin deactivation.
+ * is called. Registration disposables are tracked automatically on
+ * {@link PluginContext.subscriptions}; keep the return value only if you need to dispose
+ * early. Push your own custom disposables (timers, listeners, etc.) onto
+ * {@link PluginContext.subscriptions} yourself.
  */
 export interface Disposable {
   /**
@@ -982,7 +984,7 @@ export type ActiveTheme =
 /**
  * Custom appearance theme registration and change notifications.
  *
- * Requires the `ui` permission. Push returned disposables onto
+ * Requires the `ui` permission. Returned disposables are tracked automatically on
  * {@link PluginContext.subscriptions}.
  */
 export interface PluginThemes {
@@ -1107,8 +1109,8 @@ export interface PluginDatabase extends PluginDatabaseTx {
 /**
  * Command handlers that tie together menus, toolbar actions, and context menu items.
  *
- * Requires the `ui` permission for {@link PluginCommands.register}. Push returned
- * disposables onto {@link PluginContext.subscriptions}.
+ * Requires the `ui` permission for {@link PluginCommands.register}. Returned
+ * disposables are tracked automatically on {@link PluginContext.subscriptions}.
  */
 export interface PluginCommands {
   /**
@@ -1142,7 +1144,7 @@ export type ActionHandlerMap = Record<string, (...args: unknown[]) => void | Pro
 /**
  * Registers namespaced quick-open actions surfaced when users type `#` in the Action menu.
  *
- * Requires the `ui` permission. Push returned disposables onto
+ * Requires the `ui` permission. Returned disposables are tracked automatically on
  * {@link PluginContext.subscriptions}.
  */
 export interface PluginActions {
@@ -1261,7 +1263,8 @@ export interface PluginMcp {
    * Registers a remote MCP client server for Harbor's chat agent.
    *
    * Re-registering with the same registration id from one plugin replaces the prior
-   * entry. Push the returned {@link Disposable} onto {@link PluginContext.subscriptions}.
+   * entry. The returned {@link Disposable} is tracked automatically on
+   * {@link PluginContext.subscriptions}.
    *
    * @param config - Remote MCP server metadata and connection options.
    * @returns A {@link Disposable} that unregisters the server when disposed.
@@ -1272,7 +1275,7 @@ export interface PluginMcp {
 /**
  * **File → Import** handler registration available on {@link PluginContext.imports}.
  *
- * Requires the `ui` permission. Push returned disposables onto
+ * Requires the `ui` permission. Returned disposables are tracked automatically on
  * {@link PluginContext.subscriptions}.
  */
 export interface PluginImports {
@@ -1398,7 +1401,7 @@ export interface PluginFs {
  *
  * All `register*` methods require the `ui` permission, return a {@link Disposable},
  * and require contribution ids that match `manifest.contributes.*` entries.
- * Push every returned disposable onto {@link PluginContext.subscriptions}.
+ * Returned disposables are tracked automatically on {@link PluginContext.subscriptions}.
  */
 export interface PluginUi {
   /**
@@ -1722,7 +1725,7 @@ export interface CreateCollectionResult {
 /**
  * Renderer-side HTTP lifecycle events for reacting to completed sends in the UI.
  *
- * Requires the `http` permission. Push returned disposables onto
+ * Requires the `http` permission. Returned disposables are tracked automatically on
  * {@link PluginContext.subscriptions}.
  */
 export interface PluginRendererHttp {
@@ -1951,7 +1954,8 @@ export interface PluginContext {
   /**
    * Disposables to clean up on deactivation.
    *
-   * Push every disposable returned by registration APIs here. The host disposes all
+   * Registration APIs track their own disposables here automatically. Push your own
+   * custom disposables (timers, listeners, etc.) here as well. The host disposes all
    * entries when the plugin deactivates.
    */
   subscriptions: Disposable[];
@@ -2037,7 +2041,7 @@ export interface PluginHttpResponse {
 /**
  * HTTP hook registration API available on {@link MainPluginContext.http}.
  *
- * Requires the `http` permission. Push returned disposables onto
+ * Requires the `http` permission. Returned disposables are tracked automatically on
  * {@link MainPluginContext.subscriptions}.
  */
 export interface PluginHttp {
@@ -2066,7 +2070,7 @@ export interface PluginHttp {
  * Custom IPC registration API available on {@link MainPluginContext.ipc}.
  *
  * Exposes RPC channels callable from the renderer half of the same plugin.
- * Requires the `ipc` permission. Push returned disposables onto
+ * Requires the `ipc` permission. Returned disposables are tracked automatically on
  * {@link MainPluginContext.subscriptions}.
  */
 export interface PluginIpc {
@@ -2593,7 +2597,8 @@ export interface MainPluginContext {
   /**
    * Disposables to clean up on deactivation.
    *
-   * Push every disposable returned by registration APIs here. The host disposes all
+   * Registration APIs track their own disposables here automatically. Push your own
+   * custom disposables (timers, listeners, etc.) here as well. The host disposes all
    * entries when the plugin deactivates.
    */
   subscriptions: Disposable[];

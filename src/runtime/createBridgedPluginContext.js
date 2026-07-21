@@ -290,6 +290,36 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
   const isAgent = mode === 'agent';
 
   /**
+   * Wraps a cleanup function in an idempotent {@link Disposable}, auto-registers it
+   * on {@link PluginContext.subscriptions}, and returns it.
+   *
+   * Idempotency keeps the legacy `subscriptions.push(register())` pattern and
+   * manual `dispose()` safe — repeated dispose calls and host teardown never
+   * double-fire the underlying cleanup.
+   *
+   * @param {() => void} dispose - Cleanup invoked on first dispose.
+   * @returns {{ dispose: () => void }} Tracked disposable handle.
+   */
+  const track = (dispose) => {
+    let disposed = false;
+    const disposable = {
+      dispose: () => {
+        if (disposed) {
+          return;
+        }
+        disposed = true;
+        const index = subscriptions.indexOf(disposable);
+        if (index >= 0) {
+          subscriptions.splice(index, 1);
+        }
+        dispose();
+      }
+    };
+    subscriptions.push(disposable);
+    return disposable;
+  };
+
+  /**
    * Asserts that the plugin declared a permission in its manifest.
    *
    * @param {string} permission - Required permission flag.
@@ -365,13 +395,11 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
       });
     }
 
-    return {
-      dispose: () => {
-        if (isAgent) {
-          void bridgeInvoke('unregisterContribution', { kind, contributionId: id });
-        }
+    return track(() => {
+      if (isAgent) {
+        void bridgeInvoke('unregisterContribution', { kind, contributionId: id });
       }
-    };
+    });
   };
 
   /**
@@ -442,7 +470,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           listener(path);
         });
         void bridgeInvoke('fs.watchFile', { path });
-        return { dispose: unsubscribe };
+        return track(unsubscribe);
       }
     },
     commands: {
@@ -456,7 +484,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
         const handlers = commandHandlers.get(scopedId) ?? new Set();
         handlers.add(handler);
         commandHandlers.set(scopedId, handlers);
-        return createCommandDisposable(scopedId, handler);
+        return track(createCommandDisposable(scopedId, handler).dispose);
       },
       execute: async (id, ...args) => {
         const [ownerId, commandId] = id.includes(':') ? id.split(':', 2) : [pluginId, id];
@@ -507,13 +535,11 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           });
         }
 
-        return {
-          dispose: () => {
-            for (const disposable of disposables) {
-              disposable.dispose();
-            }
+        return track(() => {
+          for (const disposable of disposables) {
+            disposable.dispose();
           }
-        };
+        });
       }
     },
     themes: {
@@ -524,17 +550,15 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           return noopDisposable();
         }
         void bridgeInvoke('themes.register', { theme });
-        return {
-          dispose: () => {
-            void bridgeInvoke('themes.unregister', { themeId: theme.id });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('themes.unregister', { themeId: theme.id });
+        });
       },
       getActive: async () => bridgeInvoke('themes.getActive'),
       onDidChange: (listener) => {
         const unsubscribe = bridgeOn('themes.changed', listener);
         void bridgeInvoke('themes.getActive').then(listener);
-        return { dispose: unsubscribe };
+        return track(unsubscribe);
       }
     },
     ui: {
@@ -704,14 +728,12 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
             order: item.order
           }
         });
-        return {
-          dispose: () => {
-            void bridgeInvoke('unregisterContribution', {
-              kind: 'menuItems',
-              contributionId: `${item.menu}:${item.command}`
-            });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('unregisterContribution', {
+            kind: 'menuItems',
+            contributionId: `${item.menu}:${item.command}`
+          });
+        });
       },
       registerRequestToolbarAction: (action) => {
         assertManifestContribution('requestToolbarActions', action.id);
@@ -729,14 +751,12 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
             order: action.order
           }
         });
-        return {
-          dispose: () => {
-            void bridgeInvoke('unregisterContribution', {
-              kind: 'requestToolbarActions',
-              contributionId: action.id
-            });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('unregisterContribution', {
+            kind: 'requestToolbarActions',
+            contributionId: action.id
+          });
+        });
       },
       registerScriptEditorAction: (action) => {
         assertManifestContribution('scriptEditorActions', action.id);
@@ -755,14 +775,12 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
             phases: action.phases
           }
         });
-        return {
-          dispose: () => {
-            void bridgeInvoke('unregisterContribution', {
-              kind: 'scriptEditorActions',
-              contributionId: action.id
-            });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('unregisterContribution', {
+            kind: 'scriptEditorActions',
+            contributionId: action.id
+          });
+        });
       },
       registerContextMenuItem: (item) => {
         assertManifestContribution('contextMenus', item.id);
@@ -781,14 +799,12 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
             order: item.order
           }
         });
-        return {
-          dispose: () => {
-            void bridgeInvoke('unregisterContribution', {
-              kind: 'contextMenuItems',
-              contributionId: item.id
-            });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('unregisterContribution', {
+            kind: 'contextMenuItems',
+            contributionId: item.id
+          });
+        });
       },
       registerStatusBarItem: (item) => {
         assertManifestContribution('statusBarItems', item.id);
@@ -827,7 +843,7 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           const { request, response } = payload ?? {};
           return handler(request, response);
         });
-        return { dispose: unsubscribe };
+        return track(unsubscribe);
       }
     },
     ipc: {
@@ -904,12 +920,10 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           registrationId,
           extensions: normalizedExtensions
         });
-        return {
-          dispose: () => {
-            importHandlersByRegistrationId.delete(registrationId);
-            void bridgeInvoke('imports.unregisterHandler', { registrationId });
-          }
-        };
+        return track(() => {
+          importHandlersByRegistrationId.delete(registrationId);
+          void bridgeInvoke('imports.unregisterHandler', { registrationId });
+        });
       }
     },
     mcp: {
@@ -924,11 +938,9 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           registrationId,
           ...normalized
         });
-        return {
-          dispose: () => {
-            void bridgeInvoke('mcp.unregisterServer', { registrationId });
-          }
-        };
+        return track(() => {
+          void bridgeInvoke('mcp.unregisterServer', { registrationId });
+        });
       }
     }
   };

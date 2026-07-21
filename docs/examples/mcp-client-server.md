@@ -45,19 +45,17 @@ import type { PluginContext } from '@harborclient/sdk';
  * Registers the WordPress MCP client server when the plugin activates.
  */
 export function activate(hc: PluginContext): void {
-  hc.subscriptions.push(
-    hc.mcp.registerServer({
-      name: 'WordPress',
-      icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
-      serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
-      enabled: true,
-      headers: [{ key: 'Authorization', value: 'Bearer YOUR_TOKEN' }]
-    })
-  );
+  hc.mcp.registerServer({
+    name: 'WordPress',
+    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
+    enabled: true,
+    headers: [{ key: 'Authorization', value: 'Bearer YOUR_TOKEN' }]
+  });
 }
 ```
 
-Push the returned disposable onto `hc.subscriptions` so HarborClient tears down the registration when the plugin deactivates.
+Registration disposables are tracked automatically — HarborClient tears down the registration when the plugin deactivates.
 
 ## Settings appearance
 
@@ -77,6 +75,6 @@ Discovered tools are prefixed with `mcp__` in the chat agent tool list, using th
 ## Lifecycle notes
 
 - **Register during `activate(hc)`** — call `hc.mcp.registerServer` once the plugin is ready to expose the endpoint.
-- **Dispose on deactivation** — push every registration disposable onto `hc.subscriptions`.
+- **Dispose on deactivation** — registration disposables are tracked automatically; use `hc.subscriptions` only for custom cleanups.
 - **Do not persist in user MCP settings** — if you need durable configuration, store tokens or URLs in `hc.storage` and pass them into `headers` or `serverURL` at registration time.
 - **Icon constraint** — optional `icon` must be a `data:image/png;base64,...` or `data:image/svg+xml;base64,...` URI for safe display in settings.

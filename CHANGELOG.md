@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- refactor: streamline subscription management in plugin context. (`6ae8e6b`)
+
 ## 1.1.26 - 2026-07-21
 
 - docs(renderer-ui): improve documentation formatting for MainViewContribution parameters. (`5e083b1`)

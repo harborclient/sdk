@@ -15,7 +15,7 @@ Themes can be registered two ways:
 1. **JavaScript** — call `registerTheme(hc, theme)` or `hc.themes.register(theme)` from `activate()` (documented below).
 2. **JSON import** — point the manifest contribution at a Theme Designer export file (see [JSON theme import](#json-theme-import)). No `activate()` call is required for those entries.
 
-Requires the `ui` permission. For JavaScript registration, push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerTheme(hc, theme)` from `@harborclient/sdk` which registers the theme and pushes the disposable for you.
+Requires the `ui` permission. For JavaScript registration, call `registerTheme(hc, theme)` or `hc.themes.register(theme)` from `activate()` — registration disposables are tracked automatically.
 
 ### JSON theme import
 
@@ -68,7 +68,7 @@ See the [Solarized theme](/examples/solarized-theme#json-import-no-javascript) e
 
 **Signature:** `(hc: PluginContext, theme: ThemeContribution) => Disposable`
 
-Convenience wrapper around `hc.themes.register` that also pushes the returned disposable onto `hc.subscriptions`. Prefer this for single-theme plugins.
+Convenience wrapper around `hc.themes.register`. Prefer this for single-theme plugins.
 
 ```typescript
 import { registerTheme } from '@harborclient/sdk';
@@ -100,22 +100,20 @@ Use `defineTheme(theme)` when you want to define the theme object in a separate 
 Provide `colors`, a `stylesheet`, or both. Use `colors` for simple palette swaps; use `stylesheet` when you need selectors beyond `:root` (for example plugin-specific tweaks under `[data-theme='plugin-…']`).
 
 ```typescript
-hc.subscriptions.push(
-  hc.themes.register({
-    id: 'solarized',
-    title: 'Solarized Dark',
-    type: 'dark',
-    colors: {
-      surface: '#002b36',
-      sidebar: '#073642',
-      control: '#073642',
-      text: '#839496',
-      'text-secondary': '#93a1a1',
-      accent: '#268bd2',
-      selection: 'rgba(38, 139, 210, 0.25)'
-    }
-  })
-);
+hc.themes.register({
+  id: 'solarized',
+  title: 'Solarized Dark',
+  type: 'dark',
+  colors: {
+    surface: '#002b36',
+    sidebar: '#073642',
+    control: '#073642',
+    text: '#839496',
+    'text-secondary': '#93a1a1',
+    accent: '#268bd2',
+    selection: 'rgba(38, 139, 210, 0.25)'
+  }
+});
 ```
 
 When the user selects your theme, the persisted value is `plugin:<pluginId>:<themeId>`. If the plugin is disabled or uninstalled while its theme is active, HarborClient falls back to **System**.
@@ -140,13 +138,11 @@ if (active.source === 'plugin') {
 Fires when the user changes the appearance theme in Settings or when the host resets theme after plugin deactivation.
 
 ```typescript
-hc.subscriptions.push(
-  hc.themes.onDidChange((theme) => {
-    if (theme.source === 'plugin' && theme.themeId === 'solarized') {
-      hc.ui.showToast('Solarized theme active');
-    }
-  })
-);
+hc.themes.onDidChange((theme) => {
+  if (theme.source === 'plugin' && theme.themeId === 'solarized') {
+    hc.ui.showToast('Solarized theme active');
+  }
+});
 ```
 
 ### Theme color tokens
@@ -469,7 +465,7 @@ To create or update **environment** variables instead, use `hc.host.createEnviro
 
 Register handlers for **File → Import** so plugins can participate in the unified import flow instead of adding separate File menu items.
 
-Requires the `ui` permission. Push returned disposables onto `hc.subscriptions`, or use the convenience helper `registerImportHandler(hc, extensions, handler)` from `@harborclient/sdk` which registers the handler and pushes the disposable for you.
+Requires the `ui` permission. Call `registerImportHandler(hc, extensions, handler)` or `hc.imports.registerHandler(extensions, handler)` — registration disposables are tracked automatically.
 
 Built-in HarborClient formats (Postman, Bruno, HAR, and native exports) are detected first. Plugin handlers run only when the selected file is not recognized as a built-in format and its extension matches a registered handler.
 
@@ -487,7 +483,7 @@ See the [Import handler example](/examples/import-handler) for a complete walkth
 
 **Signature:** `(hc: PluginContext, extensions: string | string[], handler: ImportHandler) => Disposable`
 
-Convenience wrapper around `hc.imports.registerHandler` that also pushes the returned disposable onto `hc.subscriptions`.
+Convenience wrapper around `hc.imports.registerHandler`.
 
 ```typescript
 import { registerImportHandler } from '@harborclient/sdk';
@@ -542,18 +538,14 @@ Requires the `mcp` permission. Registrations are **activation-scoped**: Harbor c
 | `headers`   | `PluginMcpHeader[]`  | Optional HTTP headers sent with MCP client requests                         |
 | `icon`      | `string` (optional)  | Optional square icon as a `data:image/...;base64,...` URI for settings rows |
 
-Push the returned disposable onto `hc.subscriptions`:
-
 ```typescript
-hc.subscriptions.push(
-  hc.mcp.registerServer({
-    name: 'WordPress',
-    icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
-    serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
-    enabled: true,
-    headers: [{ key: 'Authorization', value: 'Bearer token' }]
-  })
-);
+hc.mcp.registerServer({
+  name: 'WordPress',
+  icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  serverURL: 'https://public-api.wordpress.com/wpcom/v2/mcp/v1',
+  enabled: true,
+  headers: [{ key: 'Authorization', value: 'Bearer token' }]
+});
 ```
 
 Discovered tools are prefixed with `mcp__` in the chat agent tool list, using the same naming scheme as user-configured MCP client servers.
@@ -562,14 +554,10 @@ Discovered tools are prefixed with `mcp__` in the chat agent tool list, using th
 
 **Type:** `Disposable[]`
 
-Push disposables returned by registration APIs here. The host disposes every entry when the plugin deactivates:
+Use this array for custom disposables you create yourself (for example `syncOnWindowFocus` from `@harborclient/sdk/store`). Registration disposables are tracked automatically. The host disposes every entry when the plugin deactivates:
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerSettingsSection({
-    /* ... */
-  })
-);
+hc.subscriptions.push(syncOnWindowFocus(schemasStore));
 ```
 
 ## Not extensible

@@ -217,3 +217,78 @@ describe('createBridgedPluginContext mcp', () => {
     ).toThrow('lacks permission: mcp');
   });
 });
+
+describe('createBridgedPluginContext subscription auto-tracking', () => {
+  it('auto-appends registration disposables to hc.subscriptions', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'agent',
+      react: {},
+      manifest: createManifest()
+    });
+
+    expect(hc.subscriptions).toHaveLength(0);
+
+    const disposable = hc.imports.registerHandler('.json', {
+      canImport: () => true,
+      import: async () => {}
+    });
+
+    expect(hc.subscriptions).toHaveLength(1);
+    expect(hc.subscriptions[0]).toBe(disposable);
+  });
+
+  it('disposes only once when dispose is called repeatedly', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'agent',
+      react: {},
+      manifest: createManifest(['mcp'])
+    });
+
+    const disposable = hc.mcp.registerServer({
+      name: 'WordPress',
+      serverURL: 'https://example.com/mcp'
+    });
+
+    bridgeInvoke.mockClear();
+    disposable.dispose();
+    disposable.dispose();
+
+    expect(bridgeInvoke).toHaveBeenCalledTimes(1);
+    expect(bridgeInvoke).toHaveBeenCalledWith('mcp.unregisterServer', {
+      registrationId: '1'
+    });
+    expect(hc.subscriptions).toHaveLength(0);
+  });
+
+  it('does not double-unregister when using the legacy subscriptions.push pattern', () => {
+    const hc = createBridgedPluginContext({
+      pluginId: 'com.example.test',
+      mode: 'agent',
+      react: {},
+      manifest: createManifest(['mcp'])
+    });
+
+    const disposable = hc.mcp.registerServer({
+      name: 'WordPress',
+      serverURL: 'https://example.com/mcp'
+    });
+    hc.subscriptions.push(disposable);
+
+    expect(hc.subscriptions).toHaveLength(2);
+
+    bridgeInvoke.mockClear();
+    disposable.dispose();
+
+    expect(bridgeInvoke).toHaveBeenCalledTimes(1);
+    expect(bridgeInvoke).toHaveBeenCalledWith('mcp.unregisterServer', {
+      registrationId: '1'
+    });
+
+    // Legacy duplicate entry remains but dispose is a no-op.
+    expect(hc.subscriptions).toHaveLength(1);
+    disposable.dispose();
+    expect(bridgeInvoke).toHaveBeenCalledTimes(1);
+  });
+});

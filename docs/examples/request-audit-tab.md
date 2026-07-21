@@ -41,13 +41,11 @@ function AuditTab({ context }: { context: RequestTabContext }) {
 }
 
 export function activate(hc: PluginContext): void {
-  hc.subscriptions.push(
-    hc.ui.registerRequestTab({
-      id: 'audit',
-      title: 'Audit',
-      Component: AuditTab
-    })
-  );
+  hc.ui.registerRequestTab({
+    id: 'audit',
+    title: 'Audit',
+    Component: AuditTab
+  });
 }
 ```
 

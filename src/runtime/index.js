@@ -43,20 +43,20 @@ export function createPluginComponent(factory) {
 }
 
 /**
- * Registers a custom appearance theme and tracks its disposable for cleanup.
+ * Registers a custom appearance theme. The returned disposable is tracked
+ * automatically on {@link PluginContext.subscriptions}.
  *
  * @param {import('../types').PluginContext} hc - Renderer plugin context.
  * @param {import('../types').ThemeContribution} theme - Theme definition; `theme.id` must match `contributes.themes`.
  * @returns {import('../types').Disposable} Disposable that unregisters the theme.
  */
 export function registerTheme(hc, theme) {
-  const disposable = hc.themes.register(theme);
-  hc.subscriptions.push(disposable);
-  return disposable;
+  return hc.themes.register(theme);
 }
 
 /**
- * Registers a File -> Import handler and tracks its disposable for cleanup.
+ * Registers a File -> Import handler. The returned disposable is tracked
+ * automatically on {@link PluginContext.subscriptions}.
  *
  * @param {import('../types').PluginContext} hc - Renderer plugin context.
  * @param {string | string[]} extensions - File extensions such as `.json` or `yaml`.
@@ -64,9 +64,7 @@ export function registerTheme(hc, theme) {
  * @returns {import('../types').Disposable} Disposable that unregisters the handler.
  */
 export function registerImportHandler(hc, extensions, handler) {
-  const disposable = hc.imports.registerHandler(extensions, handler);
-  hc.subscriptions.push(disposable);
-  return disposable;
+  return hc.imports.registerHandler(extensions, handler);
 }
 
 /**

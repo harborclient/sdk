@@ -21,21 +21,17 @@ This example is a **main-only** plugin that logs every outbound HTTP request to 
 import type { MainPluginContext } from '@harborclient/sdk';
 
 export function activate(hc: MainPluginContext): void {
-  hc.subscriptions.push(
-    hc.http.onBeforeSend((request) => {
-      console.log(`→ ${request.method} ${request.url}`);
-      console.log('  headers:', request.headers);
-      if (request.body) {
-        console.log('  body:', request.body);
-      }
-    })
-  );
+  hc.http.onBeforeSend((request) => {
+    console.log(`→ ${request.method} ${request.url}`);
+    console.log('  headers:', request.headers);
+    if (request.body) {
+      console.log('  body:', request.body);
+    }
+  });
 
-  hc.subscriptions.push(
-    hc.http.onAfterSend((request, response) => {
-      console.log(`← ${response.status} ${response.statusText} (${request.method} ${request.url})`);
-    })
-  );
+  hc.http.onAfterSend((request, response) => {
+    console.log(`← ${response.status} ${response.statusText} (${request.method} ${request.url})`);
+  });
 }
 ```
 

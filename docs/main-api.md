@@ -26,14 +26,12 @@ Returns the stored value, or `undefined` if the key has never been set.
 import type { MainPluginContext } from '@harborclient/sdk';
 
 export function activate(hc: MainPluginContext): void {
-  hc.subscriptions.push(
-    hc.http.onBeforeSend(async (request) => {
-      const token = await hc.storage.get<string>('accessToken');
-      if (token) {
-        request.headers.Authorization = `Bearer ${token}`;
-      }
-    })
-  );
+  hc.http.onBeforeSend(async (request) => {
+    const token = await hc.storage.get<string>('accessToken');
+    if (token) {
+      request.headers.Authorization = `Bearer ${token}`;
+    }
+  });
 }
 ```
 
@@ -68,12 +66,10 @@ Register a callback that runs before each outgoing HTTP request. Mutate the requ
 import type { MainPluginContext } from '@harborclient/sdk';
 
 export function activate(hc: MainPluginContext): void {
-  hc.subscriptions.push(
-    hc.http.onBeforeSend(async (request) => {
-      request.headers['X-Plugin-Trace'] = '1';
-      delete request.headers['Authorization'];
-    })
-  );
+  hc.http.onBeforeSend(async (request) => {
+    request.headers['X-Plugin-Trace'] = '1';
+    delete request.headers['Authorization'];
+  });
 }
 ```
 
@@ -106,23 +102,20 @@ import type { MainPluginContext } from '@harborclient/sdk';
 import { createHttpResponse } from '@harborclient/sdk/runtime-utils';
 
 export function activate(hc: MainPluginContext): void {
-  hc.subscriptions.push(
-    hc.server.onRequest(async (request) => {
-      // Legacy: return custom JSON (always HTTP 200), or undefined for the default echo payload.
-      if (request.path === '/echo') {
-        return { ...request.echo, custom: true };
-      }
+  hc.server.onRequest(async (request) => {
+    // Legacy: return custom JSON (always HTTP 200), or undefined for the default echo payload.
+    if (request.path === '/echo') {
+      return { ...request.echo, custom: true };
+    }
 
-      // Structured: custom status, headers, body, and delay.
-      return createHttpResponse({
-        status: 404,
-        headers: { 'X-Mock': '1' },
-        body: { error: 'not found', path: request.path },
-        delayMs: 0
-      });
-    })
-  );
-
+    // Structured: custom status, headers, body, and delay.
+    return createHttpResponse({
+      status: 404,
+      headers: { 'X-Mock': '1' },
+      body: { error: 'not found', path: request.path },
+      delayMs: 0
+    });
+  });
   void hc.server.start({ port: 0 }).then(({ port }) => {
     console.log(`Echo server listening on http://localhost:${port}`);
   });

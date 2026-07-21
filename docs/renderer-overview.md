@@ -398,7 +398,7 @@ See [harborclient-plugin-skeleton](https://github.com/harborclient/plugin-skelet
 
 ## hc.http
 
-Renderer-side HTTP lifecycle events for reacting to completed sends in the UI. Requires the `http` permission. Push returned disposables onto `hc.subscriptions`.
+Renderer-side HTTP lifecycle events for reacting to completed sends in the UI. Requires the `http` permission. Registration disposables are tracked automatically.
 
 Prefer `hc.http.onAfterSend` over a main entry + custom IPC + polling when you only need to capture completed requests in the renderer (for example history or recent-requests panels).
 
@@ -409,11 +409,9 @@ Prefer `hc.http.onAfterSend` over a main entry + custom IPC + polling when you o
 Fires after each successful send in the renderer. The `request` payload matches main-process hooks (`PluginHttpRequest`); the `response` payload is `PluginHttpResponse`.
 
 ```typescript
-hc.subscriptions.push(
-  hc.http.onAfterSend(async (request, response) => {
-    console.log(request.method, request.url, response.status);
-  })
-);
+hc.http.onAfterSend(async (request, response) => {
+  console.log(request.method, request.url, response.status);
+});
 ```
 
 For mutating outgoing requests before they are sent, use a main entry with `hc.http.onBeforeSend` instead — see [Main API](/main-api).

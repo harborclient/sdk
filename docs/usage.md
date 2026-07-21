@@ -8,11 +8,9 @@ Install `@harborclient/sdk` first — see [Install](/install).
 import type { PluginContext } from '@harborclient/sdk';
 
 export function activate(hc: PluginContext): void {
-  hc.subscriptions.push(
-    hc.http.onAfterSend(async (request, response) => {
-      // react to completed requests without a main entry
-    })
-  );
+  hc.http.onAfterSend(async (request, response) => {
+    // react to completed requests without a main entry
+  });
 }
 ```
 
@@ -26,11 +24,9 @@ Main entries run in the SES utilityProcess for HTTP hooks and custom IPC — not
 import type { MainPluginContext } from '@harborclient/sdk/main';
 
 export function activate(hc: MainPluginContext): void {
-  hc.subscriptions.push(
-    hc.http.onBeforeSend((request) => {
-      request.headers['X-Trace'] = '1';
-    })
-  );
+  hc.http.onBeforeSend((request) => {
+    request.headers['X-Trace'] = '1';
+  });
 }
 ```
 

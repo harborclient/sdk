@@ -6,7 +6,7 @@ All `hc.ui.register*` methods:
 - Return a `Disposable` that unregisters the contribution when called.
 - Require an `id` that matches an entry in the corresponding `manifest.contributes.*` array.
 
-Push every returned disposable onto `hc.subscriptions` so the host cleans up on deactivation.
+Registration disposables are tracked automatically when you call `hc.ui.register*` methods. Use `hc.subscriptions` for custom cleanups you create yourself.
 
 See [Manifest](/manifest#contribution-types) for the manifest keys that correspond to each registrar.
 
@@ -25,13 +25,11 @@ See [Manifest](/manifest#contribution-types) for the manifest keys that correspo
 Registers a React component as a Settings panel alongside built-in sections (General, Storage, and so on).
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerSettingsSection({
-    id: 'compactMode',
-    title: 'Compact Mode',
-    Component: CompactModePanel
-  })
-);
+hc.ui.registerSettingsSection({
+  id: 'compactMode',
+  title: 'Compact Mode',
+  Component: CompactModePanel
+});
 ```
 
 ## hc.ui.registerSidebarPanel(panel)
@@ -51,14 +49,12 @@ hc.subscriptions.push(
 Registers a switchable left sidebar destination — a full-height panel the user selects instead of the default collections view.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerSidebarPanel({
-    id: 'myPlugin.panel',
-    title: 'My Tools',
-    icon: 'wrench',
-    Component: MySidebarPanel
-  })
-);
+hc.ui.registerSidebarPanel({
+  id: 'myPlugin.panel',
+  title: 'My Tools',
+  icon: 'wrench',
+  Component: MySidebarPanel
+});
 ```
 
 ## hc.ui.registerSidebarSection(section)
@@ -78,14 +74,12 @@ hc.subscriptions.push(
 Adds a collapsible block inside the scrollable sidebar, using the same pattern as the built-in Collections and Environments sections.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerSidebarSection({
-    id: 'myPlugin.section',
-    title: 'Quick links',
-    Component: QuickLinksSection,
-    order: 100
-  })
-);
+hc.ui.registerSidebarSection({
+  id: 'myPlugin.section',
+  title: 'Quick links',
+  Component: QuickLinksSection,
+  order: 100
+});
 ```
 
 ## hc.ui.registerMainView(view)
@@ -104,14 +98,12 @@ hc.subscriptions.push(
 Registers a full main-area overlay, replacing the request editor while open (same pattern as Team Hubs or Sharing Keys). Open the view with `hc.commands.execute` from a menu item or other trigger. The `title` and optional `icon` appear on the page tab.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerMainView({
-    id: 'myPlugin.view',
-    title: 'My Dashboard',
-    icon: 'server',
-    Component: DashboardView
-  })
-);
+hc.ui.registerMainView({
+  id: 'myPlugin.view',
+  title: 'My Dashboard',
+  icon: 'server',
+  Component: DashboardView
+});
 ```
 
 ## hc.ui.registerModal(modal)
@@ -129,14 +121,11 @@ hc.subscriptions.push(
 Registers a modal rendered in a full-window overlay at the application root. Open it with `hc.ui.openModal(modalId, context?)` and close it with `hc.ui.closeModal(modalId?)`. Requires the `ui` permission.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerModal({
+hc.ui.registerModal({
     id: 'myPlugin.editor',
     title: 'Edit item',
     Component: ({ context }) => <EditorModal context={context} />
   })
-);
-
 hc.ui.openModal('myPlugin.editor', { itemId: 'abc' });
 ```
 
@@ -170,13 +159,11 @@ Closes the open plugin modal overlay. When `modalId` is provided, the overlay cl
 Adds a segmented tab to the request editor (alongside Params, Headers, Body, and so on). The component receives `context.draft` for the active request, `context.response` when a response exists, and `context.variables` for merged global, collection, and environment substitution values (see [Global variables](/renderer-data#global-variables)).
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerRequestTab({
-    id: 'myPlugin.requestTab',
-    title: 'Audit',
-    Component: AuditTab
-  })
-);
+hc.ui.registerRequestTab({
+  id: 'myPlugin.requestTab',
+  title: 'Audit',
+  Component: AuditTab
+});
 ```
 
 ## hc.ui.registerResponseTab(tab)
@@ -196,14 +183,12 @@ hc.subscriptions.push(
 Adds a tab to the response viewer (alongside Body, Headers, Tests).
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerResponseTab({
-    id: 'myPlugin.responseTab',
-    title: 'Summary',
-    when: 'hasResponse',
-    Component: ResponseSummaryTab
-  })
-);
+hc.ui.registerResponseTab({
+  id: 'myPlugin.responseTab',
+  title: 'Summary',
+  when: 'hasResponse',
+  Component: ResponseSummaryTab
+});
 ```
 
 ## hc.ui.registerCollectionSettingsTab(tab)
@@ -222,13 +207,11 @@ hc.subscriptions.push(
 Adds a segmented tab to Collection Settings (alongside General, Variables, Headers, and so on). The component receives `context.collectionId` and `context.readOnly`.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerCollectionSettingsTab({
-    id: 'myPlugin.collTab',
-    title: 'Plugin',
-    Component: CollectionPluginTab
-  })
-);
+hc.ui.registerCollectionSettingsTab({
+  id: 'myPlugin.collTab',
+  title: 'Plugin',
+  Component: CollectionPluginTab
+});
 ```
 
 ## hc.ui.registerFooterPanel(panel)
@@ -257,13 +240,11 @@ logic yourself. The shell provides:
 rows so controls do not sit under the host close button.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerFooterPanel({
-    id: 'myPlugin.footer',
-    title: 'My Log',
-    Component: PluginLogPanel
-  })
-);
+hc.ui.registerFooterPanel({
+  id: 'myPlugin.footer',
+  title: 'My Log',
+  Component: PluginLogPanel
+});
 ```
 
 To show a status dot beside the footer toggle (running / stopped / error), use
@@ -341,9 +322,7 @@ For **File → Import** workflows, prefer [`hc.imports.registerHandler`](/render
 hc.commands.register('myPlugin.run', () => {
   hc.ui.showToast('Command ran');
 });
-hc.subscriptions.push(
-  hc.ui.registerMenuItem({ menu: 'view', command: 'myPlugin.run', group: 'plugin' })
-);
+hc.ui.registerMenuItem({ menu: 'view', command: 'myPlugin.run', group: 'plugin' });
 ```
 
 ## hc.actions.register(namespace, handlers)
@@ -362,16 +341,14 @@ Registers plugin actions in HarborClient's Action menu. Users open the Action me
 Use this for lightweight commands that should be discoverable without adding a persistent menu item or toolbar button. Because actions are dynamic, they do not need `manifest.contributes.commands` entries, but the plugin must include the `ui` permission.
 
 ```typescript
-hc.subscriptions.push(
-  hc.actions.register('cURL', {
-    View: () => {
-      hc.ui.showToast('Viewing generated cURL command');
-    },
-    Close: () => {
-      hc.ui.showToast('Closed cURL preview');
-    }
-  })
-);
+hc.actions.register('cURL', {
+  View: () => {
+    hc.ui.showToast('Viewing generated cURL command');
+  },
+  Close: () => {
+    hc.ui.showToast('Closed cURL preview');
+  }
+});
 ```
 
 With that plugin installed, typing `#curl` in the Action menu shows:
@@ -399,13 +376,11 @@ Adds a button to the request URL bar toolbar.
 hc.commands.register('myPlugin.sendAction', () => {
   hc.ui.showToast('Pre-send check passed');
 });
-hc.subscriptions.push(
-  hc.ui.registerRequestToolbarAction({
-    id: 'myPlugin.sendAction',
-    title: 'Run check',
-    command: 'myPlugin.sendAction'
-  })
-);
+hc.ui.registerRequestToolbarAction({
+  id: 'myPlugin.sendAction',
+  title: 'Run check',
+  command: 'myPlugin.sendAction'
+});
 ```
 
 ## hc.ui.registerScriptEditorAction(action)
@@ -433,13 +408,11 @@ Adds an icon button to each script row in the pre-request and post-request stage
 hc.commands.register('myPlugin.convert', (context: ScriptEditorActionContext) => {
   hc.ui.openModal('preview', context);
 });
-hc.subscriptions.push(
-  hc.ui.registerScriptEditorAction({
-    id: 'myPlugin.convert',
-    title: 'Convert',
-    command: 'myPlugin.convert'
-  })
-);
+hc.ui.registerScriptEditorAction({
+  id: 'myPlugin.convert',
+  title: 'Convert',
+  command: 'myPlugin.convert'
+});
 ```
 
 ## hc.ui.registerContextMenuItem(item)
@@ -463,14 +436,12 @@ Adds an action to row context menus in the sidebar.
 hc.commands.register('myPlugin.requestMenu', (target) => {
   hc.ui.showToast(`Action on request ${target.requestId}`);
 });
-hc.subscriptions.push(
-  hc.ui.registerContextMenuItem({
-    id: 'myPlugin.requestMenu',
-    title: 'Plugin action',
-    command: 'myPlugin.requestMenu',
-    when: 'request'
-  })
-);
+hc.ui.registerContextMenuItem({
+  id: 'myPlugin.requestMenu',
+  title: 'Plugin action',
+  command: 'myPlugin.requestMenu',
+  when: 'request'
+});
 ```
 
 ## hc.ui.registerStatusBarItem(item)
@@ -489,13 +460,11 @@ hc.subscriptions.push(
 Adds a custom status indicator to the footer bar.
 
 ```typescript
-hc.subscriptions.push(
-  hc.ui.registerStatusBarItem({
-    id: 'myPlugin.status',
-    alignment: 'right',
-    Component: PluginStatusBadge
-  })
-);
+hc.ui.registerStatusBarItem({
+  id: 'myPlugin.status',
+  alignment: 'right',
+  Component: PluginStatusBadge
+});
 ```
 
 ## hc.ui.showToast(message, options?)

@@ -22,7 +22,7 @@ function createMockPluginContext(): PluginContext & {
 }
 
 describe('registerImportHandler', () => {
-  it('registers the handler, pushes the disposable onto subscriptions, and returns it', () => {
+  it('forwards to imports.registerHandler and returns the disposable', () => {
     const hc = createMockPluginContext();
     const handler = {
       canImport: () => true,
@@ -36,13 +36,12 @@ describe('registerImportHandler', () => {
     const disposable = registerImportHandler(hc, ['.json', '.yaml'], handler);
 
     expect(registerHandlerMock).toHaveBeenCalledWith(['.json', '.yaml'], handler);
-    expect(hc.subscriptions).toHaveLength(1);
-    expect(hc.subscriptions[0]).toBe(disposable);
+    expect(disposable).toBe(registerHandlerMock.mock.results[0]?.value);
   });
 });
 
 describe('registerTheme', () => {
-  it('registers the theme, pushes the disposable onto subscriptions, and returns it', () => {
+  it('forwards to themes.register and returns the disposable', () => {
     const hc = createMockPluginContext();
     const theme: ThemeContribution = {
       id: 'solarized',
@@ -54,8 +53,7 @@ describe('registerTheme', () => {
     const disposable = registerTheme(hc, theme);
 
     expect(hc.registerMock).toHaveBeenCalledWith(theme);
-    expect(hc.subscriptions).toHaveLength(1);
-    expect(hc.subscriptions[0]).toBe(disposable);
+    expect(disposable).toBe(hc.registerMock.mock.results[0]?.value);
   });
 });
 
