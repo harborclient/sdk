@@ -555,12 +555,37 @@ export interface FooterPanelContribution extends UiContributionBase {
    * Slide-up panel content. Use {@link PluginContext.react} — do not bundle React.
    */
   Component: React.ComponentType;
+}
+
+/**
+ * Visual tone for a host-rendered footer panel status dot.
+ *
+ * Matches {@link StatusDotVariant} from `@harborclient/sdk/components`.
+ */
+export type FooterPanelIndicatorStatus =
+  | 'success'
+  | 'danger'
+  | 'muted'
+  | 'accent'
+  | 'warning'
+  | 'info';
+
+/**
+ * Declarative state for the native status dot beside a footer panel toggle.
+ *
+ * Pass `null` to {@link PluginUi.setFooterPanelIndicator} to hide the dot.
+ */
+export interface FooterPanelIndicatorState {
+  /**
+   * Color preset for the host-rendered status dot.
+   */
+  status: FooterPanelIndicatorStatus;
 
   /**
-   * Optional decoration beside the footer toggle label (for example an active-state dot).
-   * Use {@link PluginContext.react} — do not bundle React.
+   * Optional accessible name for the status (for example "Mock server active").
+   * When omitted the host uses a generic label.
    */
-  Indicator?: React.ComponentType;
+  label?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -1480,6 +1505,20 @@ export interface PluginUi {
    * @returns A {@link Disposable} that unregisters the panel when disposed.
    */
   registerFooterPanel(panel: FooterPanelContribution): Disposable;
+
+  /**
+   * Sets or clears the native status dot beside a registered footer panel toggle.
+   *
+   * The host renders a {@link StatusDot}-style indicator; plugins do not mount
+   * their own indicator webview. Call from the agent (always-on) renderer after
+   * registering the panel, and again whenever status changes.
+   *
+   * Manifest: `contributes.footerPanels` — `panelId` must match an entry there.
+   *
+   * @param panelId - Manifest footerPanels id.
+   * @param state - Indicator status, or `null` to hide the dot.
+   */
+  setFooterPanelIndicator(panelId: string, state: FooterPanelIndicatorState | null): void;
 
   /**
    * Adds an item to an application menu.

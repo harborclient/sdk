@@ -15,10 +15,8 @@ jest.unstable_mockModule('./runtime/reactHost.js', () => ({
 jest.unstable_mockModule('./runtime/contributionRegistry.js', () => ({
   getContributionComponent: jest.fn(),
   getContributionHeaderActions: jest.fn(),
-  getContributionIndicator: jest.fn(),
   registerContributionComponent: jest.fn(),
-  registerContributionHeaderActions: jest.fn(),
-  registerContributionIndicator: jest.fn()
+  registerContributionHeaderActions: jest.fn()
 }));
 
 jest.unstable_mockModule('./runtime/pluginDatabaseApi.js', () => ({

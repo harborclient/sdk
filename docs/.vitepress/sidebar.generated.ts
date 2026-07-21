@@ -332,6 +332,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "link": "/renderer-ui#hcuiregisterfooterpanelpanel"
       },
       {
+        "text": "hc.ui.setFooterPanelIndicator(panelId, state)",
+        "link": "/renderer-ui#hcuisetfooterpanelindicatorpanelid-state"
+      },
+      {
         "text": "hc.ui.registerMenuItem(item)",
         "link": "/renderer-ui#hcuiregistermenuitemitem"
       },

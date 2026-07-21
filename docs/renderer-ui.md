@@ -237,12 +237,11 @@ hc.subscriptions.push(
 
 **Manifest:** `contributes.footerPanels`
 
-| Parameter   | Type                  | Description                                                   |
-| ----------- | --------------------- | ------------------------------------------------------------- |
-| `id`        | `string`              | Panel id                                                      |
-| `title`     | `string`              | Toggle label in the footer bar                                |
-| `Component` | `React.ComponentType` | Slide-up panel content                                        |
-| `Indicator` | `React.ComponentType` | Optional decoration beside the toggle label (e.g. active dot) |
+| Parameter   | Type                  | Description                    |
+| ----------- | --------------------- | ------------------------------ |
+| `id`        | `string`              | Panel id                       |
+| `title`     | `string`              | Toggle label in the footer bar |
+| `Component` | `React.ComponentType` | Slide-up panel content         |
 
 Registers a slide-up footer panel using the same pattern as Console and Variables.
 The host wraps your component in a resizable shell — you do not implement resize
@@ -267,6 +266,10 @@ hc.subscriptions.push(
 );
 ```
 
+To show a status dot beside the footer toggle (running / stopped / error), use
+[`hc.ui.setFooterPanelIndicator`](#hcuisetfooterpanelindicatorpanelid-state) —
+do not mount your own indicator UI.
+
 Example panel structure:
 
 ```tsx
@@ -280,6 +283,40 @@ function PluginLogPanel() {
     </div>
   );
 }
+```
+
+## hc.ui.setFooterPanelIndicator(panelId, state)
+
+**Signature:** `(panelId: string, state: FooterPanelIndicatorState | null) => void`
+
+**Manifest:** `contributes.footerPanels` — `panelId` must match a registered panel
+
+Sets or clears the native status dot beside a footer panel toggle. The host
+renders a `StatusDot`; plugins do not mount an indicator webview.
+
+| Parameter | Type                                | Description                                 |
+| --------- | ----------------------------------- | ------------------------------------------- |
+| `panelId` | `string`                            | Manifest footerPanels id                    |
+| `state`   | `FooterPanelIndicatorState \| null` | Indicator status, or `null` to hide the dot |
+
+`FooterPanelIndicatorState`:
+
+| Field    | Type                                                                  | Description                          |
+| -------- | --------------------------------------------------------------------- | ------------------------------------ |
+| `status` | `'success' \| 'danger' \| 'muted' \| 'accent' \| 'warning' \| 'info'` | Color preset for the status dot      |
+| `label`  | `string`                                                              | Optional accessible name for the dot |
+
+Call from the agent (always-on) renderer after registering the panel, and again
+whenever status changes:
+
+```typescript
+hc.ui.setFooterPanelIndicator('myPlugin.footer', {
+  status: running ? 'success' : 'muted',
+  label: running ? 'My server active' : 'My server stopped'
+});
+
+// Hide the dot:
+hc.ui.setFooterPanelIndicator('myPlugin.footer', null);
 ```
 
 ## hc.ui.registerMenuItem(item)

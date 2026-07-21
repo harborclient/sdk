@@ -1,10 +1,8 @@
 import {
   getContributionComponent,
   getContributionHeaderActions,
-  getContributionIndicator,
   registerContributionComponent,
-  registerContributionHeaderActions,
-  registerContributionIndicator
+  registerContributionHeaderActions
 } from './contributionRegistry.js';
 import { bridgeInvoke, bridgeOn } from './hcBridge.js';
 import { createPluginDatabaseApi } from './pluginDatabaseApi.js';
@@ -349,17 +347,13 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
    * @param {string} id - Manifest contribution id.
    * @param {Record<string, unknown>} metadata - Serializable metadata for the host registry.
    * @param {unknown} component - React component registered in this realm.
-   * @param {object} [options] - Optional indicator/headerActions components.
-   * @param {unknown} [options.indicator] - Footer panel indicator component.
+   * @param {object} [options] - Optional headerActions components.
    * @param {unknown} [options.headerActions] - Sidebar section header actions component.
    * @returns {{ dispose: () => void }}
    */
   const registerUiContribution = (kind, id, metadata, component, options = {}) => {
     assertUi();
     registerContributionComponent(kind, id, component);
-    if (options.indicator) {
-      registerContributionIndicator(id, options.indicator);
-    }
     if (options.headerActions) {
       registerContributionHeaderActions(id, options.headerActions);
     }
@@ -684,12 +678,15 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
           {
             id: `plugin:${pluginId}:${panel.id}`,
             title: panel.title,
-            contributionId: panel.id,
-            hasIndicator: Boolean(panel.Indicator)
+            contributionId: panel.id
           },
-          panel.Component,
-          { indicator: panel.Indicator }
+          panel.Component
         );
+      },
+      setFooterPanelIndicator: (panelId, state) => {
+        assertUi();
+        assertManifestContribution('footerPanels', panelId);
+        void bridgeInvoke('ui.setFooterPanelIndicator', { panelId, state });
       },
       registerMenuItem: (item) => {
         assertManifestMenuCommand(item.command);
@@ -957,7 +954,7 @@ export function resolveContributionKindFromUrl(contributionId, searchParams) {
  * @param {string} options.kind - Contribution bucket.
  * @param {string} options.contributionId - Manifest contribution id.
  * @param {HTMLElement} options.root - DOM mount target.
- * @param {'content' | 'headerActions' | 'indicator'} [options.slot] - Contribution sub-slot.
+ * @param {'content' | 'headerActions'} [options.slot] - Contribution sub-slot.
  * @returns {() => void} Cleanup function that unmounts the React root.
  */
 export function mountContributionView({
@@ -971,8 +968,6 @@ export function mountContributionView({
   let Component;
   if (slot === 'headerActions') {
     Component = getContributionHeaderActions(contributionId);
-  } else if (slot === 'indicator') {
-    Component = getContributionIndicator(contributionId);
   } else {
     Component = getContributionComponent(kind, contributionId);
   }
@@ -1024,15 +1019,6 @@ export function mountContributionView({
   if (slot === 'headerActions') {
     document.body.classList.add('plugin-surface-header-actions');
     document.documentElement.classList.add('plugin-surface-header-actions');
-    root.style.display = 'inline-flex';
-    root.style.width = 'fit-content';
-    root.style.maxWidth = '100%';
-    root.style.overflow = 'hidden';
-  }
-
-  if (slot === 'indicator') {
-    document.body.classList.add('plugin-surface-indicator');
-    document.documentElement.classList.add('plugin-surface-indicator');
     root.style.display = 'inline-flex';
     root.style.width = 'fit-content';
     root.style.maxWidth = '100%';
@@ -1162,60 +1148,6 @@ export function mountContributionView({
     };
   }
 
-  if (slot === 'indicator') {
-    /**
-     * Reports footer panel indicator size so the host webview stays compact inline.
-     */
-    const reportIndicatorSize = () => {
-      const measureTarget = root.firstElementChild ?? root;
-      const width = Math.ceil(
-        Math.max(
-          measureTarget.scrollWidth,
-          measureTarget.getBoundingClientRect().width,
-          measureTarget.offsetWidth
-        )
-      );
-      const height = Math.ceil(
-        Math.max(
-          measureTarget.scrollHeight,
-          measureTarget.getBoundingClientRect().height,
-          measureTarget.offsetHeight
-        )
-      );
-      if (width <= 0 && height <= 0) {
-        return;
-      }
-      if (resizeFrame != null) {
-        cancelAnimationFrame(resizeFrame);
-      }
-      resizeFrame = requestAnimationFrame(() => {
-        resizeFrame = requestAnimationFrame(() => {
-          resizeFrame = null;
-          void bridgeInvoke('view.reportSize', {
-            ...(width > 0 ? { width } : {}),
-            ...(height > 0 ? { height } : {}),
-            slot: 'indicator'
-          });
-        });
-      });
-    };
-
-    resizeObserver = new ResizeObserver(() => {
-      reportIndicatorSize();
-    });
-    resizeObserver.observe(root);
-
-    render();
-    reportIndicatorSize();
-
-    return () => {
-      resizeObserver?.disconnect();
-      if (resizeFrame != null) {
-        cancelAnimationFrame(resizeFrame);
-      }
-    };
-  }
-
   const unsubscribe = bridgeOn('view.context', (payload) => {
     currentContext = payload;
     render();
@@ -1241,4 +1173,4 @@ export function mountContributionView({
   };
 }
 
-export { getContributionComponent, getContributionHeaderActions, getContributionIndicator };
+export { getContributionComponent, getContributionHeaderActions };

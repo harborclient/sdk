@@ -79,6 +79,19 @@ export interface FooterPanelContribution extends UiContributionBase {
   Component: React.ComponentType;
 }
 
+export type FooterPanelIndicatorStatus =
+  | 'success'
+  | 'danger'
+  | 'muted'
+  | 'accent'
+  | 'warning'
+  | 'info';
+
+export interface FooterPanelIndicatorState {
+  status: FooterPanelIndicatorStatus;
+  label?: string;
+}
+
 export type AppMenu = 'file' | 'edit' | 'view' | 'help';
 
 export interface MenuItemContribution {
@@ -205,6 +218,7 @@ export interface PluginUi {
   registerResponseTab(tab: ResponseTabContribution): Disposable;
   registerCollectionSettingsTab(tab: CollectionSettingsTabContribution): Disposable;
   registerFooterPanel(panel: FooterPanelContribution): Disposable;
+  setFooterPanelIndicator(panelId: string, state: FooterPanelIndicatorState | null): void;
   registerMenuItem(item: MenuItemContribution): Disposable;
   registerRequestToolbarAction(action: RequestToolbarActionContribution): Disposable;
   registerScriptEditorAction(action: ScriptEditorActionContribution): Disposable;

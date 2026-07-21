@@ -6,9 +6,6 @@
 const components = new Map();
 
 /** @type {Map<string, unknown>} */
-const indicators = new Map();
-
-/** @type {Map<string, unknown>} */
 const headerActions = new Map();
 
 /**
@@ -20,16 +17,6 @@ const headerActions = new Map();
  */
 export function registerContributionComponent(kind, contributionId, component) {
   components.set(`${kind}:${contributionId}`, component);
-}
-
-/**
- * Stores an optional footer panel indicator component.
- *
- * @param {string} contributionId - Manifest footerPanels id.
- * @param {unknown} component - React indicator component.
- */
-export function registerContributionIndicator(contributionId, component) {
-  indicators.set(contributionId, component);
 }
 
 /**
@@ -54,16 +41,6 @@ export function getContributionComponent(kind, contributionId) {
 }
 
 /**
- * Returns a registered footer panel indicator component.
- *
- * @param {string} contributionId - Manifest footerPanels id.
- * @returns {unknown | undefined}
- */
-export function getContributionIndicator(contributionId) {
-  return indicators.get(contributionId);
-}
-
-/**
  * Returns a registered sidebar section headerActions component.
  *
  * @param {string} contributionId - Manifest sidebarSections id.
@@ -78,6 +55,5 @@ export function getContributionHeaderActions(contributionId) {
  */
 export function clearContributionRegistry() {
   components.clear();
-  indicators.clear();
   headerActions.clear();
 }
