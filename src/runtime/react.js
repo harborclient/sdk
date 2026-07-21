@@ -146,7 +146,7 @@ export function memo(Component, propsAreEqual) {
   }
 
   const displayName =
-    (typeof Component === 'function' ? Component.displayName ?? Component.name : null) ??
+    (typeof Component === 'function' ? (Component.displayName ?? Component.name) : null) ??
     'Component';
   LazyMemo.displayName = `Memo(${displayName})`;
 
