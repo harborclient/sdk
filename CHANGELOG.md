@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.28 - 2026-07-21
+
 - refactor: streamline subscription management in plugin context. (`6ae8e6b`)
 
 ## 1.1.26 - 2026-07-21
