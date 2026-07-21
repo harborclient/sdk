@@ -94,11 +94,11 @@ hc.subscriptions.push(
 
 **Manifest:** `contributes.mainViews`
 
-| Parameter   | Type                  | Description                 |
-| ----------- | --------------------- | --------------------------- |
-| `id`        | `string`              | View id                     |
-| `title`     | `string`              | Display name for the page tab |
-| `Component` | `React.ComponentType` | Full main-area content      |
+| Parameter   | Type                  | Description                                                                                                                                               |
+| ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`        | `string`              | View id                                                                                                                                                   |
+| `title`     | `string`              | Display name for the page tab                                                                                                                             |
+| `Component` | `React.ComponentType` | Full main-area content                                                                                                                                    |
 | `icon`      | `string` (optional)   | Tab-bar icon name. Supported: `server`, `database`, `globe`, `code`, `robot`, `puzzle-piece`, `bolt`, `flask`. Unknown names fall back to `puzzle-piece`. |
 
 Registers a full main-area overlay, replacing the request editor while open (same pattern as Team Hubs or Sharing Keys). Open the view with `hc.commands.execute` from a menu item or other trigger. The `title` and optional `icon` appear on the page tab.

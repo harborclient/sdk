@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- docs(renderer-ui): improve documentation formatting for MainViewContribution parameters. (`5e083b1`)
 - feat(renderer): add optional icon property for MainViewContribution. (`642a1eb`)
 
 ## 1.1.25 - 2026-07-20
