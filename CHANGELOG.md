@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.30 - 2026-07-21
+
 - Fix prettier formatting in React shim memo helper.. (`2ffea4d`)
 - Export memo and useReducer from the React shim.. (`4d1cabc`)
 
