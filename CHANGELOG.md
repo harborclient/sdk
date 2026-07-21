@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(renderer): add optional icon property for MainViewContribution. (`642a1eb`)
+
 ## 1.1.25 - 2026-07-20
 
 - feat(API): enhance HTTP request handling and response structure. (`504e4c4`)

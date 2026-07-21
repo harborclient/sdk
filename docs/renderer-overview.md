@@ -34,6 +34,8 @@ export interface SidebarSectionContribution extends UiContributionBase {
 
 export interface MainViewContribution extends UiContributionBase {
   Component: React.ComponentType;
+  /** Optional tab-bar icon name (`server`, `database`, `globe`, `code`, `robot`, `puzzle-piece`, `bolt`, `flask`). */
+  icon?: string;
 }
 
 export interface RequestTabContext {

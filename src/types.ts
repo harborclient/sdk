@@ -254,6 +254,13 @@ export interface MainViewContribution extends UiContributionBase {
    * Full main-area content. Use {@link PluginContext.react} — do not bundle React.
    */
   Component: React.ComponentType;
+
+  /**
+   * Optional tab-bar icon name. The host maps this to a built-in icon.
+   * Supported names: `server`, `database`, `globe`, `code`, `robot`,
+   * `puzzle-piece`, `bolt`, `flask`. Unknown names fall back to `puzzle-piece`.
+   */
+  icon?: string;
 }
 
 /**
