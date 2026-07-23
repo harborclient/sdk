@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.32 - 2026-07-23
+
 - feat(types): add ApplyRequestDraftPayload interface and applyRequestDraft method. (`ab18b57`)
 
 ## 1.1.30 - 2026-07-21
