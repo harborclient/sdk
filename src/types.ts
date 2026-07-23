@@ -1643,6 +1643,44 @@ export interface OpenRequestDraftPayload {
 }
 
 /**
+ * Serializable payload passed to {@link PluginHost.applyRequestDraft}.
+ *
+ * Updates the active request editor tab in place. Provided fields replace the
+ * corresponding draft values (headers and params are replaced entirely when set).
+ */
+export interface ApplyRequestDraftPayload {
+  /**
+   * HTTP method (for example `GET`, `POST`).
+   */
+  method?: string;
+
+  /**
+   * Request URL including scheme, host, path, and query string.
+   */
+  url?: string;
+
+  /**
+   * Outgoing request headers as a flat key/value map. Replaces the current headers table.
+   */
+  headers?: Record<string, string>;
+
+  /**
+   * Enabled query parameters. Replaces the current params table.
+   */
+  params?: OpenRequestDraftParam[];
+
+  /**
+   * Request body content as a string.
+   */
+  body?: string;
+
+  /**
+   * Request body encoding. Defaults to `text` when body is non-empty, otherwise `none`.
+   */
+  bodyType?: BodyType;
+}
+
+/**
  * A single saved request to create when bulk-importing a collection from a plugin.
  */
 export interface CreateCollectionRequest {
@@ -1807,6 +1845,19 @@ export interface PluginHost {
    * @param payload - Partial draft fields from a recent request entry.
    */
   openRequestDraft(payload: OpenRequestDraftPayload): Promise<void>;
+
+  /**
+   * Updates the active request editor tab in place with the given draft fields.
+   *
+   * Provided fields replace the corresponding values on the active draft.
+   * When `headers` or `params` are supplied, those tables are replaced entirely
+   * (not merged). Throws when there is no active request tab.
+   *
+   * Requires the `ui` permission.
+   *
+   * @param payload - Partial draft fields to apply to the active tab.
+   */
+  applyRequestDraft(payload: ApplyRequestDraftPayload): Promise<void>;
 
   /**
    * Opens a saved collection request or focuses an existing tab for it.

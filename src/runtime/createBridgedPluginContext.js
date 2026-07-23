@@ -857,6 +857,10 @@ export function createBridgedPluginContext({ pluginId, mode, contributionId, rea
         assertUi();
         await bridgeInvoke('host.openRequestDraft', { payload });
       },
+      applyRequestDraft: async (payload) => {
+        assertUi();
+        await bridgeInvoke('host.applyRequestDraft', { payload });
+      },
       loadRequest: async (requestId) => {
         assertUi();
         await bridgeInvoke('host.loadRequest', { requestId });

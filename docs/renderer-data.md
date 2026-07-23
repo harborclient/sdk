@@ -403,7 +403,74 @@ Requires the `ipc` permission. Call `hc.ipc.invoke(channel, ...args)` instead of
 
 Typed wrappers for built-in request editor commands. See [Renderer API](/renderer-overview).
 
-Requires the `ui` permission. Use `hc.host.openRequestDraft`, `hc.host.loadRequest`, `hc.host.sendRequest`, and `hc.host.createCollection` instead of `hc.commands.execute('harborclient:…')`.
+Requires the `ui` permission. Use `hc.host.openRequestDraft`,
+`hc.host.applyRequestDraft`, `hc.host.loadRequest`, `hc.host.sendRequest`, and
+`hc.host.createCollection` instead of `hc.commands.execute('harborclient:…')`.
+
+### Request creation and update choices
+
+Pick the host API based on the user-facing result you want:
+
+| Goal                                           | API                         | Result                                                                   |
+| ---------------------------------------------- | --------------------------- | ------------------------------------------------------------------------ |
+| Create a new editable request tab              | `hc.host.openRequestDraft`  | Opens an unsaved tab seeded with the supplied request fields             |
+| Update the active request tab in place         | `hc.host.applyRequestDraft` | Replaces supplied fields on the active draft and marks the tab dirty     |
+| Open an existing saved request by database id  | `hc.host.loadRequest`       | Focuses an already-open tab or loads the saved request from a collection |
+| Bulk-create saved requests in a new collection | `hc.host.createCollection`  | Persists a collection, optional folders, and saved requests              |
+
+Use `openRequestDraft` for history/recent-request style workflows where the
+plugin should not disturb the current tab. Use `applyRequestDraft` when the user
+is intentionally transforming the active request, such as a cURL/import preview
+tab with an **Update** button. Use `createCollection` for importers that create
+saved requests rather than editing the current tab.
+
+### hc.host.openRequestDraft(payload)
+
+**Signature:** `(payload: OpenRequestDraftPayload) => Promise<void>`
+
+Opens a new unsaved request tab seeded with request metadata. Omitted fields use
+HarborClient defaults (`GET`, no body, empty headers/params). `headers` is a
+flat map; `params` is an array of enabled query parameter rows.
+
+```typescript
+await hc.host.openRequestDraft({
+  name: 'Create pet',
+  method: 'POST',
+  url: 'https://api.example.com/pets',
+  headers: { 'Content-Type': 'application/json' },
+  params: [{ key: 'trace', value: 'true' }],
+  body: JSON.stringify({ name: 'Fluffy' }),
+  bodyType: 'json'
+});
+```
+
+### hc.host.applyRequestDraft(payload)
+
+**Signature:** `(payload: ApplyRequestDraftPayload) => Promise<void>`
+
+Updates the active request editor tab in place. Provided fields replace the
+corresponding draft values; when `headers` or `params` are supplied, those
+tables are replaced entirely. The tab becomes dirty, so the user still decides
+whether to save the changed request to its collection.
+
+```typescript
+function parseExternalFormat(source: string): ApplyRequestDraftPayload {
+  return {
+    method: 'PUT',
+    url: 'https://api.example.com/pets/123',
+    headers: { 'Content-Type': 'application/json' },
+    body: source,
+    bodyType: 'json'
+  };
+}
+
+await hc.host.applyRequestDraft(parseExternalFormat(editorText));
+hc.ui.showToast('Request updated');
+```
+
+`applyRequestDraft` throws when there is no active request tab or when a field is
+invalid. Show parse/update failures inline in your plugin UI when the user needs
+to fix input.
 
 ### hc.host.createCollection(payload)
 

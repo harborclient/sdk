@@ -266,6 +266,10 @@ export const sidebar: DefaultTheme.SidebarItem[] =
             "link": "/renderer-overview#hchostopenrequestdraftpayload"
           },
           {
+            "text": "hc.host.applyRequestDraft(payload)",
+            "link": "/renderer-overview#hchostapplyrequestdraftpayload"
+          },
+          {
             "text": "hc.host.loadRequest(requestId)",
             "link": "/renderer-overview#hchostloadrequestrequestid"
           },
@@ -501,6 +505,18 @@ export const sidebar: DefaultTheme.SidebarItem[] =
         "text": "hc.host",
         "link": "/renderer-data#hchost",
         "items": [
+          {
+            "text": "Request creation and update choices",
+            "link": "/renderer-data#request-creation-and-update-choices"
+          },
+          {
+            "text": "hc.host.openRequestDraft(payload)",
+            "link": "/renderer-data#hchostopenrequestdraftpayload"
+          },
+          {
+            "text": "hc.host.applyRequestDraft(payload)",
+            "link": "/renderer-data#hchostapplyrequestdraftpayload"
+          },
           {
             "text": "hc.host.createCollection(payload)",
             "link": "/renderer-data#hchostcreatecollectionpayload"

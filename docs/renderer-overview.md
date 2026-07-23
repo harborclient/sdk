@@ -289,8 +289,18 @@ export interface OpenRequestDraftPayload {
   bodyType?: BodyType;
 }
 
+export interface ApplyRequestDraftPayload {
+  method?: string;
+  url?: string;
+  headers?: Record<string, string>;
+  params?: OpenRequestDraftParam[];
+  body?: string;
+  bodyType?: BodyType;
+}
+
 export interface PluginHost {
   openRequestDraft(payload: OpenRequestDraftPayload): Promise<void>;
+  applyRequestDraft(payload: ApplyRequestDraftPayload): Promise<void>;
   loadRequest(requestId: number): Promise<void>;
   sendRequest(): Promise<void>;
   createEnvironmentWithVariables(
@@ -439,7 +449,9 @@ Typed wrappers for built-in HarborClient request editor commands. Requires the `
 
 **Signature:** `(payload: OpenRequestDraftPayload) => Promise<void>`
 
-Opens a new request tab seeded with captured send metadata.
+Opens a new unsaved request tab seeded with request metadata. Use this for
+recent-request/history panels, import previews, or any workflow that should
+leave the active request unchanged.
 
 ```typescript
 await hc.host.openRequestDraft({
@@ -450,6 +462,32 @@ await hc.host.openRequestDraft({
   params: request.params,
   body: request.body,
   bodyType: request.bodyType as BodyType | undefined
+});
+```
+
+### hc.host.applyRequestDraft(payload)
+
+**Signature:** `(payload: ApplyRequestDraftPayload) => Promise<void>`
+
+Updates the active request editor tab in place. Provided fields replace the
+corresponding draft values; when `headers` or `params` are supplied, those
+tables are replaced rather than merged. The active tab becomes dirty just as if
+the user edited it manually, and the user still controls when to save the
+request to its collection.
+
+Use this for bidirectional editor tabs or tools that parse external request
+formats back into HarborClient.
+
+```typescript
+await hc.host.applyRequestDraft({
+  method: 'POST',
+  url: 'https://api.example.com/pets',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: 'Bearer token'
+  },
+  body: JSON.stringify({ name: 'Fluffy' }),
+  bodyType: 'json'
 });
 ```
 
