@@ -169,38 +169,34 @@ export function FormDataEditor({
                   onEditVariable={onEditVariable}
                 />
               ) : (
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <Button
                     type="button"
                     variant="secondary"
-                    className="self-start px-2 py-0.5 text-[14px]"
+                    className="shrink-0 px-2 py-0.5 text-[14px]"
                     onClick={() => void chooseFiles(index)}
                   >
                     Choose files
                   </Button>
-                  {row.files.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {row.files.map((filePath) => (
-                        <span
-                          key={filePath}
-                          className="inline-flex max-w-full items-center gap-1 rounded-md border border-separator bg-control px-1.5 py-0.5 text-[14px] text-text"
-                          title={filePath}
-                          aria-label={filePath}
-                        >
-                          <span className="truncate">{fileBasename(filePath)}</span>
-                          <button
-                            type="button"
-                            className="app-no-drag inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text"
-                            onClick={() => removeFile(index, filePath)}
-                            title={`Remove file ${fileBasename(filePath)}`}
-                            aria-label={`Remove file ${fileBasename(filePath)}`}
-                          >
-                            <FaIcon icon={faXmark} className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  {row.files.map((filePath) => (
+                    <span
+                      key={filePath}
+                      className="inline-flex max-w-full items-center gap-1 rounded-md border border-separator bg-control px-1.5 py-0.5 text-[14px] text-text"
+                      title={filePath}
+                      aria-label={filePath}
+                    >
+                      <span className="truncate">{fileBasename(filePath)}</span>
+                      <button
+                        type="button"
+                        className="app-no-drag inline-flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded border-none bg-transparent text-muted hover:bg-selection hover:text-text"
+                        onClick={() => removeFile(index, filePath)}
+                        title={`Remove file ${fileBasename(filePath)}`}
+                        aria-label={`Remove file ${fileBasename(filePath)}`}
+                      >
+                        <FaIcon icon={faXmark} className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
                 </div>
               )}
             </TableCell>
