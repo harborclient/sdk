@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.1.33 - 2026-07-24
+
 - refactor(FormDataEditor): improve file selection layout and remove unnecessary conditional rendering. (`6c897b4`)
 
 ## 1.1.32 - 2026-07-23
