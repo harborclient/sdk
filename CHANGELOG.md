@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.2.3 - 2026-07-25
+
 - fix(SidebarHistoryItem): use status-dot-only metadata and strengthen label truncation so History sidebar rows ellipsize like Collections and Runs.
 
 ## 1.2.2 - 2026-07-25
