@@ -132,6 +132,7 @@ interface Props<T extends string> extends Omit<
 
 /**
  * macOS-style segmented tab control with WAI-ARIA tabs or radiogroup semantics.
+ * The tab strip wraps to additional rows when tabs exceed the container width.
  */
 export function SegmentedTabs<T extends string>({
   tabs,
@@ -260,14 +261,13 @@ export function SegmentedTabs<T extends string>({
   const outerClassName = cn(
     'hc-segmented-tabs',
     segmentGroup,
-    'items-center gap-1',
+    'items-start gap-1',
     fullWidth ? 'min-w-0 flex-1' : '',
     className
   );
 
   const tabListClassName = cn(
-    'hc-segmented-tabs-list inline-flex min-w-0 flex-1 items-center',
-    fullWidth ? 'w-full' : ''
+    'hc-segmented-tabs-list flex w-full min-w-0 flex-1 flex-wrap items-center gap-y-2'
   );
 
   const isRadiogroup = pattern === 'radiogroup';

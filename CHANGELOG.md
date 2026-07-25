@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(SegmentedTabs): improve tab layout and wrapping behavior. (`88b3eb2`)
+
 ## 1.1.34 - 2026-07-25
 
 - fix(tests): update methodColorClass test to include badge class. (`f61eecf`)
