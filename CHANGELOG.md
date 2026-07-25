@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.2.4 - 2026-07-25
+
 - fix(CodeEditor): keep lint hover tooltips open across diagnostic refreshes. (`8953212`)
 
 ## 1.2.3 - 2026-07-25
