@@ -184,4 +184,32 @@ describe('SidebarListbox', () => {
     expect(option).not.toBeNull();
     expect(option?.getAttribute('aria-label')).toBe('GET request, responded 200 OK');
   });
+
+  it('renders history HTTP status as a status dot without visible status text', () => {
+    act(() => {
+      root.render(
+        createElement(SidebarListbox, {
+          'aria-label': 'History',
+          multiselectable: true,
+          children: createElement(SidebarHistoryItem, {
+            method: 'POST',
+            name: 'Echo (Unsupported Media Type)',
+            status: 415,
+            statusText: 'Unsupported Media Type',
+            ariaLabel: 'POST Echo'
+          })
+        })
+      );
+    });
+
+    const option = container.querySelector('[role="option"]');
+    expect(option).not.toBeNull();
+    expect(option?.querySelector('.sr-only')?.textContent).toBe('415 Unsupported Media Type');
+    expect(option?.querySelector('[title="415 Unsupported Media Type"]')).not.toBeNull();
+
+    const withoutSrOnly = option?.cloneNode(true) as HTMLElement;
+    withoutSrOnly.querySelectorAll('.sr-only').forEach((el) => el.remove());
+    expect(withoutSrOnly.textContent).toContain('Echo (Unsupported Media Type)');
+    expect(withoutSrOnly.textContent).not.toMatch(/415\s+Unsupported Media Type/);
+  });
 });

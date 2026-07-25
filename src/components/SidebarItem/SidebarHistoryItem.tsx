@@ -114,17 +114,18 @@ export function SidebarHistoryItem({
     >
       <span className={`${SIDEBAR_ITEM_BUTTON_CLASS} py-0.5`} title={title}>
         <SidebarMethodBadge method={method} uppercase />
-        <span className="flex min-w-0 flex-1 items-center gap-1.5">
-          <span className="min-w-0 truncate text-text">{name}</span>
+        <span className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+          <span className="min-w-0 flex-1 truncate text-text">{name}</span>
           {isRun && runIcon != null ? (
             <FaIcon icon={runIcon} className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden />
           ) : null}
         </span>
         {!isRun && status != null && statusText != null ? (
-          <span className="flex shrink-0 items-center gap-1.5 text-muted tabular-nums">
-            <SidebarStatusDot className={statusDotClass(status)} />
-            {status} {statusText}
-          </span>
+          <SidebarStatusDot
+            className={statusDotClass(status)}
+            title={`${status} ${statusText}`}
+            srOnlyLabel={`${status} ${statusText}`}
+          />
         ) : null}
       </span>
     </SidebarItem>

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(SidebarHistoryItem): use status-dot-only metadata and strengthen label truncation so History sidebar rows ellipsize like Collections and Runs.
+
 ## 1.2.2 - 2026-07-25
 
 - feat(CodeEditor): add support for host diagnostics in CodeEditor component. (`597b60a`)
