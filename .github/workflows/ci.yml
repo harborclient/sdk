@@ -1,52 +1,16 @@
 name: CI
 
+# This repository is archived. CI is disabled; development continues in
+# https://github.com/harborclient/harborclient (packages/sdk).
+
 on:
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      ref:
-        description: 'Git ref to checkout'
-        required: false
-        type: string
-        default: ''
 
 jobs:
-  build:
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Format check
-        run: pnpm format:check
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
-
-      - name: Check published types (ATTW)
+      - name: Repository archived
         run: |
-          TARBALL=$(pnpm pack --pack-destination /tmp | tail -1)
-          npx --yes @arethetypeswrong/cli@0.18.4 "$TARBALL" --profile esm-only --no-summary
-
-      - name: Test
-        run: pnpm test
+          echo "SDK development moved to harborclient/harborclient packages/sdk."
+          echo "See https://github.com/harborclient/harborclient"

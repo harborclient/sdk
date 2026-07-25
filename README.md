@@ -1,40 +1,29 @@
 # @harborclient/sdk
 
-TypeScript definitions, utility modules, and React runtime helpers for [HarborClient](https://harborclient.com/) development.
+> **This repository is archived.** The SDK now lives in the
+> [`harborclient/harborclient`](https://github.com/harborclient/harborclient)
+> monorepo at [`packages/sdk`](https://github.com/harborclient/harborclient/tree/main/packages/sdk).
 
-**Documentation:** [https://harborclient.github.io/sdk/](https://harborclient.github.io/sdk/)
+TypeScript definitions, utility modules, and React runtime helpers for
+[HarborClient](https://harborclient.com/) plugin and theme development.
 
-Install as a **dev dependency** in your plugin project. The package ships type declarations, HTTP/storage/UI helpers, and a JSX runtime that forwards to the host's React instance via `installReact(hc.react)`.
+## Where to go
 
-Requires HarborClient **>=1.9.0** when using `hc.pluginId`, renderer HTTP lifecycle events, typed IPC invoke, and host request commands.
+| Resource | URL |
+| --- | --- |
+| Source | https://github.com/harborclient/harborclient/tree/main/packages/sdk |
+| Docs | https://harborclient.github.io/harborclient/sdk/ |
+| npm | https://www.npmjs.com/package/@harborclient/sdk |
+| Releases | `pnpm release:sdk` from the monorepo (`sdk-v*` tags) |
 
-## Install
+Install continues to work the same way for external plugin authors:
 
 ```bash
 pnpm add -D @harborclient/sdk
 ```
 
-See the [install guide](https://harborclient.github.io/sdk/install) for version requirements.
-
-## Quick start
-
-```tsx
-import { installReact } from '@harborclient/sdk';
-import type { PluginContext } from '@harborclient/sdk';
-
-export function activate(hc: PluginContext): void {
-  installReact(hc.react);
-  // register contributions…
-}
-```
-
-Full guides — package layout, manifest, APIs, examples, and dev workflow — live in the [plugin development docs](https://harborclient.github.io/sdk/).
-
-## Trusted publishers
-
-HarborClient maintains a [trusted publisher registry](https://harborclient.com/plugins/trusted.json). Authors listed there must sign every plugin they publish; HarborClient rejects installs that claim a trusted author name without a valid signature. See the [signing guide](https://harborclient.github.io/sdk/signing) for key generation and verification.
-
-To discuss becoming a trusted publisher, email [contact@harborclient.com](mailto:contact@harborclient.com).
+Old documentation URLs under `https://harborclient.github.io/sdk/` redirect to
+the monorepo docs site.
 
 ## License
 

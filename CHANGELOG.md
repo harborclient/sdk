@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore: redirect docs to monorepo and retire standalone development. (`07b6fc4`)
+
 ## 1.2.5 - 2026-07-25
 
 - feat(CodeEditor): support diagnostic actions in lint hover tooltips. (`40c83c3`)
