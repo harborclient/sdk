@@ -4,6 +4,7 @@ import { javascript } from '@codemirror/lang-javascript';
 import { json } from '@codemirror/lang-json';
 import { StreamLanguage } from '@codemirror/language';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
+import { forceLinting } from '@codemirror/lint';
 import { Compartment, type Extension, Prec } from '@codemirror/state';
 import {
   Decoration,
@@ -37,12 +38,14 @@ import { VariableTooltipValue } from '../VariableTooltip/index.js';
 import { portalToBody } from '../portalToBody.js';
 import { useCodeEditorConfig } from './config.js';
 import { createBuiltInSyntaxHighlighting, createEditorTheme } from './editorChrome.js';
+import { type CodeEditorDiagnostic, createHostDiagnosticsLinter } from './hostDiagnostics.js';
 import { createSlashCommandHighlighter } from './slashCommandHighlighter.js';
 import { createSyntaxHighlightedPlaceholder } from './syntaxHighlightedPlaceholder.js';
 import { createJavascriptSyntaxLinter, createJsonSyntaxLinter } from './syntaxLinters.js';
 import { getCodeEditorThemeExtension } from './themes.js';
 
 export { CODE_EDITOR_THEME_OPTIONS } from './themes.js';
+export type { CodeEditorDiagnostic } from './hostDiagnostics.js';
 
 export type CodeEditorLanguage = 'json' | 'text' | 'javascript' | 'shell' | 'css';
 
@@ -331,6 +334,14 @@ export interface Props extends Omit<
    * Defaults to true.
    */
   lint?: boolean;
+
+  /**
+   * Host-supplied diagnostic markers (for example assertion failures).
+   *
+   * Independent of {@link lint} syntax checking; rendered as CodeMirror lint
+   * underlines with hover tooltips.
+   */
+  diagnostics?: CodeEditorDiagnostic[];
 
   /**
    * When set, overrides the persisted CodeMirror theme (used by the settings preview).
@@ -977,6 +988,7 @@ interface CodeEditorCompartments {
   completion: Compartment;
   a11y: Compartment;
   placeholder: Compartment;
+  diagnostics: Compartment;
 }
 
 /**
@@ -1202,6 +1214,7 @@ export function CodeEditor({
   onSlashCommand,
   selectionActions,
   lint = true,
+  diagnostics,
   themeOverride,
   setupOverride,
   fontSize,
@@ -1247,6 +1260,8 @@ export function CodeEditor({
   variablesRef.current = variables;
   const onEditVariableRef = useRef(onEditVariable);
   onEditVariableRef.current = onEditVariable;
+  const diagnosticsRef = useRef(diagnostics);
+  diagnosticsRef.current = diagnostics;
   const hasVariables = variables != null;
   const hasCompletionSource = completionSource != null;
   const tooltipId = useId();
@@ -1271,14 +1286,16 @@ export function CodeEditor({
       core: new Compartment(),
       completion: new Compartment(),
       a11y: new Compartment(),
-      placeholder: new Compartment()
+      placeholder: new Compartment(),
+      diagnostics: new Compartment()
     };
   }
   const {
     core: coreCompartment,
     completion: completionCompartment,
     a11y: a11yCompartment,
-    placeholder: placeholderCompartment
+    placeholder: placeholderCompartment,
+    diagnostics: diagnosticsCompartment
   } = compartmentsRef.current;
 
   /**
@@ -1598,6 +1615,22 @@ export function CodeEditor({
     [useHighlightedPlaceholder, placeholder, resolvedFontSize, isDark, resolvedTheme, slashCommands]
   );
 
+  /**
+   * Stable signature of host diagnostics so a new array identity each render
+   * does not thrash compartment reconfigure.
+   */
+  const diagnosticsSignature = useMemo(() => JSON.stringify(diagnostics ?? []), [diagnostics]);
+
+  /**
+   * Host-supplied diagnostic lint markers (assertion failures, etc.).
+   */
+  const diagnosticsExtensions = useMemo(() => {
+    if (diagnosticsSignature === '[]') {
+      return [];
+    }
+    return [createHostDiagnosticsLinter(() => diagnosticsRef.current ?? [])];
+  }, [diagnosticsSignature]);
+
   const coreExtensionsRef = useRef(coreExtensions);
   coreExtensionsRef.current = coreExtensions;
   const completionExtensionsRef = useRef(completionExtensions);
@@ -1606,6 +1639,8 @@ export function CodeEditor({
   a11yExtensionsRef.current = a11yExtensions;
   const placeholderExtensionsRef = useRef(placeholderExtensions);
   placeholderExtensionsRef.current = placeholderExtensions;
+  const diagnosticsExtensionsRef = useRef(diagnosticsExtensions);
+  diagnosticsExtensionsRef.current = diagnosticsExtensions;
 
   /**
    * Restores persisted scroll/selection, syncs compartment extensions, and wires scroll tracking.
@@ -1619,9 +1654,13 @@ export function CodeEditor({
           coreCompartment.reconfigure(coreExtensionsRef.current),
           completionCompartment.reconfigure(completionExtensionsRef.current),
           a11yCompartment.reconfigure(a11yExtensionsRef.current),
-          placeholderCompartment.reconfigure(placeholderExtensionsRef.current)
+          placeholderCompartment.reconfigure(placeholderExtensionsRef.current),
+          diagnosticsCompartment.reconfigure(diagnosticsExtensionsRef.current)
         ]
       });
+      if (diagnosticsExtensionsRef.current.length > 0) {
+        forceLinting(view);
+      }
 
       const trackViewState =
         onViewStateChangeRef.current != null ||
@@ -1660,7 +1699,13 @@ export function CodeEditor({
         view.scrollDOM.removeEventListener('scroll', handleScroll);
       };
     },
-    [a11yCompartment, completionCompartment, coreCompartment, placeholderCompartment]
+    [
+      a11yCompartment,
+      completionCompartment,
+      coreCompartment,
+      diagnosticsCompartment,
+      placeholderCompartment
+    ]
   );
 
   /**
@@ -1673,7 +1718,8 @@ export function CodeEditor({
       coreCompartment.of(coreExtensions),
       completionCompartment.of(completionExtensions),
       a11yCompartment.of(a11yExtensions),
-      placeholderCompartment.of(placeholderExtensions)
+      placeholderCompartment.of(placeholderExtensions),
+      diagnosticsCompartment.of(diagnosticsExtensions)
     ];
   }
   const stableExtensions = stableExtensionsRef.current;
@@ -1721,6 +1767,23 @@ export function CodeEditor({
     }
     view.dispatch({ effects: placeholderCompartment.reconfigure(placeholderExtensions) });
   }, [placeholderCompartment, placeholderExtensions]);
+
+  /**
+   * Reconfigures host diagnostic markers when the diagnostics prop changes.
+   *
+   * Forces an immediate lint pass so the underline does not wait on the
+   * combined syntax-linter delay (facet combines delay with Math.max).
+   */
+  useEffect(() => {
+    const view = editorViewRef.current;
+    if (!view) {
+      return;
+    }
+    view.dispatch({ effects: diagnosticsCompartment.reconfigure(diagnosticsExtensions) });
+    if (diagnosticsExtensions.length > 0) {
+      forceLinting(view);
+    }
+  }, [diagnosticsCompartment, diagnosticsExtensions]);
 
   /**
    * Resolves CodeMirror basicSetup from persisted settings or read-only defaults.

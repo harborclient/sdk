@@ -44,6 +44,7 @@ export {
 export type { CodeEditorConfig } from './CodeEditor/config.js';
 export type {
   Props as CodeEditorProps,
+  CodeEditorDiagnostic,
   CodeEditorLanguage,
   CodeEditorSelectionAction,
   CodeEditorSelectionRange,

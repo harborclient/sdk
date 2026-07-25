@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(CodeEditor): add support for host diagnostics in CodeEditor component. (`597b60a`)
+
 ## 1.2.1 - 2026-07-25
 
 - chore: remove .eslintcache file. (`08ed38e`)
