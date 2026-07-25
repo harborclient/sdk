@@ -1,6 +1,28 @@
 import { type Diagnostic, linter } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
+import type { EditorView } from '@codemirror/view';
 import { lintTooltipHideOn } from './lintTooltipHideOn.js';
+
+/**
+ * One action shown in a host diagnostic lint tooltip or lint panel.
+ */
+export interface CodeEditorDiagnosticAction {
+  /**
+   * Visible action label, for example `Copy to chat (Ctrl+Shift+O)`.
+   */
+  name: string;
+
+  /**
+   * Invoked when the user activates the action. Receives the diagnostic's
+   * current range, which may differ from the original host offsets after edits.
+   */
+  apply: (view: EditorView, from: number, to: number) => void;
+
+  /**
+   * Optional CSS class merged onto the action button.
+   */
+  markClass?: string;
+}
 
 /**
  * Host-supplied diagnostic marker for {@link CodeEditor}.
@@ -33,6 +55,11 @@ export interface CodeEditorDiagnostic {
    * Optional source label shown in the lint tooltip (for example `test`).
    */
   source?: string;
+
+  /**
+   * Optional actions rendered beneath the message in lint hover tooltips.
+   */
+  actions?: readonly CodeEditorDiagnosticAction[];
 }
 
 /**
@@ -70,6 +97,9 @@ export function normalizeHostDiagnostics(
       message,
       ...(diagnostic.source != null && diagnostic.source.trim()
         ? { source: diagnostic.source.trim() }
+        : {}),
+      ...(diagnostic.actions != null && diagnostic.actions.length > 0
+        ? { actions: diagnostic.actions }
         : {})
     });
   }

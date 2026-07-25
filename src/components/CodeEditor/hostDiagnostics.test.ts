@@ -56,6 +56,28 @@ describe('normalizeHostDiagnostics', () => {
     ]);
   });
 
+  it('preserves diagnostic actions when provided', () => {
+    const apply = (): void => {};
+    expect(
+      normalizeHostDiagnostics(10, [
+        {
+          from: 1,
+          to: 4,
+          message: 'fail',
+          actions: [{ name: 'Copy to chat (Ctrl+Shift+O)', apply }]
+        }
+      ])
+    ).toEqual([
+      {
+        from: 1,
+        to: 4,
+        severity: 'error',
+        message: 'fail',
+        actions: [{ name: 'Copy to chat (Ctrl+Shift+O)', apply }]
+      }
+    ]);
+  });
+
   it('allows zero-width markers at a clamped offset', () => {
     expect(normalizeHostDiagnostics(10, [{ from: 5, to: 5, message: 'caret' }])).toEqual([
       {

@@ -45,7 +45,7 @@ import { createJavascriptSyntaxLinter, createJsonSyntaxLinter } from './syntaxLi
 import { getCodeEditorThemeExtension } from './themes.js';
 
 export { CODE_EDITOR_THEME_OPTIONS } from './themes.js';
-export type { CodeEditorDiagnostic } from './hostDiagnostics.js';
+export type { CodeEditorDiagnostic, CodeEditorDiagnosticAction } from './hostDiagnostics.js';
 
 export type CodeEditorLanguage = 'json' | 'text' | 'javascript' | 'shell' | 'css';
 

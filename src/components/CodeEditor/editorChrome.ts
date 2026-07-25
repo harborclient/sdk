@@ -92,6 +92,21 @@ export function createEditorTheme(fontSize: string): ReturnType<typeof EditorVie
       borderRadius: '6px',
       boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
     },
+    '.cm-tooltip-lint .cm-diagnosticAction': {
+      display: 'inline-flex',
+      alignItems: 'center',
+      marginTop: '6px',
+      borderRadius: '6px',
+      border: '1px solid var(--mac-separator)',
+      backgroundColor: 'var(--mac-control)',
+      padding: '4px 8px',
+      fontSize: '14px',
+      color: 'var(--mac-text)',
+      cursor: 'pointer'
+    },
+    '.cm-tooltip-lint .cm-diagnosticAction:hover': {
+      backgroundColor: 'var(--mac-selection)'
+    },
     '.cm-variable-tooltip': {
       display: 'flex',
       flexDirection: 'column',
