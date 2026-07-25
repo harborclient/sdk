@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(tests): update methodColorClass test to include badge class. (`f61eecf`)
 - feat(theme): introduce metrics for typography and geometry in theme configuration. (`2df99d2`)
 
 ## 1.1.33 - 2026-07-24

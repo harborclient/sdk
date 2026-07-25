@@ -4,7 +4,7 @@ import { methodColorClass, statusColorClass } from './ui/tokens.js';
 
 describe('method and status color helpers', () => {
   it('return host classes', () => {
-    expect(methodColorClass('GET')).toBe('text-method-get');
+    expect(methodColorClass('GET')).toBe('hc-method-badge text-method-get');
     expect(statusColorClass(200)).toBe('bg-success');
     expect(statusColorClass(404)).toBe('bg-danger');
   });
