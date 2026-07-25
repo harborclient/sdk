@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- chore: remove .eslintcache file. (`08ed38e`)
 - fix(Breadcrumb): adjust SegmentShell width for better layout. (`ca8494e`)
 
 ## 1.1.35 - 2026-07-25
