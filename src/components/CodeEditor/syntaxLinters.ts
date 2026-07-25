@@ -3,6 +3,7 @@ import { syntaxTree } from '@codemirror/language';
 import { type Diagnostic, linter } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
+import { lintTooltipHideOn } from './lintTooltipHideOn.js';
 
 /** Maximum wait before running deferred lint when the browser stays busy. */
 const LINT_IDLE_TIMEOUT_MS = 500;
@@ -54,20 +55,23 @@ function collectJavascriptSyntaxErrors(view: EditorView): Diagnostic[] {
 export function createJavascriptSyntaxLinter(): Extension {
   let cancelPending: (() => void) | null = null;
 
-  return linter((view) => {
-    cancelPending?.();
-    return new Promise<Diagnostic[]>((resolve) => {
-      cancelPending = scheduleIdle(() => {
-        cancelPending = null;
-        resolve(collectJavascriptSyntaxErrors(view));
-      }, LINT_IDLE_TIMEOUT_MS);
-    });
-  });
+  return linter(
+    (view) => {
+      cancelPending?.();
+      return new Promise<Diagnostic[]>((resolve) => {
+        cancelPending = scheduleIdle(() => {
+          cancelPending = null;
+          resolve(collectJavascriptSyntaxErrors(view));
+        }, LINT_IDLE_TIMEOUT_MS);
+      });
+    },
+    { hideOn: lintTooltipHideOn }
+  );
 }
 
 /**
  * Returns a lint extension that underlines JSON parse errors.
  */
 export function createJsonSyntaxLinter(): Extension {
-  return linter(jsonParseLinter());
+  return linter(jsonParseLinter(), { hideOn: lintTooltipHideOn });
 }

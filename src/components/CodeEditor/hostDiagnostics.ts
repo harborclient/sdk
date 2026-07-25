@@ -1,5 +1,6 @@
 import { type Diagnostic, linter } from '@codemirror/lint';
 import type { Extension } from '@codemirror/state';
+import { lintTooltipHideOn } from './lintTooltipHideOn.js';
 
 /**
  * Host-supplied diagnostic marker for {@link CodeEditor}.
@@ -88,7 +89,10 @@ export function normalizeHostDiagnostics(
 export function createHostDiagnosticsLinter(
   getDiagnostics: () => readonly CodeEditorDiagnostic[]
 ): Extension {
-  return linter((view) => {
-    return normalizeHostDiagnostics(view.state.doc.length, getDiagnostics());
-  });
+  return linter(
+    (view) => {
+      return normalizeHostDiagnostics(view.state.doc.length, getDiagnostics());
+    },
+    { hideOn: lintTooltipHideOn }
+  );
 }
