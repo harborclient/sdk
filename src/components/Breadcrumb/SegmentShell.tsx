@@ -77,7 +77,7 @@ export function SegmentShell({ shape, grow = false, className, children }: Props
         ...(needsLeadingInset ? { paddingLeft: `${CHEVRON_PX + 8}px` } : {})
       }}
     >
-      <div className="min-w-0 truncate">{children}</div>
+      <div className="w-full min-w-0 truncate">{children}</div>
     </div>
   );
 }

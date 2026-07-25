@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- fix(Breadcrumb): adjust SegmentShell width for better layout. (`ca8494e`)
+
 ## 1.1.35 - 2026-07-25
 
 - fix(SegmentedTabs): improve tab layout and wrapping behavior. (`88b3eb2`)
