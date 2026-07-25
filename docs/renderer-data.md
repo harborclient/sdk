@@ -89,15 +89,16 @@ Use `defineTheme(theme)` when you want to define the theme object in a separate 
 
 **Manifest:** `contributes.themes`
 
-| Parameter    | Type                                       | Description                                          |
-| ------------ | ------------------------------------------ | ---------------------------------------------------- |
-| `id`         | `string`                                   | Theme id unique within your plugin                   |
-| `title`      | `string`                                   | Label in the appearance dropdown                     |
-| `type`       | `'light' \| 'dark'`                        | Sets `color-scheme` and Electron native chrome base  |
-| `colors`     | `Partial<Record<ThemeColorToken, string>>` | Optional token overrides                             |
-| `stylesheet` | `string`                                   | Optional plugin-relative CSS file for complex themes |
+| Parameter    | Type                                        | Description                                                         |
+| ------------ | ------------------------------------------- | ------------------------------------------------------------------- |
+| `id`         | `string`                                    | Theme id unique within your plugin                                  |
+| `title`      | `string`                                    | Label in the appearance dropdown                                    |
+| `type`       | `'light' \| 'dark'`                         | Sets `color-scheme` and Electron native chrome base                 |
+| `colors`     | `Partial<Record<ThemeColorToken, string>>`  | Optional color token overrides                                      |
+| `metrics`    | `Partial<Record<ThemeMetricToken, string>>` | Optional typography/geometry overrides (CSS strings such as `14px`) |
+| `stylesheet` | `string`                                    | Optional plugin-relative CSS file for complex themes                |
 
-Provide `colors`, a `stylesheet`, or both. Use `colors` for simple palette swaps; use `stylesheet` when you need selectors beyond `:root` (for example plugin-specific tweaks under `[data-theme='plugin-…']`).
+Provide `colors`, `metrics`, a `stylesheet`, or a combination. Use `colors` / `metrics` for token swaps; use `stylesheet` when you need selectors beyond `:root` (for example plugin-specific tweaks under `[data-theme='plugin-…']`).
 
 ```typescript
 hc.themes.register({
@@ -112,6 +113,10 @@ hc.themes.register({
     'text-secondary': '#93a1a1',
     accent: '#268bd2',
     selection: 'rgba(38, 139, 210, 0.25)'
+  },
+  metrics: {
+    'layout-font-size': '14px',
+    'scrollbar-width': '10px'
   }
 });
 ```

@@ -902,6 +902,71 @@ export type ThemeColorToken =
   | 'terminal';
 
 /**
+ * HarborClient UI metric token ids (typography and geometry).
+ *
+ * Override via {@link ThemeContribution.metrics} or a bundled stylesheet.
+ * Each token maps to a `--mac-<token>` CSS custom property on `:root`.
+ * Values are CSS strings (for example `14px`, `0.375rem`, `system-ui, sans-serif`).
+ *
+ * Token usage by UI section:
+ * - Layout — `layout-font-family`, `layout-font-size`, `layout-border-width`, `layout-radius`
+ * - Breadcrumb — `breadcrumb-font-family`, `breadcrumb-font-size`, `breadcrumb-border-width`, `breadcrumb-radius`
+ * - Text — `text-font-family`, `text-font-family-mono`, `text-font-size`, `text-font-size-sm`, `text-font-size-lg`
+ * - Interactive — `interactive-font-family`, `interactive-font-size`, `interactive-border-width`, `interactive-radius`, `interactive-focus-ring-width`
+ * - Chrome — `chrome-font-family`, `chrome-font-size`, `chrome-border-width`, `chrome-radius`
+ * - Tabs — `tab-font-family`, `tab-font-size`, `tab-border-width`, `tab-radius`
+ * - Status — `status-font-family`, `status-font-size`, `status-border-width`, `status-radius`
+ * - HTTP methods — `method-font-family`, `method-font-size`, `method-border-width`, `method-radius`
+ * - Script stages — `script-stage-font-family`, `script-stage-font-size`, `script-stage-border-width`, `script-stage-radius`
+ * - Git — `git-font-family`, `git-font-size`, `git-border-width`, `git-radius`
+ * - Scrollbar — `scrollbar-width`
+ */
+export type ThemeMetricToken =
+  | 'layout-font-family'
+  | 'layout-font-size'
+  | 'layout-border-width'
+  | 'layout-radius'
+  | 'breadcrumb-font-family'
+  | 'breadcrumb-font-size'
+  | 'breadcrumb-border-width'
+  | 'breadcrumb-radius'
+  | 'text-font-family'
+  | 'text-font-family-mono'
+  | 'text-font-size'
+  | 'text-font-size-sm'
+  | 'text-font-size-lg'
+  | 'interactive-font-family'
+  | 'interactive-font-size'
+  | 'interactive-border-width'
+  | 'interactive-radius'
+  | 'interactive-focus-ring-width'
+  | 'chrome-font-family'
+  | 'chrome-font-size'
+  | 'chrome-border-width'
+  | 'chrome-radius'
+  | 'tab-font-family'
+  | 'tab-font-size'
+  | 'tab-border-width'
+  | 'tab-radius'
+  | 'status-font-family'
+  | 'status-font-size'
+  | 'status-border-width'
+  | 'status-radius'
+  | 'method-font-family'
+  | 'method-font-size'
+  | 'method-border-width'
+  | 'method-radius'
+  | 'script-stage-font-family'
+  | 'script-stage-font-size'
+  | 'script-stage-border-width'
+  | 'script-stage-radius'
+  | 'git-font-family'
+  | 'git-font-size'
+  | 'git-border-width'
+  | 'git-radius'
+  | 'scrollbar-width';
+
+/**
  * Custom appearance theme registered via {@link PluginThemes.register}.
  *
  * Plugin themes appear in **Settings → General → Appearance** alongside built-in options.
@@ -927,9 +992,15 @@ export interface ThemeContribution {
   type: 'light' | 'dark';
 
   /**
-   * Token overrides without the `--mac-` prefix. Use for simple palette swaps.
+   * Color token overrides without the `--mac-` prefix. Use for simple palette swaps.
    */
   colors?: Partial<Record<ThemeColorToken, string>>;
+
+  /**
+   * Typography and geometry token overrides without the `--mac-` prefix.
+   * Values are CSS strings (for example `14px`, `0.375rem`).
+   */
+  metrics?: Partial<Record<ThemeMetricToken, string>>;
 
   /**
    * Plugin-relative CSS path (for example `dist/theme.css`) for complex themes.

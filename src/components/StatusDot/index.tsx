@@ -86,7 +86,7 @@ export function StatusDot({
     <span className={cn('inline-flex shrink-0 items-center', className)} title={title} {...props}>
       <span
         className={cn(
-          'inline-block shrink-0 rounded-full',
+          'hc-status-dot inline-block shrink-0 rounded-full',
           sizeClasses(size),
           statusDotVariantClass(variant)
         )}

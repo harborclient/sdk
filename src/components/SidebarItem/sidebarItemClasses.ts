@@ -23,13 +23,13 @@ export function sourceRow(selected: boolean, compact = false): string {
  * HTTP method color classes keyed by lowercase method name.
  */
 export const METHOD_CLASSES: Record<string, string> = {
-  get: 'text-method-get',
-  post: 'text-method-post',
-  put: 'text-method-put',
-  patch: 'text-method-patch',
-  delete: 'text-method-delete',
-  head: 'text-method-head',
-  options: 'text-method-options'
+  get: 'hc-method-badge text-method-get',
+  post: 'hc-method-badge text-method-post',
+  put: 'hc-method-badge text-method-put',
+  patch: 'hc-method-badge text-method-patch',
+  delete: 'hc-method-badge text-method-delete',
+  head: 'hc-method-badge text-method-head',
+  options: 'hc-method-badge text-method-options'
 };
 
 /**

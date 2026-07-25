@@ -29,6 +29,6 @@ export function segment(active: boolean): string {
  */
 export function tabItem(active: boolean): string {
   return active
-    ? 'border-separator/70 border-b-tab-underline bg-selection text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent'
-    : 'border-separator/50 border-b-transparent bg-control/20 text-muted hover:bg-selection/60 hover:text-text focus-visible:bg-selection/60 focus-visible:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent';
+    ? 'border-separator/70 border-b-tab-underline bg-selection text-text [border-bottom-width:var(--mac-tab-border-width)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent'
+    : 'border-separator/50 border-b-transparent bg-control/20 text-muted [border-bottom-width:var(--mac-tab-border-width)] hover:bg-selection/60 hover:text-text focus-visible:bg-selection/60 focus-visible:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent';
 }

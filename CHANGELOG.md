@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- feat(theme): introduce metrics for typography and geometry in theme configuration. (`2df99d2`)
+
 ## 1.1.33 - 2026-07-24
 
 - refactor(FormDataEditor): improve file selection layout and remove unnecessary conditional rendering. (`6c897b4`)

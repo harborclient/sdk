@@ -169,14 +169,65 @@ export type ThemeColorToken =
   | 'method-head'
   | 'method-options';
 
+/**
+ * HarborClient UI metric tokens (typography and geometry).
+ * Override via `metrics` or a bundled stylesheet. Maps to `--mac-*` on `:root`.
+ */
+export type ThemeMetricToken =
+  | 'layout-font-family'
+  | 'layout-font-size'
+  | 'layout-border-width'
+  | 'layout-radius'
+  | 'breadcrumb-font-family'
+  | 'breadcrumb-font-size'
+  | 'breadcrumb-border-width'
+  | 'breadcrumb-radius'
+  | 'text-font-family'
+  | 'text-font-family-mono'
+  | 'text-font-size'
+  | 'text-font-size-sm'
+  | 'text-font-size-lg'
+  | 'interactive-font-family'
+  | 'interactive-font-size'
+  | 'interactive-border-width'
+  | 'interactive-radius'
+  | 'interactive-focus-ring-width'
+  | 'chrome-font-family'
+  | 'chrome-font-size'
+  | 'chrome-border-width'
+  | 'chrome-radius'
+  | 'tab-font-family'
+  | 'tab-font-size'
+  | 'tab-border-width'
+  | 'tab-radius'
+  | 'status-font-family'
+  | 'status-font-size'
+  | 'status-border-width'
+  | 'status-radius'
+  | 'method-font-family'
+  | 'method-font-size'
+  | 'method-border-width'
+  | 'method-radius'
+  | 'script-stage-font-family'
+  | 'script-stage-font-size'
+  | 'script-stage-border-width'
+  | 'script-stage-radius'
+  | 'git-font-family'
+  | 'git-font-size'
+  | 'git-border-width'
+  | 'git-radius'
+  | 'scrollbar-width';
+
 export interface ThemeContribution {
   /** Must match an id in manifest.contributes.themes */
   id: string;
   title: string;
   /** Base appearance for `color-scheme` and native window chrome */
   type: 'light' | 'dark';
-  /** Token overrides without the `--mac-` prefix */
+  /** Color token overrides without the `--mac-` prefix */
   colors?: Partial<Record<ThemeColorToken, string>>;
+  /** Typography/geometry overrides without the `--mac-` prefix (CSS strings) */
+  metrics?: Partial<Record<ThemeMetricToken, string>>;
   /** Plugin-relative CSS path (for example `dist/theme.css`) */
   stylesheet?: string;
 }
